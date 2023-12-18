@@ -1,0 +1,11 @@
+import { env } from '@/validations/env';
+import { drizzle } from 'drizzle-orm/planetscale-serverless';
+import { connect } from '@planetscale/database';
+
+const conn = connect({
+  host: env.DATABASE_HOST,
+  username: env.DATABASE_USERNAME,
+  password: env.DATABASE_PASSWORD,
+});
+
+export const db = drizzle(conn);

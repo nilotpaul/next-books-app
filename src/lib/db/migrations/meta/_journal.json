@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1702831156612,
+      "tag": "0000_sudden_joystick",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1702833066760,
+      "tag": "0001_steep_morlocks",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1702836098552,
+      "tag": "0002_mean_eternals",
+      "breakpoints": true
+    }
+  ]
+}

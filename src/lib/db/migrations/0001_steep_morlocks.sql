@@ -1,0 +1,1 @@
+ALTER TABLE `users` MODIFY COLUMN `user_name` varchar(50);
