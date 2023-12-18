@@ -1,5 +1,9 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+import Link from '../ui/Link';
+import NextLink from 'next/link';
+
 import {
   Navbar,
   NavbarContent,
@@ -10,9 +14,6 @@ import {
   NavbarMenuItem,
 } from '@nextui-org/navbar';
 import { navItems } from '@/constants/NavMenu';
-import Link from '../ui/Link';
-import NextLink from 'next/link';
-import { usePathname } from 'next/navigation';
 import Container from '../ui/Container';
 
 type HeaderProps = {
@@ -34,7 +35,7 @@ const Header = ({ children }: HeaderProps) => {
           wrapper: 'px-0',
         }}
       >
-        <Container className='flex w-full items-center justify-center'>
+        <Container className='flex w-full items-center'>
           <NavbarBrand>
             <NextLink href='/' className='font-bold text-gray-100'>
               <span className='text-danger'>BOOKS</span>

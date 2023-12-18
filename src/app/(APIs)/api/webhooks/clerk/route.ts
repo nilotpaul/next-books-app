@@ -30,7 +30,6 @@ export async function POST(req: Request) {
 
     if (event.type === 'user.created') {
       const createUserPayload: (typeof users)['$inferInsert'] = {
-        id: nanoid(),
         clerkId: payload.data.id,
         email: payload.data.email_addresses[0].email_address,
         firstName: payload.data.first_name,

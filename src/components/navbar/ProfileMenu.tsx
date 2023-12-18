@@ -12,9 +12,12 @@ const ProfileMenu = ({ children }: ProfileMenu) => {
   return (
     <Dropdown>
       <DropdownTrigger>{children}</DropdownTrigger>
-      <DropdownMenu aria-label='Profile Menu'>
+      <DropdownMenu aria-label='User Menu'>
         <DropdownItem as={Link} key='profile' href='/profile'>
           Profile
+        </DropdownItem>
+        <DropdownItem as={Link} key='manage' href='/manage'>
+          Manage
         </DropdownItem>
         <DropdownItem key='delete' className='text-danger' color='danger'>
           <SignOutButton />

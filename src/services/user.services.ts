@@ -5,9 +5,7 @@ import { eq } from 'drizzle-orm';
 export async function createUser(user: (typeof users)['$inferInsert']) {
   const createdUser = await db.insert(users).values(user);
 
-  console.log(createUser);
-
-  if (!createdUser) {
+  if (createdUser.rowsAffected === 0) {
     return null;
   }
 
@@ -17,7 +15,7 @@ export async function createUser(user: (typeof users)['$inferInsert']) {
 export async function deleteUser(userId: string) {
   const deletedUser = await db.delete(users).where(eq(users.clerkId, userId));
 
-  if (!deletedUser) {
+  if (deletedUser.rowsAffected === 0) {
     return null;
   }
 

@@ -1,6 +1,6 @@
 import { UserProfile } from '@clerk/nextjs';
 
-const ProfilePage = () => {
+const ManagePage = () => {
   return (
     <div className='flex w-full items-center justify-center'>
       <UserProfile />
@@ -8,4 +8,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default ManagePage;
