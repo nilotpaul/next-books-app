@@ -10,6 +10,12 @@ const config: Config = {
     './src/**/*.{ts,tsx,html,css}',
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
-  plugins: [nextui({ addCommonColors: true })],
+  theme: {
+    extend: {},
+  },
+  plugins: [
+    nextui({ addCommonColors: true }),
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
 };
 export default config;

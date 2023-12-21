@@ -39,18 +39,26 @@ export const likes = mysqlTable('likes', {
   updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
 });
 
-export const userRelations = relations(users, ({ one }) => ({
+export const userRelations = relations(users, ({ one, many }) => ({
   author: one(authors, {
     fields: [users.clerkId],
     references: [authors.clerkId],
   }),
+  likes: many(likes),
 }));
 
 export const authorRelations = relations(authors, ({ many }) => ({
   books: many(books),
 }));
 
-export const likedRelations = relations(likes, ({ many }) => ({
+export const booksRealtions = relations(books, ({ one }) => ({
+  author: one(authors, {
+    fields: [books.id],
+    references: [authors.clerkId],
+  }),
+}));
+
+export const likesRelations = relations(likes, ({ many }) => ({
   likedAuthors: many(authors),
   likedBooks: many(books),
 }));

@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1702831156612,
-      "tag": "0000_sudden_joystick",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1702833066760,
-      "tag": "0001_steep_morlocks",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1702836098552,
-      "tag": "0002_mean_eternals",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1702921044412,
-      "tag": "0003_empty_marrow",
+      "when": 1702974223851,
+      "tag": "0000_flowery_rockslide",
       "breakpoints": true
     }
   ]

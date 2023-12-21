@@ -26,7 +26,16 @@ CREATE TABLE `likes` (
 	CONSTRAINT `likes_clerk_id` PRIMARY KEY(`clerk_id`)
 );
 --> statement-breakpoint
-ALTER TABLE `users` DROP PRIMARY KEY;--> statement-breakpoint
-ALTER TABLE `users` ADD `is_author` boolean DEFAULT false;--> statement-breakpoint
-ALTER TABLE `users` DROP COLUMN `id`;--> statement-breakpoint
-ALTER TABLE `users` ADD PRIMARY KEY(`clerk_id`);
+CREATE TABLE `users` (
+	`clerk_id` varchar(255) NOT NULL,
+	`email` varchar(255) NOT NULL,
+	`first_name` varchar(50) NOT NULL,
+	`last_name` varchar(70) NOT NULL,
+	`user_name` varchar(50),
+	`image_url` varchar(255),
+	`strategy` varchar(50) NOT NULL,
+	`is_author` boolean DEFAULT false,
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	`updated_at` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `users_clerk_id` PRIMARY KEY(`clerk_id`)
+);

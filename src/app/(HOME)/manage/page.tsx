@@ -1,10 +1,18 @@
-import { UserProfile } from '@clerk/nextjs';
+import { userSession } from '@/services/auth.services';
 
-const ManagePage = () => {
+import TabContent from '@/components/manage/TabContent';
+
+const ManagePage = async () => {
+  const { firstName, lastName, emailAddresses, username, imageUrl } = await userSession();
+
   return (
-    <div className='flex w-full items-center justify-center'>
-      <UserProfile />
-    </div>
+    <TabContent
+      firstName={firstName!}
+      lastName={lastName!}
+      username={username!}
+      email={emailAddresses[0].emailAddress}
+      image={imageUrl}
+    />
   );
 };
 

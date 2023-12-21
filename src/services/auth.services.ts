@@ -8,6 +8,10 @@ export const userSession = cache(async () => {
   try {
     const user = await currentUser();
 
+    if (!user?.id) {
+      redirect('/');
+    }
+
     return user;
   } catch (err) {
     console.error('No User Session', err);

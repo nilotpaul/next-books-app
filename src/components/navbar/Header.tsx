@@ -13,7 +13,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
 } from '@nextui-org/navbar';
-import { navItems } from '@/constants/NavMenu';
+import { navItems } from '@/config/constants/navMenu';
 import Container from '../ui/Container';
 
 type HeaderProps = {
