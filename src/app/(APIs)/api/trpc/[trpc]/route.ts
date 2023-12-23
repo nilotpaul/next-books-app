@@ -1,6 +1,5 @@
 import { appRouter } from '@/trpc/root';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
-import { createContext } from '@/trpc/context';
 import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
@@ -10,12 +9,7 @@ const handler = (req: NextRequest) =>
     endpoint: '/api/trpc',
     req,
     router: appRouter,
-    createContext: () => {
-      return createContext({
-        req,
-        resHeaders: req.headers,
-      });
-    },
+    createContext: () => ({}),
     onError:
       process.env.NODE_ENV === 'development'
         ? ({ path, error }) => {

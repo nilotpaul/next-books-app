@@ -1,5 +1,14 @@
 import { relations } from 'drizzle-orm';
-import { boolean, mysqlTable, timestamp, varchar, mysqlEnum, int } from 'drizzle-orm/mysql-core';
+import {
+  boolean,
+  mysqlTable,
+  timestamp,
+  varchar,
+  mysqlEnum,
+  int,
+  json,
+} from 'drizzle-orm/mysql-core';
+import { BookGenres } from '@/types/author.types';
 
 export const users = mysqlTable('users', {
   clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
@@ -18,6 +27,11 @@ export const authors = mysqlTable('authors', {
   clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
   authorName: varchar('author_name', { length: 120 }).notNull(),
   author_image: varchar('author_image', { length: 255 }),
+  bio: varchar('bio', { length: 255 }).notNull(),
+  artistGenres: json('artist_genres').$type<BookGenres>().notNull(),
+  confirm_email: varchar('confirmed_email', { length: 255 }).notNull(),
+  isConfirmed: boolean('is_confirmed').default(false),
+  secretKey: varchar('secret_key', { length: 255 }).notNull(),
   stars: int('stars').default(0),
   joinedOn: timestamp('joined_on').defaultNow().notNull(),
 });
@@ -27,6 +41,7 @@ export const books = mysqlTable('books', {
   clerkId: varchar('clerk_id', { length: 255 }).notNull(),
   bookName: varchar('book_name', { length: 70 }).notNull(),
   status: mysqlEnum('status', ['draft', 'published']),
+  genres: json('genres').$type<BookGenres>().notNull(),
   stars: int('stars').default(0),
   publicationDate: timestamp('publication_date').defaultNow(),
   createdAt: timestamp('created_at').defaultNow().notNull(),

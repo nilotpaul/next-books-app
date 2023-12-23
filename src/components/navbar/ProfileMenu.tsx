@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
 import { SignOutButton } from '@clerk/nextjs';
 import Link from 'next/link';
@@ -9,6 +11,8 @@ type ProfileMenu = {
 };
 
 const ProfileMenu = ({ children }: ProfileMenu) => {
+  const router = useRouter();
+
   return (
     <Dropdown>
       <DropdownTrigger>{children}</DropdownTrigger>
@@ -20,7 +24,7 @@ const ProfileMenu = ({ children }: ProfileMenu) => {
           Manage
         </DropdownItem>
         <DropdownItem key='delete' className='text-danger' color='danger'>
-          <SignOutButton />
+          <SignOutButton signOutCallback={() => router.push('/')} />
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

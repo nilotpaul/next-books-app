@@ -10,7 +10,7 @@ const ManageTabs = () => {
   return (
     <Tabs
       selectedKey={tab}
-      onSelectionChange={() => changeTab()}
+      onSelectionChange={(key) => changeTab(key.toString())}
       classNames={{
         tabList: 'sm:flex-col',
         tabContent: 'sm:w-[150px]',

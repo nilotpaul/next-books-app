@@ -2,6 +2,8 @@ import { db } from '@/lib/db/conn';
 import { users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 
+import 'server-only';
+
 export async function createUser(user: (typeof users)['$inferInsert']) {
   const createdUser = await db.insert(users).values(user);
 

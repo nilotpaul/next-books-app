@@ -5,6 +5,7 @@ import TRPCProvider from './trpc/TRPCProvider';
 import { NextUIProvider } from '@nextui-org/react';
 import { ThemeProvider } from 'next-themes';
 import { ClerkProvider } from '@clerk/nextjs';
+import { Toaster } from 'sonner';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -14,7 +15,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <ClerkProvider>
         <NextUIProvider navigate={router.push}>
           <ThemeProvider attribute='class' defaultTheme='dark' storageKey='theme' enableColorScheme>
-            <TRPCProvider>{children}</TRPCProvider>
+            <TRPCProvider>
+              <Toaster richColors closeButton duration={1500} />
+              {children}
+            </TRPCProvider>
           </ThemeProvider>
         </NextUIProvider>
       </ClerkProvider>

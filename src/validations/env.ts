@@ -1,12 +1,6 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
-import dotenv from 'dotenv';
-
-dotenv.config({
-  path: './.env.local',
-});
-
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url().min(1),
@@ -15,6 +9,9 @@ export const env = createEnv({
     DATABASE_PASSWORD: z.string().min(1),
     CLERK_SECRET_KEY: z.string().min(1),
     WEBHOOK_SECRET: z.string().min(1),
+    BREVO_SMTP_KEY: z.string().min(1),
+    BREVO_API_KEY: z.string().min(1),
+    ADMIN_EMAIL: z.string().email().min(1),
     NEXT_URL: z.string().url().min(1),
   },
 
@@ -30,6 +27,9 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     WEBHOOK_SECRET: process.env.WEBHOOK_SECRET,
+    BREVO_SMTP_KEY: process.env.BREVO_SMTP_KEY,
+    BREVO_API_KEY: process.env.BREVO_API_KEY,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL,
     NEXT_URL: process.env.NEXT_URL,
   },
 });

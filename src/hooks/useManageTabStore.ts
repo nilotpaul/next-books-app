@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
 type ManageTabStore = {
-  tab: 'Reader' | 'Author';
-  changeTab: () => void;
+  tab: string;
+  changeTab: (key: string) => void;
 };
 
 export const useManageTabStore = create<ManageTabStore>((set) => ({
   tab: 'Reader',
-  changeTab: () => set((state) => ({ tab: state.tab === 'Reader' ? 'Author' : 'Reader' })),
+  changeTab: (key) => set({ tab: key }),
 }));
