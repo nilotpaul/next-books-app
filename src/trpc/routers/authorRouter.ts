@@ -13,7 +13,7 @@ import { AxiosError } from 'axios';
 
 export const authorRouter = router({
   register: privateProcedure.input(registerAuthorValidation).mutation(async ({ input }) => {
-    const { authorName, bio, confirm_email, genres } = input;
+    const { authorName, bio, confirm_email, imageUrl, genres } = input;
 
     try {
       const { username, ...user } = (await userSession()) as User;
@@ -38,6 +38,7 @@ export const authorRouter = router({
           bio,
           artistGenres: genres,
           secretKey: verificationCode,
+          author_image: imageUrl,
           confirm_email,
         },
         {
@@ -106,7 +107,7 @@ export const authorRouter = router({
         });
       }
 
-      if (!author.secretKey) {
+      if (!author?.secretKey) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'No secret key found',

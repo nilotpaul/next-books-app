@@ -2,14 +2,13 @@ import { db } from '@/lib/db/conn';
 import { authors, users } from '@/lib/db/schema';
 import { env } from '@/validations/env';
 import { eq } from 'drizzle-orm';
-import axios from 'axios';
 
 export async function getAuthorById(userId: string) {
   const author = await db
     .select()
     .from(users)
     .where(eq(users.clerkId, userId))
-    .innerJoin(authors, eq(authors.clerkId, userId));
+    .leftJoin(authors, eq(authors.clerkId, userId));
 
   if (!author || author.length === 0 || !author[0].users.isAuthor) {
     return {

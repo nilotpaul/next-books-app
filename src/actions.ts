@@ -1,7 +1,9 @@
 'use server';
 
+import { s3 } from './lib/aws/s3Bucket';
 import { userSession } from './services/auth.services';
 import { createUser } from './services/user.services';
+import { env } from './validations/env';
 
 // just for testing with db
 
@@ -20,4 +22,16 @@ export async function manuallyCreateUser() {
   });
 
   console.log('status:', user?.rowsAffected);
+}
+
+export async function uploadImageTest() {
+  const image = await s3.putObject({
+    Bucket: env.AWS_BUCKET_NAME,
+    Body: 'hello',
+    Key: 'hello.txt',
+  });
+
+  await image.on('httpUploadProgress', (progress, res) => console.log({ progress, res }));
+
+  await image.promise();
 }

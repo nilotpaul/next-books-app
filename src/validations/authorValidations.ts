@@ -14,6 +14,7 @@ export const registerAuthorValidation = z.object({
       required_error: 'Bio required',
     })
     .min(20, { message: 'Min 20 characters required' }),
+  imageUrl: z.string().url().min(1),
   genres: z.array(
     z.enum(bookGenres, {
       errorMap: (err) => ({ message: err.message || 'Choose from the genre menu' }),

@@ -18,6 +18,7 @@ import { Select, SelectItem } from '@nextui-org/select';
 import { Button } from '@nextui-org/button';
 import { CreditCard, Mail, PencilLine, User } from 'lucide-react';
 import { toast } from 'sonner';
+import ProfileImageDropzone from '../manage/ProfileImageDropzone';
 
 const AuthorRegisterModal = () => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -28,7 +29,7 @@ const AuthorRegisterModal = () => {
     handleSubmit,
     setValue,
     setError,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<RegisterAuthor>({
     resolver: zodResolver(registerAuthorValidation),
     mode: 'onChange',
@@ -36,6 +37,7 @@ const AuthorRegisterModal = () => {
       authorName: '',
       bio: '',
       confirm_email: '',
+      imageUrl: '',
       genres: [],
     },
   });
@@ -70,23 +72,20 @@ const AuthorRegisterModal = () => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
       >
-        <form
-          onKeyDown={(e) => {
-            if ((e.key === 'Enter' && !isValid) || isLoading) {
-              e.preventDefault();
-            }
-          }}
-          onSubmit={handleSubmit((values) => {
-            if (values.genres.length === 0) {
-              setError('genres', { message: 'Choose from the genre menu' });
-              return;
-            }
-            registerAuthor(values);
-          })}
-        >
-          <ModalContent>
+        <ModalContent>
+          <form
+            onSubmit={handleSubmit((values) => {
+              if (values.genres.length === 0) {
+                setError('genres', { message: 'Choose from the genre menu' });
+                return;
+              }
+              registerAuthor(values);
+            })}
+          >
             <ModalHeader>Register as an Author</ModalHeader>
-            <ModalBody>
+            <ModalBody className='flex w-full items-center justify-center'>
+              <ProfileImageDropzone setValue={setValue} />
+
               <Input
                 {...register('authorName')}
                 errorMessage={errors.authorName?.message}
@@ -133,8 +132,8 @@ const AuthorRegisterModal = () => {
                 Submit
               </Button>
             </ModalFooter>
-          </ModalContent>
-        </form>
+          </form>
+        </ModalContent>
       </Modal>
     </>
   );

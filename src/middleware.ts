@@ -8,6 +8,10 @@ export default authMiddleware({
       return redirectToSignIn({ returnBackUrl: req.url });
     }
 
+    if (auth.userId && req.nextUrl.pathname === '/api/upload/image') {
+      return new Response('Only reserved for developer', { status: 401 });
+    }
+
     return NextResponse.next();
   },
 });
