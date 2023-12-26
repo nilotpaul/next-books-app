@@ -1,5 +1,5 @@
 import { db } from '@/lib/db/conn';
-import { authors, users } from '@/lib/db/schema';
+import { authors, socialLinks, users } from '@/lib/db/schema';
 import { env } from '@/validations/env';
 import { eq } from 'drizzle-orm';
 
@@ -22,6 +22,28 @@ export async function getAuthorById(userId: string) {
     isAuthor: author[0].users.isAuthor,
     user: author[0].users,
     author: author[0].authors,
+  };
+}
+
+export async function getAuthorByIdWithLinks(userId: string) {
+  const row = await db
+    .select()
+    .from(authors)
+    .where(eq(authors.clerkId, userId))
+    .leftJoin(socialLinks, eq(socialLinks.clerkId, userId));
+
+  if (!row[0].authors || !row[0].authors.isConfirmed) {
+    return {
+      isAuthor: false,
+      author: null,
+      links: null,
+    };
+  }
+
+  return {
+    isAuthor: row[0].authors.isConfirmed,
+    author: row[0].authors,
+    links: row[0].social_links,
   };
 }
 

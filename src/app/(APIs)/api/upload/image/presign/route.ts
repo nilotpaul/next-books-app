@@ -1,6 +1,7 @@
 import { MAX_FILE_SIZE } from '@/config/constants/imageUpload';
 import { s3 } from '@/lib/aws/s3Bucket';
 import { userSession } from '@/services/auth.services';
+import { getImageUrl } from '@/utils/getImageUrl';
 import { env } from '@/validations/env';
 import { imagePresignValidation } from '@/validations/uploadImageValidation';
 import { nanoid } from 'nanoid';
@@ -20,8 +21,8 @@ export async function POST(req: Request) {
 
     const uniqueId = nanoid();
     const extension = type.split('/')[1];
-    const key =
-      'author_profile' + `/${user.id}|${uniqueId.replace('-', '').replace('|', '')}|${extension}`;
+    const key = `${user.id}|${uniqueId.replace('-', '').replace('|', '')}.${extension}`;
+    const publicUrl = getImageUrl(key);
 
     const { url: postUrl, fields } = (await new Promise((resolve, reject) => {
       s3.createPresignedPost(
@@ -48,16 +49,9 @@ export async function POST(req: Request) {
       return new Response('Failed to create signed url', { status: 500 });
     }
 
-    const getUrl = await s3.getSignedUrlPromise('getObject', {
-      Bucket: env.AWS_BUCKET_NAME,
-      Key: key,
+    return new Response(JSON.stringify({ postUrl, publicUrl, fields, key }), {
+      status: 201,
     });
-
-    if (!getUrl) {
-      return new Response('Failed to create signed url', { status: 500 });
-    }
-
-    return new Response(JSON.stringify({ postUrl, getUrl, fields }));
   } catch (err) {
     console.error(err);
 

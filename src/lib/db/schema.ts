@@ -54,6 +54,13 @@ export const likes = mysqlTable('likes', {
   updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
 });
 
+export const socialLinks = mysqlTable('social_links', {
+  clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
+  instagram: varchar('instagram', { length: 255 }),
+  twitter: varchar('twitter', { length: 255 }),
+  other: varchar('other', { length: 255 }),
+});
+
 export const userRelations = relations(users, ({ one, many }) => ({
   author: one(authors, {
     fields: [users.clerkId],
@@ -62,8 +69,12 @@ export const userRelations = relations(users, ({ one, many }) => ({
   likes: many(likes),
 }));
 
-export const authorRelations = relations(authors, ({ many }) => ({
+export const authorRelations = relations(authors, ({ many, one }) => ({
   books: many(books),
+  socialLinks: one(socialLinks, {
+    fields: [authors.clerkId],
+    references: [socialLinks.clerkId],
+  }),
 }));
 
 export const booksRealtions = relations(books, ({ one }) => ({
@@ -76,4 +87,11 @@ export const booksRealtions = relations(books, ({ one }) => ({
 export const likesRelations = relations(likes, ({ many }) => ({
   likedAuthors: many(authors),
   likedBooks: many(books),
+}));
+
+export const socialLinksRelations = relations(socialLinks, ({ one }) => ({
+  author: one(authors, {
+    fields: [socialLinks.clerkId],
+    references: [authors.clerkId],
+  }),
 }));

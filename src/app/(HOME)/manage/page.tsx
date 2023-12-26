@@ -1,6 +1,6 @@
 import { userSession } from '@/services/auth.services';
 import { User } from '@clerk/nextjs/server';
-import { getAuthorById } from '@/services/author.services';
+import { getAuthorByIdWithLinks } from '@/services/author.services';
 
 import TabContent from '@/components/manage/TabContent';
 
@@ -13,7 +13,7 @@ const ManagePage = async () => {
     username,
     imageUrl,
   } = (await userSession()) as User;
-  const { isAuthor, author, user } = await getAuthorById(userId);
+  const { isAuthor, author, links } = await getAuthorByIdWithLinks(userId);
 
   return (
     <TabContent
@@ -24,6 +24,7 @@ const ManagePage = async () => {
       image={imageUrl}
       isAuthor={isAuthor}
       author={author}
+      links={links}
     />
   );
 };

@@ -17,9 +17,10 @@ export const imagePresignValidation = z.object({
   }),
 });
 
-export const uploadFromSignedUrl = z.object({
-  getUrl: z.string(),
+export const signedUrlUploadValidator = z.object({
   postUrl: z.string(),
+  publicUrl: z.string().url(),
+  key: z.string(),
   fields: z.object({
     Policy: z.string(),
     'X-Amz-Algorithm': z.string(),
@@ -33,4 +34,4 @@ export const uploadFromSignedUrl = z.object({
 
 export type UploadImage = z.infer<typeof uploadImageValidation>;
 export type PresignImage = z.infer<typeof imagePresignValidation>;
-export type UploadFromSignedUrl = z.infer<typeof uploadFromSignedUrl>;
+export type SignedUrlUpload = z.infer<typeof signedUrlUploadValidator>;

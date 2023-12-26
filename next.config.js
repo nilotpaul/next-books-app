@@ -13,6 +13,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'next-books-app.s3.ap-southeast-1.amazonaws.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'next-books-app.s3.amazonaws.com',
+      },
     ],
   },
 };

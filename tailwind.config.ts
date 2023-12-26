@@ -16,6 +16,7 @@ const config: Config = {
   plugins: [
     nextui({ addCommonColors: true }),
     require('tailwind-scrollbar')({ nocompatible: true }),
+    require('@tailwindcss/typography'),
   ],
 };
 export default config;

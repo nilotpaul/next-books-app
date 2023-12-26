@@ -1,7 +1,7 @@
 'use client';
 
 import { useManageTabStore } from '@/hooks/useManageTabStore';
-import { Author } from '@/types/author.types';
+import { Author, SocialLinks } from '@/types/author.types';
 
 import ReaderTab from './ReaderTab';
 import AuthorTab from './AuthorTab';
@@ -14,9 +14,10 @@ type TabContentProps = {
   image: string;
   isAuthor: boolean;
   author: Author | null;
+  links: SocialLinks | null;
 };
 
-const TabContent = ({ isAuthor, author, ...props }: TabContentProps) => {
+const TabContent = ({ isAuthor, author, links, ...props }: TabContentProps) => {
   const tab = useManageTabStore((state) => state.tab);
 
   return (
@@ -24,7 +25,7 @@ const TabContent = ({ isAuthor, author, ...props }: TabContentProps) => {
       {tab === 'Reader' ? (
         <ReaderTab {...props} />
       ) : (
-        <AuthorTab isAuthor={isAuthor} author={author} />
+        <AuthorTab isAuthor={isAuthor} author={author} links={links} />
       )}
     </>
   );

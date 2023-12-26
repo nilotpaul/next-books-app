@@ -1,5 +1,9 @@
+import { getImageUrl } from '@/utils/getImageUrl';
 import type { RegisterAuthor } from '@/validations/authorValidations';
-import { uploadFromSignedUrl, uploadImageValidation } from '@/validations/uploadImageValidation';
+import {
+  signedUrlUploadValidator,
+  uploadImageValidation,
+} from '@/validations/uploadImageValidation';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
@@ -8,7 +12,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 export function useSignedUrlToUpload(
-  setUrl: UseFormSetValue<RegisterAuthor>,
+  setUrl?: UseFormSetValue<RegisterAuthor>,
   onClose?: () => void
 ) {
   const router = useRouter();
@@ -18,7 +22,7 @@ export function useSignedUrlToUpload(
     isLoading,
     isError,
     isSuccess,
-    data: getUrl,
+    data,
   } = useMutation({
     mutationFn: async (file: File) => {
       const { file: imageFile } = uploadImageValidation.parse({ file }) as { file: File };
@@ -27,7 +31,7 @@ export function useSignedUrlToUpload(
         type: imageFile.type,
       });
 
-      const { getUrl, postUrl, fields } = uploadFromSignedUrl.parse(data);
+      const { postUrl, key, fields } = signedUrlUploadValidator.parse(data);
 
       const uploadImage = {
         ...fields,
@@ -44,13 +48,15 @@ export function useSignedUrlToUpload(
 
       await axios.post(postUrl, formData);
 
-      return getUrl;
+      return { key };
     },
-    onSuccess: (getUrl) => {
+    onSuccess: (data) => {
       toast.success('Image uploaded successfully');
       router.refresh();
-      setUrl('imageUrl', getUrl);
 
+      if (setUrl) {
+        setUrl('imageUrl', getImageUrl(data.key));
+      }
       if (onClose) {
         onClose();
       }
@@ -73,27 +79,65 @@ export function useSignedUrlToUpload(
 
   return {
     uploadImage,
-    getUrl,
+    data,
     isLoading,
     isError,
     isSuccess,
   };
 }
 
-export async function useUploadImage(file: File, onClose?: () => void) {
-  const router = useRouter();
+export function useUploadImage() {
+  const uploadImage = async (file: File, onSuccess?: (publicUrl: string, key: string) => void) => {
+    try {
+      const { file: imageFile } = uploadImageValidation.parse({ file }) as { file: File };
 
-  if (!file) {
-    throw new Error('No file found');
-  }
+      const { data } = await axios.post('/api/upload/image/presign', {
+        type: imageFile.type,
+      });
 
-  const {
-    mutate: uploadImage,
-    isLoading,
-    isError,
-    isSuccess,
-  } = useMutation({
-    mutationFn: async () => {
+      const { postUrl, publicUrl, key, fields } = signedUrlUploadValidator.parse(data);
+
+      const uploadImage = {
+        ...fields,
+        'Content-Type': file.type,
+        file,
+      };
+
+      const formData = new FormData();
+      Object.entries(uploadImage).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      console.log('uploading...');
+
+      await axios.post(postUrl, formData);
+
+      if (onSuccess) {
+        onSuccess(publicUrl, key);
+      }
+
+      return { publicUrl, key };
+    } catch (err) {
+      console.error('[AWS_S3: client]', err);
+      if (err instanceof z.ZodError) {
+        toast.error(err.issues[0].message);
+        return;
+      }
+      if (err instanceof AxiosError) {
+        toast.error(err.response?.data);
+        return;
+      }
+
+      toast.error('Failed to upload image');
+    }
+  };
+
+  const uploadImageDirect = async (file: File, onSuccess?: () => void) => {
+    if (!file) {
+      throw new Error('No file found');
+    }
+
+    try {
       const { file: imageFile } = uploadImageValidation.parse({ file }) as { file: File };
 
       const formData = new FormData();
@@ -104,36 +148,31 @@ export async function useUploadImage(file: File, onClose?: () => void) {
         formData
       );
 
-      return data;
-    },
-    onSuccess: () => {
-      toast.success('Image uploaded successfully');
-      router.refresh();
+      console.log('uploading...');
 
-      if (onClose) {
-        onClose();
+      if (onSuccess) {
+        onSuccess();
       }
-    },
-    onError: (err) => {
-      console.error(err);
 
+      return data;
+    } catch (err) {
+      console.error('[AWS_S3: client]', err);
+      if (err instanceof z.ZodError) {
+        toast.error(err.issues[0].message);
+        return;
+      }
       if (err instanceof AxiosError) {
         toast.error(err.response?.data);
         return;
       }
-      if (err instanceof z.ZodError) {
-        toast.error('Invalid image type');
+      if (err instanceof Error) {
+        toast.error(err.message);
         return;
       }
 
       toast.error('Failed to upload image');
-    },
-  });
-
-  return {
-    uploadImage,
-    isLoading,
-    isError,
-    isSuccess,
+    }
   };
+
+  return { uploadImage, uploadImageDirect };
 }
