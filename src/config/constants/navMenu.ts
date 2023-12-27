@@ -16,3 +16,10 @@ export const navItems = [
     path: '/forum',
   },
 ];
+
+export const dashNavItems = [
+  {
+    name: 'Documentation',
+    path: '/docs',
+  },
+];

@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
-type ManageTabStore = {
+type ToggleTabStore = {
   tab: string;
   changeTab: (key: string) => void;
 };
 
-export const useManageTabStore = create<ManageTabStore>((set) => ({
+export const useToggleTabStore = create<ToggleTabStore>((set) => ({
   tab: 'Reader',
   changeTab: (key) => set({ tab: key }),
 }));

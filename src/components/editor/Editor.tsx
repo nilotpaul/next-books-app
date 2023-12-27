@@ -43,7 +43,7 @@ const Editor = ({ placeholder, label }: EditorProps) => {
         onReady: () => {
           editorRef.current = editor;
         },
-        placeholder: placeholder?.editor ?? 'Write your content here...',
+        placeholder: placeholder.editor,
         inlineToolbar: true,
         data: { blocks: [] },
         tools: {

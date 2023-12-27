@@ -13,16 +13,15 @@ import {
   NavbarMenu,
   NavbarMenuItem,
 } from '@nextui-org/navbar';
-import { navItems } from '@/config/constants/navMenu';
 import Container from '../ui/Container';
+import { dashNavItems } from '@/config/constants/navMenu';
 
-type HeaderProps = {
+type DashNavbarProps = {
   children: React.ReactNode;
 };
 
-const Header = ({ children }: HeaderProps) => {
+const DashNavbar = ({ children }: DashNavbarProps) => {
   const pathname = usePathname();
-
   return (
     <Navbar
       maxWidth='full'
@@ -34,21 +33,28 @@ const Header = ({ children }: HeaderProps) => {
         wrapper: 'px-0',
       }}
     >
-      <Container className='flex w-full items-center'>
-        <NavbarBrand>
+      <Container className='flex w-full items-center gap-12'>
+        <NavbarBrand className='sm:min-w-fit sm:max-w-fit'>
           <NextLink href='/' className='font-bold text-gray-100'>
             <span className='text-danger'>BOOKS</span>
             <span className='text-foreground-700'>God</span>
           </NextLink>
         </NavbarBrand>
 
-        <NavbarContent className='hidden gap-4 font-medium sm:flex' justify='center'>
-          {navItems.map((item) => {
+        <NavbarContent className='hidden gap-4 font-medium sm:flex'>
+          {dashNavItems.map((item) => {
             const isActive = pathname === item.path;
 
             return (
               <NavbarItem key={item.path} isActive={isActive}>
-                <Link isBlock underline={isActive ? 'always' : 'none'} href={item.path} size='md'>
+                <Link
+                  isBlock
+                  underline={isActive ? 'always' : 'none'}
+                  href={item.path}
+                  size='md'
+                  color='foreground'
+                  className='text-[0.95rem] leading-6 text-foreground-600'
+                >
                   {item.name}
                 </Link>
               </NavbarItem>
@@ -62,8 +68,8 @@ const Header = ({ children }: HeaderProps) => {
 
         <NavbarMenuToggle className='sm:hidden' />
 
-        <NavbarMenu>
-          {navItems.map((item) => {
+        <NavbarMenu className='font-medium'>
+          {dashNavItems.map((item) => {
             const isActive = pathname === item.path;
 
             return (
@@ -73,9 +79,10 @@ const Header = ({ children }: HeaderProps) => {
                 className='mt-1 flex w-full items-center justify-center'
               >
                 <Link
-                  className='font-medium'
+                  color='foreground'
                   underline={isActive ? 'always' : 'none'}
                   href={item.path}
+                  className='text-foreground-600'
                 >
                   {item.name}
                 </Link>
@@ -90,4 +97,4 @@ const Header = ({ children }: HeaderProps) => {
   );
 };
 
-export default Header;
+export default DashNavbar;

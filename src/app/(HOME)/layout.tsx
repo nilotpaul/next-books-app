@@ -6,7 +6,7 @@ import Container from '@/components/ui/Container';
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='space-y-3'>
+    <div>
       <Header>
         <Search />
         <Auth
@@ -17,7 +17,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
         <Auth width='default' className='hidden md:block' />
         <Profile />
       </Header>
-      <Container>{children}</Container>
+      <Container className='mt-3'>{children}</Container>
     </div>
   );
 }

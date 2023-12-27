@@ -7,8 +7,10 @@ import {
   mysqlEnum,
   int,
   json,
+  decimal,
 } from 'drizzle-orm/mysql-core';
 import { BookGenres } from '@/types/author.types';
+import { BOOK_AVAILABALITY, BOOK_LANGUAGES } from '../../config/constants/books';
 
 export const users = mysqlTable('users', {
   clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
@@ -40,10 +42,17 @@ export const books = mysqlTable('books', {
   id: varchar('id', { length: 255 }).primaryKey().notNull(),
   clerkId: varchar('clerk_id', { length: 255 }).notNull(),
   bookName: varchar('book_name', { length: 70 }).notNull(),
-  status: mysqlEnum('status', ['draft', 'published']),
-  genres: json('genres').$type<BookGenres>().notNull(),
+  frontArtwork: varchar('front_artwork', { length: 255 }),
+  backArtwork: varchar('back_artwork', { length: 255 }),
+  status: mysqlEnum('status', ['draft', 'published']).notNull(),
+  genres: json('genres').$type<BookGenres>(),
+  language: mysqlEnum('language', BOOK_LANGUAGES).notNull(),
+  availability: mysqlEnum('availabality', BOOK_AVAILABALITY),
+  pricing: decimal('pricing', { precision: 10, scale: 2 }),
+  series: json('series').$type<string[]>().default([]).notNull(),
+  collaborations: json('collaborations').$type<string[]>(),
   stars: int('stars').default(0),
-  publicationDate: timestamp('publication_date').defaultNow(),
+  publicationDate: timestamp('publication_date'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
 });

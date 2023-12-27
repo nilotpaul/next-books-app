@@ -2,8 +2,9 @@ import { db } from '@/lib/db/conn';
 import { authors, socialLinks, users } from '@/lib/db/schema';
 import { env } from '@/validations/env';
 import { eq } from 'drizzle-orm';
+import { cache } from 'react';
 
-export async function getAuthorById(userId: string) {
+export const getAuthorById = cache(async (userId: string) => {
   const author = await db
     .select()
     .from(users)
@@ -23,9 +24,9 @@ export async function getAuthorById(userId: string) {
     user: author[0].users,
     author: author[0].authors,
   };
-}
+});
 
-export async function getAuthorByIdWithLinks(userId: string) {
+export const getAuthorByIdWithLinks = cache(async (userId: string) => {
   const row = await db
     .select()
     .from(authors)
@@ -45,7 +46,7 @@ export async function getAuthorByIdWithLinks(userId: string) {
     author: row[0].authors,
     links: row[0].social_links,
   };
-}
+});
 
 export async function verifyAuthor(userId: string) {
   await db.transaction(async (tx) => {

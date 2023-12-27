@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { type UseFormSetValue } from 'react-hook-form';
 import { MAX_FILE_SIZE } from '@/config/constants/imageUpload';
 import { useUploadImage } from '@/hooks/useImageUpload';
-import { type RegisterAuthor } from '@/validations/authorValidations';
 import { useDropzone } from 'react-dropzone';
 
 import Image from '../ui/Image';
@@ -11,8 +9,8 @@ import { toast } from 'sonner';
 import { Skeleton } from '@nextui-org/skeleton';
 import { cn } from '@/utils/utils';
 
-type ProfileImageDropzone = {
-  setValue: UseFormSetValue<RegisterAuthor>;
+type CircleImageDropzone = {
+  onUpload?: (publicUrl: string, key: string) => Promise<void> | void;
   classNames?: {
     wrapper?: string;
     image?: string;
@@ -22,7 +20,7 @@ type ProfileImageDropzone = {
   };
 };
 
-const ProfileImageDropzone = ({ setValue, classNames }: ProfileImageDropzone) => {
+const CircleImageDropzone = ({ onUpload, classNames }: CircleImageDropzone) => {
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState('');
 
@@ -43,9 +41,8 @@ const ProfileImageDropzone = ({ setValue, classNames }: ProfileImageDropzone) =>
           throw new Error('File not found');
         }
 
-        const data = await uploadImage(acceptedFiles[0], (imageUrl) => {
-          setValue('imageUrl', imageUrl);
-        });
+        const data = await uploadImage(acceptedFiles[0], onUpload);
+
         setImage(data?.publicUrl ?? '');
         setIsLoading(false);
       } catch (err) {
@@ -115,4 +112,4 @@ const ProfileImageDropzone = ({ setValue, classNames }: ProfileImageDropzone) =>
   );
 };
 
-export default ProfileImageDropzone;
+export default CircleImageDropzone;

@@ -1,0 +1,23 @@
+export const BOOK_AVAILABALITY = ['free', 'paid'] as const;
+export const BOOK_LANGUAGES = [
+  'English',
+  'Spanish',
+  'French',
+  'German',
+  'Chinese',
+  'Russian',
+  'Japanese',
+  'Arabic',
+  'Hindi',
+  'Portuguese',
+  'Bengali',
+  'Urdu',
+  'Indonesian',
+  'Italian',
+  'Dutch',
+  'Turkish',
+  'Korean',
+  'Vietnamese',
+  'Polish',
+  'Thai',
+] as const;

@@ -18,7 +18,7 @@ import { Select, SelectItem } from '@nextui-org/select';
 import { Button } from '@nextui-org/button';
 import { CreditCard, Mail, PencilLine, User } from 'lucide-react';
 import { toast } from 'sonner';
-import ProfileImageDropzone from '../manage/ProfileImageDropzone';
+import CircleImageDropzone from '../dropzones/CircleImageDropzone';
 
 const AuthorRegisterModal = () => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -46,6 +46,7 @@ const AuthorRegisterModal = () => {
     onSuccess: () => {
       toast.success('Success. Please check your email!');
       router.refresh();
+      onClose();
     },
     onError: (err) => {
       toast.error(err.message);
@@ -84,7 +85,7 @@ const AuthorRegisterModal = () => {
           >
             <ModalHeader>Register as an Author</ModalHeader>
             <ModalBody className='flex w-full items-center justify-center'>
-              <ProfileImageDropzone setValue={setValue} />
+              <CircleImageDropzone onUpload={(publicUrl) => setValue('imageUrl', publicUrl)} />
 
               <Input
                 {...register('authorName')}

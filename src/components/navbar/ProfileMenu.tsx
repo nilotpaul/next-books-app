@@ -23,6 +23,9 @@ const ProfileMenu = ({ children }: ProfileMenu) => {
         <DropdownItem as={Link} key='manage' href='/manage'>
           Manage
         </DropdownItem>
+        <DropdownItem as={Link} key='dashboard' href='/dashboard'>
+          Dashboard
+        </DropdownItem>
         <DropdownItem key='delete' className='text-danger' color='danger'>
           <SignOutButton signOutCallback={() => router.push('/')} />
         </DropdownItem>

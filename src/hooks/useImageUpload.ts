@@ -87,7 +87,10 @@ export function useSignedUrlToUpload(
 }
 
 export function useUploadImage() {
-  const uploadImage = async (file: File, onSuccess?: (publicUrl: string, key: string) => void) => {
+  const uploadImage = async (
+    file: File,
+    onSuccess?: (publicUrl: string, key: string) => Promise<void> | void
+  ) => {
     try {
       const { file: imageFile } = uploadImageValidation.parse({ file }) as { file: File };
 
@@ -113,7 +116,7 @@ export function useUploadImage() {
       await axios.post(postUrl, formData);
 
       if (onSuccess) {
-        onSuccess(publicUrl, key);
+        await onSuccess(publicUrl, key);
       }
 
       return { publicUrl, key };

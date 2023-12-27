@@ -4,8 +4,12 @@ import { useToggleTabStore } from '@/hooks/useToggleTabStore';
 
 import { Tabs, Tab } from '@nextui-org/tabs';
 
-const ManageTabs = () => {
-  const { tab, changeTab } = useToggleTabStore((state) => state);
+type DashSidebarProps = {
+  isAuthor: boolean;
+};
+
+const DashSidebar = ({ isAuthor }: DashSidebarProps) => {
+  const { tab, changeTab } = useToggleTabStore();
 
   return (
     <Tabs
@@ -16,23 +20,25 @@ const ManageTabs = () => {
         tabContent: 'sm:w-[150px]',
         base: 'sm:h-[calc(100vh-5.5rem)] sm:bg-stone-900/50 rounded-lg px-3 py-2',
       }}
-      aria-label='Manage Account Options'
+      aria-label='Dashboard'
       color='secondary'
       variant='light'
     >
+      {isAuthor && (
+        <Tab
+          key='WriteBooks'
+          title={
+            <div className='flex items-center space-x-2'>
+              <span className='text-sm font-medium'>Write Books</span>
+            </div>
+          }
+        />
+      )}
       <Tab
-        key='Reader'
+        key='Reading'
         title={
           <div className='flex items-center space-x-2'>
-            <span className='text-sm font-medium'>Reader</span>
-          </div>
-        }
-      />
-      <Tab
-        key='Author'
-        title={
-          <div className='flex items-center space-x-2'>
-            <span className='text-sm font-medium'>Author</span>
+            <span className='text-sm font-medium'>Reading</span>
           </div>
         }
       />
@@ -40,4 +46,4 @@ const ManageTabs = () => {
   );
 };
 
-export default ManageTabs;
+export default DashSidebar;

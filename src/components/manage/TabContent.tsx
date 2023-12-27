@@ -1,6 +1,6 @@
 'use client';
 
-import { useManageTabStore } from '@/hooks/useManageTabStore';
+import { useToggleTabStore } from '@/hooks/useToggleTabStore';
 import { Author, SocialLinks } from '@/types/author.types';
 
 import ReaderTab from './ReaderTab';
@@ -18,7 +18,7 @@ type TabContentProps = {
 };
 
 const TabContent = ({ isAuthor, author, links, ...props }: TabContentProps) => {
-  const tab = useManageTabStore((state) => state.tab);
+  const tab = useToggleTabStore((state) => state.tab);
 
   return (
     <>
