@@ -6,6 +6,6 @@ type ToggleTabStore = {
 };
 
 export const useToggleTabStore = create<ToggleTabStore>((set) => ({
-  tab: 'Reader',
+  tab: '',
   changeTab: (key) => set({ tab: key }),
 }));

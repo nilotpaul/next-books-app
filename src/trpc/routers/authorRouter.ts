@@ -2,8 +2,6 @@ import { privateProcedure, router } from '../trpc';
 
 import { registerAuthorValidation, verifyAuthorValidation } from '@/validations/authorValidations';
 import { getAuthorById, registerAuthor, verifyAuthor } from '@/services/author.services';
-import { userSession } from '@/services/auth.services';
-import { User } from '@clerk/nextjs/server';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { DrizzleError } from 'drizzle-orm';
@@ -12,12 +10,11 @@ import { nanoid } from 'nanoid';
 import { AxiosError } from 'axios';
 
 export const authorRouter = router({
-  register: privateProcedure.input(registerAuthorValidation).mutation(async ({ input }) => {
+  register: privateProcedure.input(registerAuthorValidation).mutation(async ({ input, ctx }) => {
+    const { username, ...user } = ctx.user;
     const { authorName, bio, confirm_email, imageUrl, genres } = input;
 
     try {
-      const { username, ...user } = (await userSession()) as User;
-
       const author = await getAuthorById(user.id);
 
       if (author.isAuthor) {
@@ -92,12 +89,11 @@ export const authorRouter = router({
     }
   }),
 
-  verify: privateProcedure.input(verifyAuthorValidation).mutation(async ({ input }) => {
+  verify: privateProcedure.input(verifyAuthorValidation).mutation(async ({ input, ctx }) => {
+    const { id } = ctx.user;
     const { secretKey } = input;
 
     try {
-      const { id } = (await userSession()) as User;
-
       const { isAuthor, author } = await getAuthorById(id);
 
       if (isAuthor) {

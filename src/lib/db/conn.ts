@@ -9,4 +9,4 @@ const conn = connect({
   password: env.DATABASE_PASSWORD,
 });
 
-export const db = drizzle(conn, { schema, logger: process.env.NODE_ENV === 'development' });
+export const db = drizzle(conn, { schema });

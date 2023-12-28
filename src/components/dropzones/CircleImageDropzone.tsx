@@ -37,16 +37,13 @@ const CircleImageDropzone = ({ onUpload, classNames }: CircleImageDropzone) => {
       try {
         setIsLoading(true);
         if (!acceptedFiles || acceptedFiles.length === 0) {
-          setIsLoading(false);
           throw new Error('File not found');
         }
 
         const data = await uploadImage(acceptedFiles[0], onUpload);
 
         setImage(data?.publicUrl ?? '');
-        setIsLoading(false);
       } catch (err) {
-        setIsLoading(false);
         console.error(err);
 
         if (err instanceof Error) {
@@ -55,10 +52,11 @@ const CircleImageDropzone = ({ onUpload, classNames }: CircleImageDropzone) => {
         }
 
         toast.error('Failed to upload image');
+      } finally {
+        setIsLoading(false);
       }
     },
     onError: (err) => {
-      setIsLoading(false);
       console.error(err);
       toast.error(err.message);
     },

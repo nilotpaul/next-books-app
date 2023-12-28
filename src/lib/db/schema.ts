@@ -10,7 +10,7 @@ import {
   decimal,
 } from 'drizzle-orm/mysql-core';
 import { BookGenres } from '@/types/author.types';
-import { BOOK_AVAILABALITY, BOOK_LANGUAGES } from '../../config/constants/books';
+import { BOOK_AVAILABALITY, BOOK_LANGUAGES, BOOK_STATUS } from '../../config/constants/books';
 
 export const users = mysqlTable('users', {
   clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
@@ -41,10 +41,12 @@ export const authors = mysqlTable('authors', {
 export const books = mysqlTable('books', {
   id: varchar('id', { length: 255 }).primaryKey().notNull(),
   clerkId: varchar('clerk_id', { length: 255 }).notNull(),
-  bookName: varchar('book_name', { length: 70 }).notNull(),
+  bookTitle: varchar('book_name', { length: 70 }).unique().notNull(),
+  content: json('content').$type<JSON>(),
+  normalised_title: varchar('normalised_title', { length: 100 }).unique().notNull(),
   frontArtwork: varchar('front_artwork', { length: 255 }),
   backArtwork: varchar('back_artwork', { length: 255 }),
-  status: mysqlEnum('status', ['draft', 'published']).notNull(),
+  status: mysqlEnum('status', BOOK_STATUS).notNull(),
   genres: json('genres').$type<BookGenres>(),
   language: mysqlEnum('language', BOOK_LANGUAGES).notNull(),
   availability: mysqlEnum('availabality', BOOK_AVAILABALITY),

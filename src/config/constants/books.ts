@@ -1,4 +1,5 @@
-export const BOOK_AVAILABALITY = ['free', 'paid'] as const;
+export const BOOK_STATUS = ['draft', 'published'] as const;
+export const BOOK_AVAILABALITY = ['Free', 'Paid'] as const;
 export const BOOK_LANGUAGES = [
   'English',
   'Spanish',

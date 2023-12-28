@@ -1,16 +1,31 @@
 'use client';
 
 import { useToggleTabStore } from '@/hooks/useToggleTabStore';
+import { useMounted } from '@/hooks/useMounted';
 
 import { Card, CardHeader, CardBody } from '@nextui-org/card';
-import { Button } from '@nextui-org/button';
 import WriteBooksTab from './WriteBooksTab';
 import ReadingTab from './ReadingTab';
 import Divider from '../ui/Divider';
-import { Plus } from 'lucide-react';
+import CreateBookModal from '../modals/CreateBookModal';
+import { Loader2Icon } from 'lucide-react';
 
-const ManageDashTabs = () => {
+type ManageDashTabsProps = {
+  userId: string;
+};
+
+const ManageDashTabs = ({ userId }: ManageDashTabsProps) => {
   const tab = useToggleTabStore((state) => state.tab);
+
+  const [isMounted] = useMounted();
+
+  if (!isMounted) {
+    return (
+      <div className='flex h-full w-full items-center justify-center'>
+        <Loader2Icon className='h-12 w-12 animate-spin text-primary' />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -26,15 +41,7 @@ const ManageDashTabs = () => {
             {tab === 'WriteBooks' ? 'Written Books' : 'Reading'} <Divider className='w-[150px]' />
           </span>
 
-          <Button
-            variant='solid'
-            color='success'
-            size='sm'
-            startContent={<Plus className='h-4 w-4 font-extrabold' />}
-            className='gap-1.5 text-small font-semibold text-black'
-          >
-            Write Book
-          </Button>
+          <CreateBookModal userId={userId} />
         </CardHeader>
 
         <CardBody className='h-full py-2 pl-0 sm:pl-3'>

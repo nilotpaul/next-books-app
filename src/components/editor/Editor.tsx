@@ -5,10 +5,15 @@ import { useUploadImage } from '@/hooks/useImageUpload';
 import EditorJS from '@editorjs/editorjs';
 import { Textarea } from '@nextui-org/input';
 
-import '@/styles/editor.css';
 import { toast } from 'sonner';
+import { Kbd } from '@nextui-org/kbd';
+import '@/styles/editor.css';
 
 type EditorProps = {
+  defaultValues?: {
+    title?: string;
+    content?: string;
+  };
   placeholder: {
     titleBar: string;
     editor: string;
@@ -19,7 +24,7 @@ type EditorProps = {
   };
 };
 
-const Editor = ({ placeholder, label }: EditorProps) => {
+const Editor = ({ defaultValues, placeholder, label }: EditorProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const editorRef = useRef<EditorJS | undefined>(undefined);
   const titleRef = useRef<HTMLTextAreaElement | null>(null);
@@ -132,11 +137,12 @@ const Editor = ({ placeholder, label }: EditorProps) => {
 
   return (
     <>
-      <form className='prose prose-stone mx-auto space-y-2 dark:prose-invert'>
+      <form className='prose prose-stone mx-auto flex flex-col justify-between space-y-2 dark:prose-invert'>
         <Textarea
           ref={titleRef}
           label={label.titleBar}
           placeholder={placeholder.titleBar}
+          defaultValue={defaultValues?.title}
           labelPlacement='outside'
           size='sm'
           variant='bordered'
@@ -148,12 +154,16 @@ const Editor = ({ placeholder, label }: EditorProps) => {
             label: 'text-lg font-semibold',
             inputWrapper: 'outline-none border-none px-0',
           }}
-          minRows={2}
+          minRows={1.5}
         />
 
-        <div>
+        <div className='h-full'>
           <span className='pb-1.5 text-lg font-semibold text-primary'>{label.editor}</span>
-          <div id='editorjs' />
+          <div id='editorjs' className='min-h-[480px]' />
+
+          <div className='text-sm text-foreground-500'>
+            Use <Kbd keys={['tab']}>Tab</Kbd> to open editor tools
+          </div>
         </div>
       </form>
     </>

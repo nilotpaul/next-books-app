@@ -1,7 +1,8 @@
 import { TRPCError, initTRPC } from '@trpc/server';
 import { ZodError } from 'zod';
 import superjson from 'superjson';
-import { auth } from '@clerk/nextjs';
+import { userSession } from '@/services/auth.services';
+import { getAuthorById } from '@/services/author.services';
 
 export const t = initTRPC.create({
   errorFormatter: ({ shape, error }) => {
@@ -18,15 +19,39 @@ export const t = initTRPC.create({
 });
 
 const isAuthed = t.middleware(async ({ next }) => {
-  const user = await auth();
+  const user = await userSession();
 
-  if (!user.userId) {
+  if (!user || !user?.id) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
     });
   }
 
-  return next();
+  return next({
+    ctx: {
+      user,
+    },
+  });
+});
+
+export const isAuthor = t.middleware(async ({ next }) => {
+  const user = await userSession();
+  const { isAuthor, author, user: dbUser } = await getAuthorById(user?.id || '');
+
+  if (!user || !user?.id || !isAuthor || !author) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'You need to be an author to do this',
+    });
+  }
+
+  return next({
+    ctx: {
+      isAuthor,
+      user: dbUser,
+      author,
+    },
+  });
 });
 
 export const router = t.router;
