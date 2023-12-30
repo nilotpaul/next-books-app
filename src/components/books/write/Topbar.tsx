@@ -1,6 +1,5 @@
-'use client';
-
 import { Book } from '@/types/book.types';
+import { EditorOutput } from '@/types/editor.types';
 
 import { Button } from '@nextui-org/button';
 import { Chip } from '@nextui-org/chip';
@@ -11,9 +10,10 @@ import BookPublishModal from '@/components/modals/BookPublishModal';
 
 type TopbarProps = {
   book: Omit<Book, 'normalised_title' | 'stars' | 'updatedAt' | 'publicationDate'>;
+  requestSubmit: () => Promise<EditorOutput>;
 };
 
-const Topbar = ({ book }: TopbarProps) => {
+const Topbar = ({ ...props }: TopbarProps) => {
   return (
     <Container className='flex w-full items-center justify-between'>
       <div className='flex items-center gap-12'>
@@ -26,7 +26,7 @@ const Topbar = ({ book }: TopbarProps) => {
         </Chip>
       </div>
       <div className='space-x-3'>
-        <BookPublishModal book={book} />
+        <BookPublishModal {...props} />
       </div>
     </Container>
   );

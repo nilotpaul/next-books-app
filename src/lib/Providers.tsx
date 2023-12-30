@@ -16,7 +16,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <NextUIProvider navigate={router.push}>
           <ThemeProvider attribute='class' defaultTheme='dark' storageKey='theme' enableColorScheme>
             <TRPCProvider>
-              <Toaster richColors closeButton duration={2000} />
+              <Toaster richColors closeButton duration={2500} theme='system' />
               {children}
             </TRPCProvider>
           </ThemeProvider>

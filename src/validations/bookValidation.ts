@@ -19,6 +19,7 @@ export const createBookValidation = z.object({
 });
 
 export const publishBookValidation = z.object({
+  bookId: z.string().min(1),
   bookTitle: z
     .string({
       invalid_type_error: 'Only string is allowed',
@@ -33,14 +34,19 @@ export const publishBookValidation = z.object({
   status: z.enum(BOOK_STATUS, {
     errorMap: (err) => ({ message: err.message || 'Select status from the menu' }),
   }),
-  genres: z.array(
-    z.enum(bookGenres, {
-      errorMap: (err) => ({ message: err.message || 'Select genres from the menu' }),
+  genres: z
+    .array(
+      z.enum(bookGenres, {
+        errorMap: (err) => ({ message: err.message || 'Select genres from the menu' }),
+      }),
+      {
+        errorMap: (err) => ({ message: err.message || 'Select genres from menu' }),
+      }
+    )
+    .refine((genre) => genre.length !== 0, {
+      message: 'Choose at least one genre',
+      path: ['genres'],
     }),
-    {
-      errorMap: (err) => ({ message: err.message || 'Select genres from menu' }),
-    }
-  ),
   language: z.enum(BOOK_LANGUAGES, {
     errorMap: (err) => ({
       message: err.message || 'Choose language from the menu',
@@ -49,8 +55,10 @@ export const publishBookValidation = z.object({
   availability: z.enum(BOOK_AVAILABALITY, {
     errorMap: (err) => ({ message: err.message || 'Select availability from the menu' }),
   }),
-  pricing: z.number(),
-  series: z.string().min(1),
+  pricing: z.string(),
+  series: z.array(z.string(), {
+    errorMap: (err) => ({ message: err.message || 'Input a list of series' }),
+  }),
   collaborations: z.array(z.string(), {
     errorMap: (err) => ({ message: err.message || 'Input a list of collaborators' }),
   }),

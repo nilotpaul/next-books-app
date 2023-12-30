@@ -2,8 +2,7 @@ import { getAuthorBookById } from '@/services/books.services';
 import { notFound } from 'next/navigation';
 import { omit } from 'lodash';
 
-import Topbar from '@/components/books/write/Topbar';
-import Editor from '@/components/editor/Editor';
+import MainWrapper from '@/components/books/write/MainWrapper';
 
 type WriteBookPageProps = {
   params: {
@@ -22,28 +21,11 @@ const WriteBookPage = async ({ params }: WriteBookPageProps) => {
     ['normalised_title', 'stars', 'updatedAt', 'publicationDate']
   );
 
-  if (!bookId || !userId || !book) {
+  if (!bookId || !userId || !book.id) {
     return notFound();
   }
 
-  return (
-    <>
-      <Topbar book={book} />
-
-      <div className='mt-8'>
-        <Editor
-          defaultValues={{
-            title: book.bookTitle,
-          }}
-          label={{ titleBar: 'Book Title', editor: 'Book Content' }}
-          placeholder={{
-            titleBar: 'Enter book title here',
-            editor: 'Start Writing...',
-          }}
-        />
-      </div>
-    </>
-  );
+  return <MainWrapper book={book} />;
 };
 
 export default WriteBookPage;

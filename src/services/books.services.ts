@@ -1,9 +1,18 @@
 import { db } from '@/lib/db/conn';
 import { books } from '@/lib/db/schema';
-import { normaliseTitle } from '@/utils/utils';
 import { CreateBook } from '@/validations/bookValidation';
 import { and, eq, like } from 'drizzle-orm';
 import { cache } from 'react';
+
+export const getBookById = cache(async (bookId: string) => {
+  const row = await db.select().from(books).where(eq(books.id, bookId));
+
+  if (row.length === 0 || !row[0]?.id) {
+    return null;
+  }
+
+  return row[0];
+});
 
 export const getAuthorBookById = cache(
   async ({ authorId, bookId }: { bookId: string; authorId: string }) => {
@@ -12,7 +21,7 @@ export const getAuthorBookById = cache(
       .from(books)
       .where(and(eq(books.id, bookId), eq(books.clerkId, authorId)));
 
-    if (!row[0]?.id) {
+    if (row.length === 0 || !row[0]?.id) {
       return null;
     }
 
@@ -32,6 +41,16 @@ export const getBookByTitle = cache(async (bookTitle: string) => {
 
   return row[0];
 });
+
+export const publishBook = async (payload: (typeof books)['$inferInsert']) => {
+  const publish = await db.update(books).set(payload).where(eq(books.id, payload.id));
+
+  if (publish.rowsAffected === 0) {
+    return { success: false };
+  }
+
+  return { success: true };
+};
 
 export const createBook = async ({
   bookId,

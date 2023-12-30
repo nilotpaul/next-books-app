@@ -42,7 +42,7 @@ export const books = mysqlTable('books', {
   id: varchar('id', { length: 255 }).primaryKey().notNull(),
   clerkId: varchar('clerk_id', { length: 255 }).notNull(),
   bookTitle: varchar('book_name', { length: 70 }).unique().notNull(),
-  content: json('content').$type<JSON>(),
+  content: json('content').$type<any>(),
   normalised_title: varchar('normalised_title', { length: 100 }).unique().notNull(),
   frontArtwork: varchar('front_artwork', { length: 255 }),
   backArtwork: varchar('back_artwork', { length: 255 }),

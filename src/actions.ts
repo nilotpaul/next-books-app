@@ -3,6 +3,7 @@
 import { s3 } from './lib/aws/s3Bucket';
 import { userSession } from './services/auth.services';
 import { createUser } from './services/user.services';
+import { EditorOutput } from './types/editor.types';
 import { env } from './validations/env';
 
 // just for testing with db
@@ -34,4 +35,8 @@ export async function uploadImageTest() {
   await image.on('httpUploadProgress', (progress, res) => console.log({ progress, res }));
 
   await image.promise();
+}
+
+export async function getEditorInputs(data: EditorOutput) {
+  return data;
 }
