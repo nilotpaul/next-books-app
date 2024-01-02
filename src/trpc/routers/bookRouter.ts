@@ -1,4 +1,10 @@
-import { createBook, getBookById, getBookByTitle, publishBook } from '@/services/books.services';
+import {
+  createBook,
+  deleteBookById,
+  getBookById,
+  getBookByTitle,
+  publishBook,
+} from '@/services/books.services';
 import { isAuthor, publicProcedure, router } from '../trpc';
 
 import { createBookValidation, publishBookValidation } from '@/validations/bookValidation';
@@ -150,6 +156,71 @@ export const bookRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to publish the book',
+        });
+      }
+    }),
+
+  delete: publicProcedure
+    .use(isAuthor)
+    .input(z.object({ bookId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const { author } = ctx;
+      const { bookId } = input;
+
+      try {
+        const book = await getBookById(bookId);
+
+        if (!book || !book.id) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'This book does not exist',
+          });
+        }
+
+        const bookAuthor = book.clerkId === author.clerkId;
+
+        if (!bookAuthor) {
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'You are not the author of this book',
+          });
+        }
+
+        const { success } = await deleteBookById(bookId);
+
+        if (!success) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to delete the book',
+          });
+        }
+
+        return { success: true };
+      } catch (err) {
+        console.error('[DELETE_BOOK_ERROR]:', err);
+
+        if (err instanceof z.ZodError) {
+          throw new TRPCError({
+            code: 'PARSE_ERROR',
+            message: 'Data not passed in correct format',
+          });
+        }
+        if (err instanceof DrizzleError) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to make changes to the db',
+          });
+        }
+        if (err instanceof TRPCError) {
+          throw new TRPCError({
+            code: err.code,
+            message: err.message,
+          });
+        }
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to delete the book',
         });
       }
     }),

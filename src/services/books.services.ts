@@ -1,8 +1,25 @@
 import { db } from '@/lib/db/conn';
-import { books } from '@/lib/db/schema';
+import { authors, books } from '@/lib/db/schema';
 import { CreateBook } from '@/validations/bookValidation';
 import { and, eq, like } from 'drizzle-orm';
 import { cache } from 'react';
+
+export const getPublishedBookWithAuthorById = cache(async (bookId: string) => {
+  const row = await db
+    .select({
+      authorName: authors.authorName,
+      book: books,
+    })
+    .from(books)
+    .where(eq(books.id, bookId))
+    .leftJoin(authors, eq(authors.clerkId, books.clerkId));
+
+  if (row.length === 0 || !row[0].book.id || !row[0].authorName) {
+    return null;
+  }
+
+  return row[0];
+});
 
 export const getBookById = cache(async (bookId: string) => {
   const row = await db.select().from(books).where(eq(books.id, bookId));
@@ -73,6 +90,16 @@ export const createBook = async ({
   console.log('create book', { create });
 
   if (create.rowsAffected === 0) {
+    return { success: false };
+  }
+
+  return { success: true };
+};
+
+export const deleteBookById = async (bookId: string) => {
+  const deletedBook = await db.delete(books).where(eq(books.id, bookId));
+
+  if (deletedBook.rowsAffected === 0) {
     return { success: false };
   }
 

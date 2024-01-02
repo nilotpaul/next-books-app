@@ -1,8 +1,28 @@
 import { db } from '@/lib/db/conn';
-import { authors, socialLinks, users } from '@/lib/db/schema';
+import { authors, books, socialLinks, users } from '@/lib/db/schema';
 import { env } from '@/validations/env';
 import { eq } from 'drizzle-orm';
 import { cache } from 'react';
+
+export const getAuthorWithBooksById = cache(async (userId: string) => {
+  const row = await db
+    .select()
+    .from(authors)
+    .where(eq(authors.clerkId, userId))
+    .leftJoin(books, eq(books.clerkId, userId));
+
+  const allBooks = row.map((book) => book.books);
+
+  if (row.length === 0 || !row[0].authors.isConfirmed || !row[0].books?.id) {
+    return {
+      isAuthor: false,
+      author: row[0].authors,
+      books: allBooks,
+    };
+  }
+
+  return { isAuthor: true, author: row[0].authors, books: allBooks };
+});
 
 export const getAuthorById = cache(async (userId: string) => {
   const author = await db

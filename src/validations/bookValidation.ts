@@ -64,5 +64,17 @@ export const publishBookValidation = z.object({
   }),
 });
 
+export const epubValidation = z.object({
+  blocks: z.any(),
+  bookInfo: z.object({
+    bookId: z.string(),
+    title: z.string().min(1),
+    author: z.string().min(1),
+    publisher: z.string().min(1),
+    cover: z.string().url().min(1),
+  }),
+});
+
 export type CreateBook = z.infer<typeof createBookValidation>;
 export type PublishBook = z.infer<typeof publishBookValidation>;
+export type EPubValidation = z.infer<typeof epubValidation>;

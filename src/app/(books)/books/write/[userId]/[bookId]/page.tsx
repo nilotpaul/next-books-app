@@ -4,6 +4,9 @@ import { omit } from 'lodash';
 
 import MainWrapper from '@/components/books/write/MainWrapper';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 type WriteBookPageProps = {
   params: {
     userId: string;

@@ -1,19 +1,16 @@
-import { Chip } from '@nextui-org/chip';
+import { BooksWithoutNT } from '@/types/book.types';
+import BookTable from './BookTable';
 
-const WriteBooksTab = () => {
+type WriteBooksTab = {
+  books: (BooksWithoutNT[number] & { authorImage: string | null; authorName: string | null })[];
+};
+
+const WriteBooksTab = ({ books }: WriteBooksTab) => {
+  const draftBooks = books.filter((book) => book.status === 'draft');
+
   return (
-    <div className='space-y-8'>
-      <section>
-        <Chip variant='dot' color='warning'>
-          Draft
-        </Chip>
-      </section>
-
-      <section>
-        <Chip variant='dot' color='success'>
-          Published
-        </Chip>
-      </section>
+    <div>
+      <BookTable type='Draft Books Table' books={draftBooks} />
     </div>
   );
 };

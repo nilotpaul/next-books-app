@@ -4,12 +4,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useUploadImage } from '@/hooks/useImageUpload';
 import EditorJS from '@editorjs/editorjs';
 import { Textarea } from '@nextui-org/input';
+import { getFileDimensions } from '@/lib/getImageDimensions';
 
 import { toast } from 'sonner';
 import { Kbd } from '@nextui-org/kbd';
-import '@/styles/editor.css';
-import { Loader2 } from 'lucide-react';
 import { Skeleton } from '@nextui-org/react';
+import '@/styles/editor.css';
 
 type EditorProps = {
   titleRef: React.MutableRefObject<HTMLTextAreaElement | null>;
@@ -80,6 +80,12 @@ const Editor = ({ defaultValues, placeholder, label, titleRef, editorRef, data }
               uploader: {
                 // upload images here
                 uploadByFile: async (file: File) => {
+                  const dimensions = await getFileDimensions(file);
+
+                  if (!dimensions.width || !dimensions.height) {
+                    toast.error('Something went wrong');
+                    return;
+                  }
                   const data = await uploadImage(file, () => {
                     toast.success('Image uploaded successfully');
                   });
@@ -88,6 +94,8 @@ const Editor = ({ defaultValues, placeholder, label, titleRef, editorRef, data }
                     success: 1,
                     file: {
                       url: data?.publicUrl || '',
+                      height: dimensions.height,
+                      width: dimensions.width,
                     },
                   };
                 },
@@ -107,7 +115,7 @@ const Editor = ({ defaultValues, placeholder, label, titleRef, editorRef, data }
         },
       });
     }
-  }, [editorRef.current]);
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
