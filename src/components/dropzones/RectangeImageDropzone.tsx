@@ -6,7 +6,6 @@ import { useDropzone } from 'react-dropzone';
 import { Image } from '@nextui-org/image';
 import { UploadCloud } from 'lucide-react';
 import { toast } from 'sonner';
-import { Skeleton } from '@nextui-org/skeleton';
 import { cn } from '@/utils/utils';
 
 type RectangleImageDropzoneProps = {
@@ -14,13 +13,19 @@ type RectangleImageDropzoneProps = {
     icon?: string;
   };
   label?: string;
+  initialImage?: string;
   onUpload?: (publicUrl: string, key: string) => Promise<void> | void;
 };
 
-const RectangeImageDropzone = ({ label, classNames, onUpload }: RectangleImageDropzoneProps) => {
+const RectangeImageDropzone = ({
+  label,
+  classNames,
+  initialImage,
+  onUpload,
+}: RectangleImageDropzoneProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(initialImage || '');
 
   const { uploadImage } = useUploadImage();
 
@@ -75,7 +80,7 @@ const RectangeImageDropzone = ({ label, classNames, onUpload }: RectangleImageDr
           ),
         })}
       >
-        {!image ? (
+        {!image || isLoading ? (
           <>
             {label && (
               <label htmlFor='dropzone' className='cursor-pointer text-sm text-foreground-700'>
@@ -93,7 +98,7 @@ const RectangeImageDropzone = ({ label, classNames, onUpload }: RectangleImageDr
                 }
               )}
             >
-              {!previewImage ? (
+              {!previewImage || isLoading ? (
                 <UploadCloud className={cn('h-10 w-10', classNames?.icon)} />
               ) : (
                 <Image

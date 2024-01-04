@@ -2,7 +2,6 @@ import { getPublishedBookWithAuthorById } from '@/services/books.services';
 import { getcontentByChapter } from '@/lib/blocksParser';
 import { notFound } from 'next/navigation';
 
-import Container from '@/components/ui/Container';
 import ReaderWrapper from '@/components/books/read/ReaderWrapper';
 
 type pageProps = {
@@ -13,7 +12,7 @@ type pageProps = {
 
 const page = async ({ params }: pageProps) => {
   const { bookId } = params;
-  const dbBook = await getPublishedBookWithAuthorById(bookId); // later only published books will show up
+  const dbBook = await getPublishedBookWithAuthorById(bookId);
 
   if (!bookId || !dbBook?.authorName || !dbBook.book.id) {
     return notFound();

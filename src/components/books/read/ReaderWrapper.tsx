@@ -40,7 +40,7 @@ const ReaderWrapper = ({ chapters: initialChapters, metadata, toc }: ReaderWrapp
         <ArrowLeft />
       </Button>
 
-      <Container className='h-full w-full rounded-xl px-0 sm:max-w-3xl'>
+      <Container className='h-full w-full overflow-y-auto rounded-xl px-0 scrollbar-hide sm:max-w-3xl'>
         <Reader
           content={chapters[chapterIndex].content}
           setChapterIndex={setChapterIndex}
@@ -59,10 +59,10 @@ const ReaderWrapper = ({ chapters: initialChapters, metadata, toc }: ReaderWrapp
       >
         <ArrowRight />
       </Button>
-
+      {/* 
       <p className='absolute bottom-20 left-1/2 -translate-x-1/2 rounded-lg bg-foreground-50/80 p-1.5 text-sm font-medium md:bottom-0'>
         Chapter {chapterIndex} / {chapters.length - 1}
-      </p>
+      </p> */}
     </div>
   );
 };

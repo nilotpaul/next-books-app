@@ -7,13 +7,13 @@
 //   return html;
 // }
 
-export function getcontentByChapter(blocks: any) {
-  const chapterList = blocks[0];
+export function getcontentByChapter(blocks?: any) {
+  const chapterList = blocks?.[0];
 
   let chapters = [];
   let currentChapter: any = null;
 
-  if (chapterList.type !== 'list') {
+  if (chapterList?.type !== 'list') {
     return null;
   }
 

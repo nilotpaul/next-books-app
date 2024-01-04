@@ -7,6 +7,7 @@ import { type PublishBook, publishBookValidation } from '@/validations/bookValid
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EditorOutput } from '@/types/editor.types';
 import { useRouter } from 'next/navigation';
+import { trpc } from '@/lib/trpc/TRPCProvider';
 
 import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@nextui-org/modal';
 import { Button } from '@nextui-org/button';
@@ -17,8 +18,6 @@ import { Autocomplete, AutocompleteItem } from '@nextui-org/autocomplete';
 import { Input } from '@nextui-org/input';
 import RectangeImageDropzone from '../dropzones/RectangeImageDropzone';
 import { toast } from 'sonner';
-import Image from '../ui/Image';
-import { trpc } from '@/lib/trpc/TRPCProvider';
 
 type BookPublishModalProps = {
   book: Omit<Book, 'normalised_title' | 'stars' | 'updatedAt' | 'publicationDate'>;
@@ -27,7 +26,7 @@ type BookPublishModalProps = {
 
 const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [isSelected, setIsSelected] = useState(false);
+  const [isSelected, setIsSelected] = useState(book.status === 'published' || false);
   const router = useRouter();
 
   const {
@@ -66,7 +65,13 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
   const { mutate: publishBook, isLoading } = trpc.bookRouter.publish.useMutation({
     onSuccess: () => {
       toast.success(`${!isSelected ? 'Successfully saved the book as draft' : 'Book Published'}`);
+      if (!isSelected) {
+        router.refresh();
+        onClose();
+        return;
+      }
       router.push('/dashboard');
+      router.refresh();
     },
     onError: (err) => {
       console.log(err);
@@ -90,17 +95,8 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
             <ModalBody>
               <div className='grid grid-cols-2 gap-4'>
                 <div className='relative'>
-                  {book.frontArtwork && (
-                    <Image
-                      src={book.frontArtwork}
-                      alt='Front Artwork'
-                      radius='sm'
-                      height={160}
-                      width={160}
-                      className='absolute -right-1/2 z-10 h-[10rem] w-full translate-x-1/2'
-                    />
-                  )}
                   <RectangeImageDropzone
+                    initialImage={book.frontArtwork || ''}
                     label={!book.frontArtwork ? 'Front Cover Artwork' : ''}
                     onUpload={(imageUrl) => {
                       setValue('frontArtwork', imageUrl);
@@ -110,17 +106,8 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                 </div>
 
                 <div className='relative'>
-                  {book.backArtwork && (
-                    <Image
-                      src={book.backArtwork}
-                      alt='Front Artwork'
-                      radius='sm'
-                      height={160}
-                      width={160}
-                      className='absolute -right-1/2 z-10 h-[10rem] w-full translate-x-1/2'
-                    />
-                  )}
                   <RectangeImageDropzone
+                    initialImage={book.backArtwork || ''}
                     label={!book.backArtwork ? 'Back Cover Artwork' : ''}
                     onUpload={(imageUrl) => {
                       setValue('backArtwork', imageUrl);
@@ -210,7 +197,6 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
               </div>
               <div className='flex items-center justify-between'>
                 <Switch
-                  defaultChecked={book.status === 'published'}
                   {...register('status')}
                   isSelected={isSelected}
                   onValueChange={(value) => {

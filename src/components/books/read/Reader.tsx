@@ -12,7 +12,7 @@ type ReaderProps = {
 
 const Reader = ({ content, chapters, setChapterIndex }: ReaderProps) => {
   return (
-    <div className='mt-6 h-full prose-headings:text-foreground-600 prose-p:text-foreground-800'>
+    <div className='mt-2 h-full prose-headings:text-foreground-600 prose-p:text-foreground-800'>
       <Blocks
         data={{
           blocks: content,
@@ -49,42 +49,34 @@ const ImageRenderer = ({
     data.file.width === 1800 && data.file.height === 2700 && data.file.title?.length !== 0;
 
   return (
-    <>
-      {isCover && (
-        <h1 className='text-2xl font-bold text-foreground-600 md:text-3xl'>{data.file.title}</h1>
+    <div
+      className={cn(
+        'relative my-4 flex max-h-[700px] min-w-[350px] flex-col justify-center gap-2 rounded-lg bg-default/30 p-1.5',
+        {
+          'mx-auto mt-3 p-0 md:w-[630px]': isCover,
+        }
       )}
-      <div
-        className={cn(
-          'relative my-4 flex max-h-[600px] min-w-[150px] flex-col justify-center gap-2 rounded-lg bg-default/30 p-1.5'
-        )}
-      >
-        {isCover && (
-          <div className='absolute bottom-2 right-2 z-30 flex flex-col rounded-lg bg-black/40 p-1.5 px-3 text-small text-zinc-600'>
-            <span className='font-medium'>By</span>
-            <span className='truncate font-semibold'>{data.file.author}</span>
-          </div>
-        )}
-        <Image
-          classNames={{
-            blurredImg: 'scale-[1] rounded-lg',
-            img: 'rounded-lg',
-            wrapper: 'rounded-lg',
-          }}
-          className='z-10 max-h-[600px] min-w-[150px]'
-          src={data.file.url}
-          alt={data.caption}
-          height={data.file.height}
-          width={data.file.width}
-          quality={100}
-          isBlurred
-        />
-        {data?.caption && (
-          <span className='truncate text-sm font-medium italic text-foreground-700'>
-            {data.caption}
-          </span>
-        )}
-      </div>
-    </>
+    >
+      <Image
+        classNames={{
+          blurredImg: 'scale-[1] rounded-lg',
+          img: 'rounded-lg',
+          wrapper: 'rounded-lg',
+        }}
+        className={cn('z-10', { 'mx-auto max-h-[700px] md:w-[630px]': isCover })}
+        src={data.file.url}
+        alt={data.caption}
+        height={data.file.height}
+        width={data.file.width}
+        quality={100}
+        isBlurred
+      />
+      {data?.caption && (
+        <span className='truncate text-sm font-medium italic text-foreground-700'>
+          {data.caption}
+        </span>
+      )}
+    </div>
   );
 };
 

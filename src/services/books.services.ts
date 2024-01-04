@@ -11,7 +11,9 @@ export const getPublishedBookWithAuthorById = cache(async (bookId: string) => {
       book: books,
     })
     .from(books)
-    .where(eq(books.id, bookId))
+    .where(
+      and(eq(books.id, bookId), eq(authors.clerkId, books.clerkId), eq(books.status, 'published'))
+    )
     .leftJoin(authors, eq(authors.clerkId, books.clerkId));
 
   if (row.length === 0 || !row[0].book.id || !row[0].authorName) {
