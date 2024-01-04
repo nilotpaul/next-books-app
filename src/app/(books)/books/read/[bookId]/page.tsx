@@ -1,9 +1,9 @@
 import { getPublishedBookWithAuthorById } from '@/services/books.services';
+import { getcontentByChapter } from '@/lib/blocksParser';
 import { notFound } from 'next/navigation';
 
 import Container from '@/components/ui/Container';
-import Reader from '@/components/books/read/Reader';
-import { getcontentByChapter } from '@/lib/blocksParser';
+import ReaderWrapper from '@/components/books/read/ReaderWrapper';
 
 type pageProps = {
   params: {
@@ -29,17 +29,14 @@ const page = async ({ params }: pageProps) => {
     cover: book.frontArtwork || '',
   };
 
-  const chapters = getcontentByChapter(book.content);
+  const content = getcontentByChapter(book.content);
 
-  if (!chapters || chapters?.length === 0) {
+  if (!content || content.chapters?.length === 0 || content.chapterList.length === 0) {
     return notFound();
   }
-  const index = 0;
 
   return (
-    <Container className='h-[calc(100vh-1.5rem)] px-0 sm:max-w-3xl'>
-      <Reader content={chapters?.[index].content} />
-    </Container>
+    <ReaderWrapper chapters={content.chapters} toc={content.chapterList} metadata={metadata} />
   );
 };
 

@@ -36,7 +36,7 @@ export function getcontentByChapter(blocks: any) {
       currentChapter = { title: item.data.text, content: [item] };
     } else if (!titles.includes(item.data.text) && item.type === 'image') {
       currentChapter = {
-        title: item.data.text || '',
+        title: item.data.text || currentChapter.title || '',
         content: currentChapter?.content.concat(item) || [item],
       };
     } else {
@@ -48,5 +48,8 @@ export function getcontentByChapter(blocks: any) {
     chapters.push({ title: currentChapter.title, content: currentChapter.content });
   }
 
-  return chapters;
+  return {
+    chapters,
+    chapterList,
+  };
 }

@@ -1,11 +1,9 @@
-import { Kbd } from '@nextui-org/react';
-
 type layoutProps = {
   children: React.ReactNode;
 };
 
 const layout = ({ children }: layoutProps) => {
-  return <div className='p-4'>{children}</div>;
+  return <div className='h-screen p-3 py-0 md:p-4'>{children}</div>;
 };
 
 export default layout;

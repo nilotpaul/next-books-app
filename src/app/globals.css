@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.first-letter-capital:first-of-type::first-letter {
+  color: red;
+}
