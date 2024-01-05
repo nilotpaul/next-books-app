@@ -13,6 +13,7 @@ const DashSidebar = ({ isAuthor }: DashSidebarProps) => {
 
   return (
     <Tabs
+      defaultSelectedKey='WriteBook'
       selectedKey={tab}
       onSelectionChange={(key) => changeTab(key.toString())}
       classNames={{

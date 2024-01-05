@@ -1,8 +1,19 @@
 import { db } from '@/lib/db/conn';
 import { users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import { cache } from 'react';
 
 import 'server-only';
+
+export const getUserById = cache(async (userId: string) => {
+  const row = await db.select().from(users).where(eq(users.clerkId, userId));
+
+  if (!row[0]?.clerkId) {
+    return null;
+  }
+
+  return row[0];
+});
 
 export async function createUser(user: (typeof users)['$inferInsert']) {
   const createdUser = await db.insert(users).values(user);

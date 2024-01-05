@@ -18,7 +18,7 @@ type BookTableProps = {
 
 const BookTable = ({ books, type }: BookTableProps) => {
   const router = useRouter();
-  const { mutate: deleteBook, isLoading: s } = trpc.bookRouter.delete.useMutation({
+  const { mutate: deleteBook, isLoading } = trpc.bookRouter.delete.useMutation({
     onSuccess: () => {
       router.refresh();
       toast.success('Successfully deleted the book');
@@ -28,7 +28,7 @@ const BookTable = ({ books, type }: BookTableProps) => {
       toast.error(err.message);
     },
   });
-  const isLoading = !true;
+
   return (
     <Table aria-label={type}>
       <TableHeader>

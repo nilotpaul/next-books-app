@@ -6,11 +6,11 @@ type WriteBooksTab = {
 };
 
 const WriteBooksTab = ({ books }: WriteBooksTab) => {
-  const draftBooks = books.filter((book) => book.status === 'draft');
+  const sortedBooks = books.sort((a, b) => a.status.length - b.status.length);
 
   return (
     <div>
-      <BookTable type='Draft Books Table' books={draftBooks} />
+      <BookTable type='Draft Books Table' books={sortedBooks} />
     </div>
   );
 };

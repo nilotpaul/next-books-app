@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
 type ToggleTabStore = {
-  tab: string;
+  tab: string | undefined;
   changeTab: (key: string) => void;
 };
 
 export const useToggleTabStore = create<ToggleTabStore>((set) => ({
-  tab: '',
+  tab: undefined,
   changeTab: (key) => set({ tab: key }),
 }));
