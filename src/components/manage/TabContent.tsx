@@ -2,9 +2,11 @@
 
 import { useToggleTabStore } from '@/hooks/useToggleTabStore';
 import { Author, SocialLinks } from '@/types/author.types';
+import { useMounted } from '@/hooks/useMounted';
 
 import ReaderTab from './ReaderTab';
 import AuthorTab from './AuthorTab';
+import ManageSkeleton from '../loadings/ManageSkeleton';
 
 type TabContentProps = {
   firstName: string;
@@ -19,6 +21,12 @@ type TabContentProps = {
 
 const TabContent = ({ isAuthor, author, links, ...props }: TabContentProps) => {
   const tab = useToggleTabStore((state) => state.tab);
+
+  const [isMounted] = useMounted();
+
+  if (!isMounted) {
+    return <ManageSkeleton />;
+  }
 
   return (
     <>

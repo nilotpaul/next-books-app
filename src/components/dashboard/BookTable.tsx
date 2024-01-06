@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BooksWithoutNT } from '@/types/book.types';
 import { format } from 'date-fns';
 import { trpc } from '@/lib/trpc/TRPCProvider';
@@ -10,6 +11,7 @@ import { Chip } from '@nextui-org/chip';
 import { Eye, PencilLine, Trash2 } from 'lucide-react';
 import Link from '../ui/Link';
 import { Button } from '@nextui-org/button';
+import AlertDialog from '../ui/AlertDialog';
 
 type BookTableProps = {
   books: (BooksWithoutNT[number] & { authorImage: string | null })[];
@@ -17,11 +19,13 @@ type BookTableProps = {
 };
 
 const BookTable = ({ books, type }: BookTableProps) => {
+  const [isDeleting, setIsDeleting] = useState('');
   const router = useRouter();
   const { mutate: deleteBook, isLoading } = trpc.bookRouter.delete.useMutation({
     onSuccess: () => {
       router.refresh();
       toast.success('Successfully deleted the book');
+      setIsDeleting('');
     },
     onError: (err) => {
       console.error(err);
@@ -63,15 +67,28 @@ const BookTable = ({ books, type }: BookTableProps) => {
                   <PencilLine className='h-5 w-5 scale-95 cursor-pointer text-default-400 active:opacity-50' />
                 </Link>
                 <Button
-                  onClick={() => {
-                    // deleteBook({ bookId: book.id });
-                  }}
-                  disableAnimation
-                  isLoading={isLoading}
+                  isLoading={isLoading && isDeleting === book.id}
                   isIconOnly
                   className='m-0 block min-w-min max-w-min gap-0 bg-transparent p-0'
                 >
-                  <Trash2 className='h-5 w-5 scale-95 cursor-pointer text-danger active:opacity-50' />
+                  <AlertDialog
+                    trigger={
+                      <Trash2 className='h-5 w-5 scale-95 cursor-pointer text-danger active:opacity-50' />
+                    }
+                    headerContent='Are you are?'
+                    bodyContent='This action cannot be undone. This will delete the book permanently.'
+                    footerContent={
+                      <Button
+                        onClick={() => {
+                          setIsDeleting(book.id);
+                          deleteBook({ bookId: book.id });
+                        }}
+                        color='danger'
+                      >
+                        Delete
+                      </Button>
+                    }
+                  />
                 </Button>
               </span>
             </TableCell>

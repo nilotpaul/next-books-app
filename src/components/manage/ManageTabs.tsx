@@ -1,11 +1,19 @@
 'use client';
 
+import { useMounted } from '@/hooks/useMounted';
 import { useToggleTabStore } from '@/hooks/useToggleTabStore';
 
 import { Tabs, Tab } from '@nextui-org/tabs';
+import DashSidebarSkeleton from '../loadings/DashSidebarSkeleton';
 
 const ManageTabs = () => {
   const { tab, changeTab } = useToggleTabStore((state) => state);
+
+  const [isMounted] = useMounted();
+
+  if (!isMounted) {
+    return <DashSidebarSkeleton />;
+  }
 
   return (
     <Tabs
