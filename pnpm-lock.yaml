@@ -98,6 +98,9 @@ dependencies:
   editorjs-react-renderer:
     specifier: ^3.5.1
     version: 3.5.1
+  embla-carousel-react:
+    specifier: 8.0.0-rc18
+    version: 8.0.0-rc18(react@18.2.0)
   epub-gen-memory:
     specifier: ^1.0.10
     version: 1.0.10
@@ -4914,6 +4917,28 @@ packages:
   /electron-to-chromium@1.4.576:
     resolution: {integrity: sha512-yXsZyXJfAqzWk1WKryr0Wl0MN2D47xodPvEEwlVePBnhU5E7raevLQR+E6b9JAD3GfL/7MbAL9ZtWQQPcLx7wA==}
     dev: true
+
+  /embla-carousel-react@8.0.0-rc18(react@18.2.0):
+    resolution: {integrity: sha512-sif+zkOnQIJzZJJQdtE/kDBrlxNt7Vm6zI8i17qT6QYv3dnazPVf4EEfXQ2CZdh7J3UPwnIMS3Q55E1a8uxJ/g==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.1 || ^18.0.0
+    dependencies:
+      embla-carousel: 8.0.0-rc18
+      embla-carousel-reactive-utils: 8.0.0-rc18(embla-carousel@8.0.0-rc18)
+      react: 18.2.0
+    dev: false
+
+  /embla-carousel-reactive-utils@8.0.0-rc18(embla-carousel@8.0.0-rc18):
+    resolution: {integrity: sha512-VOFfvhkICz4GKXb/huMTspYVR8mx8C4uDf0Kp+jA9iZNUA4lmlfxxYUr++SwIy1xABycpqML/9hP2tV6Nn0AEQ==}
+    peerDependencies:
+      embla-carousel: 8.0.0-rc18
+    dependencies:
+      embla-carousel: 8.0.0-rc18
+    dev: false
+
+  /embla-carousel@8.0.0-rc18:
+    resolution: {integrity: sha512-MtiatQCt+R/lEKl2D4TyAx2Ba4/gfosQIY+Y/ooZu1yahxTbFLyhGW8aodn0GW2WZ6jO3Qpfx7VuqCPdRV5moQ==}
+    dev: false
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}

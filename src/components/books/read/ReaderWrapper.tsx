@@ -6,8 +6,13 @@ import { BookMetadata } from '@/types/book.types';
 
 import Reader from './Reader';
 import Container from '@/components/ui/Container';
-import { Button } from '@nextui-org/button';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/Carousel';
 
 type ReaderWrapperProps = {
   chapters: {
@@ -24,45 +29,28 @@ const ReaderWrapper = ({ chapters: initialChapters, metadata, toc }: ReaderWrapp
     ...bookMetadata,
     ...initialChapters,
   ]);
-  const [chapterIndex, setChapterIndex] = useState(0);
 
   return (
-    <div className='relative flex h-full md:h-[calc(100vh-1.5rem)]'>
-      <Button
-        onClick={() => {
-          chapterIndex <= chapters.length && chapterIndex !== 0
-            ? setChapterIndex((prev) => prev - 1)
-            : setChapterIndex(chapters.length - 1);
-        }}
-        isIconOnly
-        className='-translate-1/2 absolute left-0 top-1/2 ml-8 hidden md:flex'
-      >
-        <ArrowLeft />
-      </Button>
-
-      <Container className='h-full w-full overflow-y-auto rounded-xl px-0 scrollbar-hide sm:max-w-3xl'>
-        <Reader
-          content={chapters[chapterIndex].content}
-          setChapterIndex={setChapterIndex}
-          chapters={chapters}
-        />
+    <div className='relative flex h-full items-center justify-center md:h-[calc(100vh-1.5rem)]'>
+      <Container className='mx-auto h-full w-full overflow-y-auto rounded-xl px-0 scrollbar-hide sm:max-w-3xl'>
+        <Carousel>
+          <CarouselContent>
+            {chapters.map((chapter) => (
+              <CarouselItem key={chapter.title}>
+                <Reader content={chapter.content} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious
+            color='danger'
+            className='absolute left-8 top-1/2 hidden -translate-y-1/2 lg:flex'
+          />
+          <CarouselNext
+            color='danger'
+            className='absolute right-8 top-1/2 hidden -translate-y-1/2 lg:flex'
+          />
+        </Carousel>
       </Container>
-
-      <Button
-        onClick={() => {
-          chapterIndex < chapters.length - 1
-            ? setChapterIndex((prev) => prev + 1)
-            : setChapterIndex(0);
-        }}
-        isIconOnly
-        className='-translate-1/2 absolute right-0 top-1/2 mr-8 hidden md:flex'
-      >
-        <ArrowRight />
-      </Button>
-      {/* 
-      <p className='absolute bottom-20 left-1/2 -translate-x-1/2 rounded-lg bg-foreground-50/80 p-1.5 text-sm font-medium md:bottom-0'>
-        Chapter {chapterIndex} / {chapters.length - 1}
-      </p> */}
     </div>
   );
 };

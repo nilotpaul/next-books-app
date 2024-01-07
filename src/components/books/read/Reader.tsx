@@ -6,11 +6,9 @@ import { cn } from '@/utils/utils';
 
 type ReaderProps = {
   content: any;
-  setChapterIndex: React.Dispatch<React.SetStateAction<number>>;
-  chapters: { title: any; content: any }[];
 };
 
-const Reader = ({ content, chapters, setChapterIndex }: ReaderProps) => {
+const Reader = ({ content }: ReaderProps) => {
   return (
     <div className='mt-2 h-full prose-headings:text-foreground-600 prose-p:text-foreground-800'>
       <Blocks
@@ -20,9 +18,6 @@ const Reader = ({ content, chapters, setChapterIndex }: ReaderProps) => {
           version: '',
         }}
         config={{
-          header: {
-            className: 'md:text-2xl text-xl font-bold',
-          },
           paragraph: {
             className:
               'text-base first-of-type:first-letter:text-3xl mt-3 first-of-type:first-letter:font-bold text-base leading-8',
@@ -30,11 +25,39 @@ const Reader = ({ content, chapters, setChapterIndex }: ReaderProps) => {
         }}
         renderers={{
           image: ImageRenderer,
-          list: (data) => ListRenderer({ ...data, chapters, setChapterIndex }),
+          list: ListRenderer,
+          header: HeaderRenderer,
         }}
       />
     </div>
   );
+};
+
+const HeaderRenderer = ({
+  data,
+}: {
+  data: { text: string; level: number };
+  className?: string;
+}) => {
+  if (data.level === 1) {
+    return (
+      <h1 id={data.text.toLowerCase().trim()} className='text-xl font-bold md:text-2xl'>
+        {data.text}
+      </h1>
+    );
+  } else if (data.level === 2) {
+    return (
+      <h2 id={data.text.trim().toLowerCase()} className='text-xl font-bold md:text-2xl'>
+        {data.text}
+      </h2>
+    );
+  } else if (data.level === 3) {
+    return <h3>{data.text}</h3>;
+  } else if (data.level === 4) {
+    return <h4>{data.text}</h4>;
+  }
+
+  return <></>;
 };
 
 const ImageRenderer = ({
@@ -43,7 +66,7 @@ const ImageRenderer = ({
   data: {
     file: { url: string; height: number; width: number; title?: string; author?: string };
     caption: string;
-  } & Record<string, any>;
+  };
 }) => {
   const isCover =
     data.file.width === 1800 && data.file.height === 2700 && data.file.title?.length !== 0;
@@ -82,12 +105,8 @@ const ImageRenderer = ({
 
 const ListRenderer = ({
   data,
-  chapters,
-  setChapterIndex,
 }: {
   data: { items: any[]; style: 'ordered' | 'unordered'; name?: string; title?: string };
-  chapters: { title: any; content: any }[];
-  setChapterIndex: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const isToc = Boolean(data?.name && data?.name === 'toc');
 
@@ -101,16 +120,12 @@ const ListRenderer = ({
           {data.items.map((item, index) => (
             <ul key={index}>
               <p className='mb-1 text-lg font-medium'>Chapter {index + 1}</p>
-              <span
-                onClick={() => {
-                  const index = chapters.findIndex(({ title }) => title === item);
-                  if (!index) return;
-                  setChapterIndex(index);
-                }}
+              <a
+                href={`#${item.trim().toLowerCase()}`}
                 className='cursor-pointer text-base text-foreground-600 underline'
               >
                 {item}
-              </span>
+              </a>
             </ul>
           ))}
         </ul>
