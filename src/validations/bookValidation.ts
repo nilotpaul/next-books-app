@@ -28,53 +28,42 @@ export const publishBookValidation = z.object({
       message: 'Title must be more than 2 character(s)',
     })
     .max(70, { message: 'Title cannot be more than 70 character(s)' }),
-  content: z.unknown(),
-  frontArtwork: z.string().url().min(2),
-  backArtwork: z.string().url().min(2),
+  content: z.any().optional(),
+  frontArtwork: z.string().url().min(2).optional(),
+  backArtwork: z.string().url().min(2).optional(),
   status: z.enum(BOOK_STATUS, {
     errorMap: (err) => ({ message: err.message || 'Select status from the menu' }),
   }),
-  genres: z
-    .array(
-      z.enum(bookGenres, {
-        errorMap: (err) => ({ message: err.message || 'Select genres from the menu' }),
-      }),
-      {
-        errorMap: (err) => ({ message: err.message || 'Select genres from menu' }),
-      }
-    )
-    .refine((genre) => genre.length !== 0, {
-      message: 'Choose at least one genre',
-      path: ['genres'],
+  genres: z.array(
+    z.enum(bookGenres, {
+      errorMap: (err) => ({ message: err.message || 'Select genres from the menu' }),
     }),
+    {
+      errorMap: (err) => ({ message: err.message || 'Select genres from menu' }),
+    }
+  ),
   language: z.enum(BOOK_LANGUAGES, {
     errorMap: (err) => ({
       message: err.message || 'Choose language from the menu',
     }),
   }),
-  availability: z.enum(BOOK_AVAILABALITY, {
-    errorMap: (err) => ({ message: err.message || 'Select availability from the menu' }),
-  }),
-  pricing: z.string(),
-  series: z.array(z.string(), {
-    errorMap: (err) => ({ message: err.message || 'Input a list of series' }),
-  }),
-  collaborations: z.array(z.string(), {
-    errorMap: (err) => ({ message: err.message || 'Input a list of collaborators' }),
-  }),
-});
-
-export const epubValidation = z.object({
-  blocks: z.any(),
-  bookInfo: z.object({
-    bookId: z.string(),
-    title: z.string().min(1),
-    author: z.string().min(1),
-    publisher: z.string().min(1),
-    cover: z.string().url().min(1),
-  }),
+  availability: z
+    .enum(BOOK_AVAILABALITY, {
+      errorMap: (err) => ({ message: err.message || 'Select availability from the menu' }),
+    })
+    .optional(),
+  pricing: z.string().optional(),
+  series: z
+    .array(z.string(), {
+      errorMap: (err) => ({ message: err.message || 'Input a list of series' }),
+    })
+    .optional(),
+  collaborations: z
+    .array(z.string(), {
+      errorMap: (err) => ({ message: err.message || 'Input a list of collaborators' }),
+    })
+    .optional(),
 });
 
 export type CreateBook = z.infer<typeof createBookValidation>;
 export type PublishBook = z.infer<typeof publishBookValidation>;
-export type EPubValidation = z.infer<typeof epubValidation>;

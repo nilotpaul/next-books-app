@@ -11,7 +11,11 @@ const config: Config = {
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        xs: '550px',
+      },
+    },
   },
   plugins: [
     nextui({ addCommonColors: true }),

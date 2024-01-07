@@ -1,5 +1,4 @@
 import { Author, SocialLinks } from '@/types/author.types';
-import { cn } from '@/utils/utils';
 
 import PendingAuthorRegisterModal from '../modals/PendingAuthorRegisterModal';
 import AuthorRegisterModal from '../modals/AuthorRegisterModal';
@@ -9,6 +8,7 @@ import { Card, CardBody, CardHeader, CardFooter } from '@nextui-org/card';
 import { Input, Textarea } from '@nextui-org/input';
 import { Chip } from '@nextui-org/chip';
 import { Button } from '@nextui-org/button';
+import { cn } from '@/utils/utils';
 
 type AuthorTabtProps = {
   isAuthor: boolean;

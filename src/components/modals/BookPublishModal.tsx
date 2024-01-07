@@ -45,22 +45,13 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
       status: isSelected ? 'published' : 'draft',
       series: [],
       genres: book.genres || [],
-      frontArtwork: book?.frontArtwork || '',
-      backArtwork: book?.backArtwork || '',
+      frontArtwork: book?.frontArtwork || undefined,
+      backArtwork: book?.backArtwork || undefined,
       collaborations: [],
       availability: 'Free',
       pricing: '00.00',
     },
   });
-
-  const isError = !Object.values(errors).every((err) => !err?.message);
-
-  useEffect(() => {
-    const msg = Object.values(errors).filter((err) => err?.message)[0];
-    if (isError) {
-      toast.error(`Please fill all the inputs in the settings. (${msg?.message})`);
-    }
-  }, [isError, errors]);
 
   const { mutate: publishBook, isLoading } = trpc.bookRouter.publish.useMutation({
     onSuccess: () => {

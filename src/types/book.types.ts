@@ -11,3 +11,11 @@ export type BookMetadata = {
   publisher: string;
   cover: string;
 };
+
+export type PublishedBook = {
+  id: string;
+  title: string;
+  availability: 'Free' | 'Paid' | null;
+  artwork: string | null;
+  price: string | null;
+};

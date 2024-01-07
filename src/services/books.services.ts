@@ -1,8 +1,24 @@
 import { db } from '@/lib/db/conn';
 import { authors, books } from '@/lib/db/schema';
 import { CreateBook } from '@/validations/bookValidation';
-import { and, eq, like } from 'drizzle-orm';
+import { and, desc, eq, like } from 'drizzle-orm';
 import { cache } from 'react';
+
+export const getPublishedBooks = cache(async () => {
+  const row = await db
+    .select({
+      id: books.id,
+      title: books.bookTitle,
+      availability: books.availability,
+      artwork: books.frontArtwork,
+      price: books.pricing,
+    })
+    .from(books)
+    .orderBy(desc(books.stars))
+    .limit(8);
+
+  return row;
+});
 
 export const getPublishedBookWithAuthorById = cache(async (bookId: string) => {
   const row = await db
