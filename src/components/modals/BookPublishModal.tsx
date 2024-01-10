@@ -3,7 +3,12 @@ import { Book } from '@/types/book.types';
 import { bookGenres } from '@/config/constants/author';
 import { BOOK_AVAILABALITY, BOOK_LANGUAGES } from '@/config/constants/books';
 import { useForm } from 'react-hook-form';
-import { type PublishBook, publishBookValidation } from '@/validations/bookValidation';
+import {
+  type PublishBook,
+  publishBookValidation,
+  DraftBook,
+  draftBookValidation,
+} from '@/validations/bookValidation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EditorOutput } from '@/types/editor.types';
 import { useRouter } from 'next/navigation';
@@ -34,8 +39,8 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<PublishBook>({
-    resolver: zodResolver(publishBookValidation),
+  } = useForm<PublishBook | DraftBook>({
+    resolver: zodResolver(isSelected ? publishBookValidation : draftBookValidation),
     mode: 'onChange',
     defaultValues: {
       bookId: book.id,
@@ -82,7 +87,6 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} size='5xl' className='overflow-y-auto'>
           <ModalContent>
             <ModalHeader>Book Settings</ModalHeader>
-
             <ModalBody>
               <div className='grid grid-cols-2 gap-4'>
                 <div className='relative'>
@@ -232,6 +236,9 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                     setValue('content', data?.blocks);
 
                     handleSubmit((values) => publishBook(values))(e);
+                    if (errors.frontArtwork?.message) {
+                      toast.error(errors.frontArtwork.message);
+                    } // todo: add error messages
                   }}
                   isLoading={isLoading}
                   color={!isSelected ? 'secondary' : 'warning'}

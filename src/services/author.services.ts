@@ -1,8 +1,21 @@
 import { db } from '@/lib/db/conn';
 import { authors, books, socialLinks, users } from '@/lib/db/schema';
 import { env } from '@/validations/env';
-import { eq } from 'drizzle-orm';
+import { eq, like } from 'drizzle-orm';
 import { cache } from 'react';
+
+export const getAuthorByName = cache(async (authorName: string) => {
+  const row = await db
+    .select({
+      id: authors.clerkId,
+      authorName: authors.authorName,
+    })
+    .from(authors)
+    .where(like(authors.authorName, `%${authorName}%`))
+    .limit(5);
+
+  return row;
+});
 
 export const getAuthorWithBooksById = cache(async (userId: string) => {
   const row = await db

@@ -1,8 +1,50 @@
+import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { db } from '@/lib/db/conn';
 import { authors, books } from '@/lib/db/schema';
-import { CreateBook } from '@/validations/bookValidation';
-import { and, desc, eq, like } from 'drizzle-orm';
+import { BookFilters, CreateBook } from '@/validations/bookValidation';
+import { and, asc, desc, eq, gt, like, sql } from 'drizzle-orm';
 import { cache } from 'react';
+
+export const getBooksByFilters = cache(
+  async (
+    filters: Partial<BookFilters>,
+    cursor?: string,
+    limit: number = MAX_SEARCH_RESULTS_LIMIT
+  ) => {
+    const genresQuery = filters?.genres?.map((genre) => genre).join('|');
+
+    const row = await db
+      .select({
+        id: books.id,
+        title: books.bookTitle,
+        availability: books.availability,
+        artwork: books.frontArtwork,
+        price: books.pricing,
+      })
+      .from(books)
+      .where(
+        and(
+          filters.genres?.length
+            ? sql`books.genres REGEXP`.append(
+                sql`${genresQuery}`.append(sql`COLLATE utf8mb4_general_ci`)
+              )
+            : undefined,
+          filters.publication ? like(books.publicationDate, `%${filters.publication}%`) : undefined,
+          filters.rating ? eq(books.stars, filters.rating) : undefined,
+          filters.price ? like(books.pricing, `%${filters.price}%`) : undefined,
+          filters.language ? like(books.language, `%${filters.language}%`) : undefined,
+          filters.series ? like(books.series, `%${filters.series}%`) : undefined,
+          filters.availability ? eq(books.availability, filters.availability) : undefined,
+          filters.authorName ? eq(books.clerkId, filters.authorName) : undefined,
+          cursor ? gt(books.id, cursor) : undefined
+        )
+      )
+      .limit(limit + 1)
+      .orderBy(asc(books.id));
+
+    return row;
+  }
+);
 
 export const getPublishedBooks = cache(async () => {
   const row = await db
@@ -15,7 +57,7 @@ export const getPublishedBooks = cache(async () => {
     })
     .from(books)
     .orderBy(desc(books.stars))
-    .limit(8);
+    .limit(10);
 
   return row;
 });

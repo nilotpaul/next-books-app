@@ -3,16 +3,26 @@ import {
   deleteBookById,
   getBookById,
   getBookByTitle,
+  getBooksByFilters,
   publishBook,
 } from '@/services/books.services';
 import { isAuthor, publicProcedure, router } from '../trpc';
 
-import { createBookValidation, publishBookValidation } from '@/validations/bookValidation';
+import {
+  bookFilterValidation,
+  createBookValidation,
+  draftBookValidation,
+  publishBookValidation,
+} from '@/validations/bookValidation';
 import { TRPCError } from '@trpc/server';
-import { DrizzleError } from 'drizzle-orm';
+import { DrizzleError, like, or } from 'drizzle-orm';
 import { z } from 'zod';
 import { nanoid } from 'nanoid';
 import { normaliseTitle } from '@/utils/utils';
+import { BOOK_STATUS } from '@/config/constants/books';
+import { db } from '@/lib/db/conn';
+import { books } from '@/lib/db/schema';
+import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 
 export const bookRouter = router({
   create: publicProcedure
@@ -83,13 +93,17 @@ export const bookRouter = router({
 
   publish: publicProcedure
     .use(isAuthor)
-    .input(publishBookValidation)
+    .input(z.any())
     .mutation(async ({ input, ctx }) => {
       const { author } = ctx;
 
-      const { bookId, ...rest } = input;
+      const body = input;
 
       try {
+        const { bookId, ...rest } = (
+          body?.status === 'draft' ? draftBookValidation : publishBookValidation
+        ).parse(input);
+
         const book = await getBookById(bookId);
 
         if (!book || !book?.id) {
@@ -224,4 +238,67 @@ export const bookRouter = router({
         });
       }
     }),
+
+  filter: publicProcedure.input(bookFilterValidation).query(async ({ input }) => {
+    const { cursor } = input;
+    const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT + 1;
+
+    try {
+      const values = Object.fromEntries(
+        Object.entries(input).filter(([key, value]) => {
+          if (key !== ('cursor' && 'limit')) {
+            return value;
+          }
+        })
+      );
+
+      const isEmpty = Object.values(values).length === 0;
+
+      if (isEmpty) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Atleast one filter should be there',
+        });
+      }
+
+      const books = await getBooksByFilters(values, cursor, limit);
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (books.length > limit) {
+        const nextItem = [...books].pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        books,
+        nextCursor,
+      };
+    } catch (err) {
+      console.error('[BOOK_FILTER_ERROR]:', err);
+
+      if (err instanceof z.ZodError) {
+        throw new TRPCError({
+          code: 'PARSE_ERROR',
+          message: 'Data not passed in correct format',
+        });
+      }
+      if (err instanceof DrizzleError) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to make changes to the db',
+        });
+      }
+      if (err instanceof TRPCError) {
+        throw new TRPCError({
+          code: err.code,
+          message: err.message,
+        });
+      }
+
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Something went wrong',
+      });
+    }
+  }),
 });

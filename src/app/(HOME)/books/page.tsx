@@ -1,6 +1,7 @@
-import BookCard from '@/components/books/main/BookCard';
+import BookCardWrapper from '@/components/books/main/BookCardWrapper';
 import BookCardSkeleton from '@/components/loadings/BookCardSkeleton';
 import Divider from '@/components/ui/Divider';
+import { getPublishedBooks } from '@/services/books.services';
 import { Suspense } from 'react';
 
 const BooksPage = () => {
@@ -12,7 +13,7 @@ const BooksPage = () => {
       <div className='mt-4'>
         <Suspense fallback={<BookCardSkeleton />}>
           {/* todo: only published should show up */}
-          <BookCard />
+          <BookCardWrapper getBooks={async () => await getPublishedBooks()} />
         </Suspense>
       </div>
     </div>

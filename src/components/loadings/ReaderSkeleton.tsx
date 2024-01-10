@@ -1,12 +1,17 @@
 import Image from '@/components/ui/Image';
 import { Button } from '@nextui-org/button';
-import { ArrowLeft, ArrowRight, BookCopy } from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, BookCopy } from 'lucide-react';
 
 const ReaderSkeleton = () => {
   return (
-    <div className='relative flex h-full w-full justify-center'>
-      <Button isIconOnly className='absolute left-0 top-1/2 ml-8 hidden md:flex'>
-        <ArrowLeft />
+    <div className='relative flex h-full w-full items-center justify-center'>
+      <Button
+        isIconOnly
+        variant='bordered'
+        color='danger'
+        className='absolute left-8 top-1/2 hidden rounded-full md:flex'
+      >
+        <ArrowLeftIcon className='h-4 w-4' />
       </Button>
 
       <div className='relative flex h-full items-center justify-center'>
@@ -22,8 +27,13 @@ const ReaderSkeleton = () => {
         <BookCopy className='absolute h-10 w-10 animate-ping text-danger' />
       </div>
 
-      <Button isIconOnly className='absolute right-0 top-1/2 mr-8 hidden md:flex'>
-        <ArrowRight />
+      <Button
+        isIconOnly
+        variant='bordered'
+        color='danger'
+        className='absolute right-8 top-1/2 hidden rounded-full md:flex'
+      >
+        <ArrowRightIcon className='h-4 w-4' />
       </Button>
     </div>
   );

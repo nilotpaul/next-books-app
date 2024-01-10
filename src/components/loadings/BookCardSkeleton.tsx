@@ -2,10 +2,14 @@ import { Card, CardBody, CardFooter } from '@nextui-org/card';
 import Image from '../ui/Image';
 import { Skeleton } from '../ui/Skeleton';
 
-const BookCardSkeleton = () => {
+type BookCardSkeletonProps = {
+  cards?: number;
+};
+
+const BookCardSkeleton = ({ cards = 8 }: BookCardSkeletonProps) => {
   return (
-    <div className='xs:grid-cols-3 grid grid-cols-2 place-items-center gap-y-4 sm:grid-cols-3 sm:gap-x-2 md:grid-cols-4 md:place-items-start md:gap-x-4 md:gap-y-4 xl:grid-cols-5'>
-      {Array(8)
+    <div className='grid grid-cols-2 place-items-center gap-y-4 xs:grid-cols-3 sm:grid-cols-3 sm:gap-x-2 md:grid-cols-4 md:place-items-start md:gap-x-4 md:gap-y-4 xl:grid-cols-5'>
+      {Array(cards)
         .fill(0)
         .map((_, index) => (
           <Card

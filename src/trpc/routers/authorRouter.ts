@@ -1,13 +1,19 @@
 import { privateProcedure, router } from '../trpc';
 
 import { registerAuthorValidation, verifyAuthorValidation } from '@/validations/authorValidations';
-import { getAuthorById, registerAuthor, verifyAuthor } from '@/services/author.services';
+import {
+  getAuthorById,
+  getAuthorByName,
+  registerAuthor,
+  verifyAuthor,
+} from '@/services/author.services';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { DrizzleError } from 'drizzle-orm';
 import { emailTemplate } from '@/utils/emailTemplate';
 import { nanoid } from 'nanoid';
 import { AxiosError } from 'axios';
+import { authors } from '@/lib/db/schema';
 
 export const authorRouter = router({
   register: privateProcedure.input(registerAuthorValidation).mutation(async ({ input, ctx }) => {
@@ -155,4 +161,47 @@ export const authorRouter = router({
       });
     }
   }),
+
+  search: privateProcedure
+    .input(z.string().min(2, { message: 'Author name must be greater than 2 character(s)' }))
+    .query(async ({ input }) => {
+      try {
+        const authorArr = await getAuthorByName(input);
+
+        if (!authorArr || authorArr.length === 0) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'No artist found',
+          });
+        }
+
+        return authorArr;
+      } catch (err) {
+        console.error('[AUTHOR_SEARCH_ERROR]', err);
+
+        if (err instanceof z.ZodError) {
+          throw new TRPCError({
+            code: 'PARSE_ERROR',
+            message: 'Data not passed in correct format',
+          });
+        }
+        if (err instanceof DrizzleError) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to make changes to the database',
+          });
+        }
+        if (err instanceof TRPCError) {
+          throw new TRPCError({
+            code: err.code,
+            message: err.message,
+          });
+        }
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong',
+        });
+      }
+    }),
 });
