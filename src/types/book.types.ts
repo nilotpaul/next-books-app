@@ -1,4 +1,5 @@
 import { books } from '@/lib/db/schema';
+import { getBookInfoById } from '@/services/books.services';
 
 export type Book = (typeof books)['$inferSelect'];
 
@@ -19,3 +20,5 @@ export type PublishedBook = {
   artwork: string | null;
   price: string | null;
 };
+
+export type BookInfo = Awaited<ReturnType<typeof getBookInfoById>>;

@@ -5,15 +5,13 @@ import useSearchParams from '@/hooks/useSearchParams';
 import { useDebounce } from '@/hooks/useDebounce';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { trpc } from '@/lib/trpc/TRPCProvider';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { bookGenres } from '@/config/constants/author';
 
 import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@nextui-org/modal';
 import { Button } from '@nextui-org/button';
 import { BookHeart, SearchIcon } from 'lucide-react';
 import SearchInput from '../search/SearchInput';
-import { cn } from '@/utils/utils';
-import { CircularProgress } from '@nextui-org/react';
 import SearchedResults from '../search/SearchedResults';
 import SearchResultSkeleton from '../loadings/SearchResultSkeleton';
 
@@ -23,8 +21,9 @@ type SearchModalProps = {
 
 const SearchModal = ({ userId }: SearchModalProps) => {
   const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
-  const { getQueryParams } = useSearchParams();
+  const { getQueryParams, deleteQueryParams } = useSearchParams();
   const debouncedValue = useDebounce(getQueryParams('q') || '', 800);
+  const pathname = usePathname();
   const router = useRouter();
 
   const { data, isFetching, isFetchingNextPage, hasNextPage, refetch, fetchNextPage } =
@@ -67,6 +66,9 @@ const SearchModal = ({ userId }: SearchModalProps) => {
         placement='center'
         isOpen={isOpen}
         onOpenChange={onOpenChange}
+        onClose={() =>
+          deleteQueryParams('q')?.length && router.replace(pathname + '?' + deleteQueryParams('q'))
+        }
         classNames={{
           closeButton: 'hidden',
         }}
@@ -74,7 +76,7 @@ const SearchModal = ({ userId }: SearchModalProps) => {
       >
         <ModalContent>
           <ModalHeader className='p-0'>
-            <SearchInput />
+            <SearchInput isOpen={isOpen} />
           </ModalHeader>
 
           <ModalBody className='p-2'>
@@ -82,19 +84,14 @@ const SearchModal = ({ userId }: SearchModalProps) => {
               <>
                 {bookGenres.slice(0, 5).map((genre, index) => (
                   <Button
+                    key={index}
                     onClick={() => {
                       onClose();
                       router.push(`/discover?genres=${genre.toLowerCase()}`);
                     }}
-                    key={index}
                     size='lg'
-                    className={cn(
-                      'min-h-[4rem] w-full justify-start bg-default-50 pl-4 text-foreground-500 hover:bg-primary hover:text-white',
-                      {
-                        'hover:bg-danger': (index - 1) % 2 === 0,
-                      }
-                    )}
                     radius='sm'
+                    className='min-h-[4rem] w-full justify-start bg-default-50 pl-4 text-foreground-500 hover:bg-primary hover:text-white'
                   >
                     <BookHeart className='h-6 w-6' />
                     {genre}
@@ -108,7 +105,9 @@ const SearchModal = ({ userId }: SearchModalProps) => {
             {!(debouncedValue.length >= 0 && debouncedValue.length < 2) &&
               !isFetching &&
               !isFetchingNextPage &&
-              books?.length === 0 && <p>No books found.</p>}
+              books?.length === 0 && (
+                <p className='py-12 text-center text-foreground-500'>No books found.</p>
+              )}
             {hasNextPage && (
               <Button size='sm' radius='sm' className='font-medium' onClick={() => fetchNextPage()}>
                 Load More

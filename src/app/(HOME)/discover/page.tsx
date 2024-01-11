@@ -24,7 +24,11 @@ const DiscoverPage = ({ searchParams }: DiscoverPageProps) => {
           Book Results <Divider className='mx-auto mt-1 h-[1px] w-[200px]' />
         </h2>
         <Suspense fallback={<BookCardSkeleton />}>
-          <FilterResults searchParams={searchParams} />
+          <FilterResults
+            searchParams={Object.fromEntries(
+              Object.entries(searchParams).filter(([key]) => key !== 'q')
+            )}
+          />
         </Suspense>
       </section>
     </div>

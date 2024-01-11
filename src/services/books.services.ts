@@ -5,6 +5,35 @@ import { BookFilters, CreateBook } from '@/validations/bookValidation';
 import { and, asc, desc, eq, gt, like, sql } from 'drizzle-orm';
 import { cache } from 'react';
 
+export const getBookInfoById = cache(async (bookId: string) => {
+  const row = await db
+    .select({
+      id: books.id,
+      title: books.bookTitle,
+      authorName: authors.authorName,
+      availability: books.availability,
+      collaborations: books.collaborations,
+      frontArtwork: books.frontArtwork,
+      backArtwork: books.backArtwork,
+      genres: books.genres,
+      language: books.language,
+      pricing: books.pricing,
+      publicationDate: books.publicationDate,
+      updatedAt: books.updatedAt,
+      series: books.series,
+      stars: books.stars,
+    })
+    .from(books)
+    .where(eq(books.id, bookId))
+    .leftJoin(authors, eq(authors.clerkId, books.clerkId));
+
+  if (!row || row.length === 0 || !row[0].authorName || !row[0].id) {
+    return null;
+  }
+
+  return row[0];
+});
+
 export const getBooksByFilters = cache(
   async (
     filters: Partial<BookFilters>,

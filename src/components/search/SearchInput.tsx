@@ -3,17 +3,30 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { Input } from '@nextui-org/react';
 import { Search } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
-const SearchInput = () => {
+type SearchInputProps = {
+  isOpen: boolean;
+};
+
+const SearchInput = ({ isOpen }: SearchInputProps) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const router = useRouter();
-  const { setQueryParams } = useSearchParams();
+  const { setQueryParams, getQueryParams } = useSearchParams();
   const pathname = usePathname();
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [isOpen]);
 
   return (
     <Input
+      ref={inputRef}
       onValueChange={(value) => {
         router.replace(pathname + '?' + setQueryParams('q', value.toLowerCase()));
       }}
+      defaultValue={getQueryParams('q')}
       labelPlacement='outside'
       radius='none'
       size='lg'

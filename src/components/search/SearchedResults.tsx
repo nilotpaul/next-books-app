@@ -14,7 +14,7 @@ const SearchedResults = ({ book, ref }: SearchedResultsProps) => {
     <div ref={ref}>
       <Button
         radius='sm'
-        className='min-h-[4rem] w-full justify-between bg-default-50 pl-4 text-foreground-500 hover:bg-default/60 hover:text-white'
+        className='min-h-[4rem] w-full justify-between bg-default-50 pl-4 text-foreground-600 hover:bg-default/60 hover:text-white'
       >
         <div className='flex items-center gap-4'>
           <Avatar

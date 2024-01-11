@@ -23,7 +23,20 @@ const useSearchParams = () => {
     [searchParams]
   );
 
-  return { setQueryParams, getQueryParams };
+  const deleteQueryParams = useCallback(
+    (name: string) => {
+      const params = new URLSearchParams(searchParams);
+
+      if (params.has(name)) {
+        params.delete(name);
+
+        return params.toString();
+      }
+    },
+    [searchParams]
+  );
+
+  return { setQueryParams, getQueryParams, deleteQueryParams };
 };
 
 export default useSearchParams;
