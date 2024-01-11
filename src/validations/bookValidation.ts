@@ -121,6 +121,7 @@ export const bookFilterValidation = z.object({
   language: z.enum(BOOK_LANGUAGES).optional(),
   series: z.string().optional(),
   availability: z.enum(BOOK_AVAILABALITY).optional(),
+  q: z.string().optional(),
   cursor: z.string().optional(),
   limit: z.number().min(1).max(100).optional(),
 });

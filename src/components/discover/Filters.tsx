@@ -150,7 +150,7 @@ const Filters = () => {
       </Select>
 
       <div className='absolute right-4 top-1 space-x-2 text-sm'>
-        <Button onClick={() => router.replace(pathname)} size='sm' variant='ghost' isIconOnly>
+        <Button onClick={() => router.replace(pathname)} size='sm' variant='light' isIconOnly>
           <FilterX className='h-4 w-4 text-danger' />
         </Button>
         <Button type='submit' size='sm' variant='flat' isIconOnly>

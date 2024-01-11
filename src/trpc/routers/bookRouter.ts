@@ -241,10 +241,10 @@ export const bookRouter = router({
 
   filter: publicProcedure.input(bookFilterValidation).query(async ({ input }) => {
     const { cursor } = input;
-    const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT + 1;
+    const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
 
     try {
-      const values = Object.fromEntries(
+      const filters = Object.fromEntries(
         Object.entries(input).filter(([key, value]) => {
           if (key !== ('cursor' && 'limit')) {
             return value;
@@ -252,7 +252,7 @@ export const bookRouter = router({
         })
       );
 
-      const isEmpty = Object.values(values).length === 0;
+      const isEmpty = Object.values(filters).length === 0;
 
       if (isEmpty) {
         throw new TRPCError({
@@ -261,11 +261,11 @@ export const bookRouter = router({
         });
       }
 
-      const books = await getBooksByFilters(values, cursor, limit);
+      const books = await getBooksByFilters(filters, cursor, limit);
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (books.length > limit) {
-        const nextItem = [...books].pop();
+        const nextItem = books[books.length - 1];
         nextCursor = nextItem?.id;
       }
 

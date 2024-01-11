@@ -5,20 +5,13 @@ import { BookFilters } from '@/validations/bookValidation';
 import { useEffect, useRef } from 'react';
 import { useIntersection } from '@mantine/hooks';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
+import { PublishedBook } from '@/types/book.types';
 
 import BookCard from '../books/main/BookCard';
 import BookCardSkeleton from '../loadings/BookCardSkeleton';
 
-type Book = {
-  id: string;
-  title: string;
-  availability: 'Free' | 'Paid' | null;
-  artwork: string | null;
-  price: string | null;
-};
-
 type ResultWrapperProps = {
-  books: Book[];
+  books: PublishedBook[];
   filters: BookFilters;
 };
 
@@ -30,7 +23,7 @@ const ResultWrapper = ({ books, filters }: ResultWrapperProps) => {
     threshold: 1,
   });
 
-  const { data, isFetching, refetch, fetchNextPage, hasNextPage } =
+  const { data, isFetching, isFetchingNextPage, refetch, fetchNextPage, hasNextPage } =
     trpc.bookRouter.filter.useInfiniteQuery(
       {
         ...filters,
@@ -45,6 +38,7 @@ const ResultWrapper = ({ books, filters }: ResultWrapperProps) => {
           pages: [{ books, nextCursor: undefined }],
         },
         enabled: false,
+        refetchOnWindowFocus: false,
       }
     );
 
@@ -61,7 +55,7 @@ const ResultWrapper = ({ books, filters }: ResultWrapperProps) => {
     }
   }, [entry, hasNextPage, fetchNextPage]);
 
-  if (isFetching) {
+  if (isFetching || isFetchingNextPage) {
     return <BookCardSkeleton cards={3} />;
   }
 

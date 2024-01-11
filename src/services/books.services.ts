@@ -36,6 +36,7 @@ export const getBooksByFilters = cache(
           filters.series ? like(books.series, `%${filters.series}%`) : undefined,
           filters.availability ? eq(books.availability, filters.availability) : undefined,
           filters.authorName ? eq(books.clerkId, filters.authorName) : undefined,
+          filters.q ? like(books.bookTitle, `%${filters.q}%`) : undefined,
           cursor ? gt(books.id, cursor) : undefined
         )
       )

@@ -1,18 +1,14 @@
 import { userSession } from '@/services/auth.services';
+import { User } from '@clerk/nextjs/server';
 
-import { Button } from '@nextui-org/button';
-import { SearchIcon } from 'lucide-react';
+import SearchModal from '../modals/SearchModal';
 
 const Search = async () => {
-  const user = await userSession();
+  const user = (await userSession()) as User;
 
   return (
     <>
-      {user?.id && (
-        <Button size='sm' isIconOnly radius='md'>
-          <SearchIcon className='h-5 w-5' />
-        </Button>
-      )}
+      <SearchModal userId={user?.id} />
     </>
   );
 };
