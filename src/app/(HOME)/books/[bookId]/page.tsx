@@ -1,7 +1,9 @@
 import { getBookInfoById } from '@/services/books.services';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 import BookInfo from '@/components/books/main/BookInfo';
+import BookInfoSkeleton from '@/components/loadings/BookInfoSkeleton';
 
 type BookInfoPageProps = {
   params: { bookId: string };
@@ -15,15 +17,17 @@ const BookInfoPage = ({ params }: BookInfoPageProps) => {
   }
 
   return (
-    <BookInfo
-      getBook={async () => {
-        const book = await getBookInfoById(bookId);
-        if (!book?.id) {
-          return notFound();
-        }
-        return book;
-      }}
-    />
+    <Suspense fallback={<BookInfoSkeleton />}>
+      <BookInfo
+        getBook={async () => {
+          const book = await getBookInfoById(bookId);
+          if (!book?.id) {
+            return notFound();
+          }
+          return book;
+        }}
+      />
+    </Suspense>
   );
 };
 

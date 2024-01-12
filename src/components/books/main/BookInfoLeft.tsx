@@ -17,9 +17,10 @@ type BookInfoLeftProps = {
   frontArtwork: string;
   backArtwork: string;
   title: string;
+  isLoading?: boolean;
 };
 
-const BookInfoLeft = ({ backArtwork, frontArtwork, title }: BookInfoLeftProps) => {
+const BookInfoLeft = ({ backArtwork, frontArtwork, title, isLoading }: BookInfoLeftProps) => {
   const [api, setApi] = useState<CarouselApi>(undefined);
   const [current, setCurrent] = useState(0);
 
@@ -53,6 +54,7 @@ const BookInfoLeft = ({ backArtwork, frontArtwork, title }: BookInfoLeftProps) =
               alt={`${item.title} image ${index + 1}`}
               height={2400}
               width={1600}
+              isLoading={isLoading}
               isBlurred
               radius='sm'
               className='max-h-[650px] rounded-md'
@@ -70,16 +72,17 @@ const BookInfoLeft = ({ backArtwork, frontArtwork, title }: BookInfoLeftProps) =
         <CarouselPrevious disabled={current === 1} radius='none' size='sm' className='border-1' />
         {carouselItems.map((item, index) => (
           <div
+            key={item.image}
             className={cn('relative h-[100px] w-[80px]', {
               'rounded-sm border-1 border-primary': current === index + 1,
             })}
           >
             <Image
-              key={item.image}
               src={item.image}
               alt={`${item.title} image ${index + 1}`}
               fill
               radius='none'
+              isLoading={isLoading}
               isBlurred
               onClick={() => api?.scrollTo(index)}
               classNames={{
