@@ -23,13 +23,13 @@ const BookCard = ({ books, mantineRef }: BookCardProps) => {
       {books.length !== 0 ? (
         <>
           {books.map((book, index) => {
-            const lastIndex = books.findIndex((item) => item.id === books[books.length - 1].id);
+            const lastIndex = index === books.length - 1;
 
             return (
-              <div key={book.id} ref={lastIndex === index ? mantineRef : undefined}>
+              <div key={book.id} ref={lastIndex ? mantineRef : undefined}>
                 <Card
                   as={Link}
-                  href={`/books/read/${book.id}`}
+                  href={`/books/${book.id}`}
                   shadow='sm'
                   radius='sm'
                   isPressable

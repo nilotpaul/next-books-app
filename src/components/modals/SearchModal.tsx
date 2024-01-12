@@ -10,7 +10,7 @@ import { bookGenres } from '@/config/constants/author';
 
 import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@nextui-org/modal';
 import { Button } from '@nextui-org/button';
-import { BookHeart, SearchIcon } from 'lucide-react';
+import { Book, SearchIcon } from 'lucide-react';
 import SearchInput from '../search/SearchInput';
 import SearchedResults from '../search/SearchedResults';
 import SearchResultSkeleton from '../loadings/SearchResultSkeleton';
@@ -22,9 +22,10 @@ type SearchModalProps = {
 const SearchModal = ({ userId }: SearchModalProps) => {
   const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
   const { getQueryParams, deleteQueryParams } = useSearchParams();
-  const debouncedValue = useDebounce(getQueryParams('q') || '', 800);
   const pathname = usePathname();
   const router = useRouter();
+
+  const debouncedValue = useDebounce(getQueryParams('q') || '', 800);
 
   const { data, isFetching, isFetchingNextPage, hasNextPage, refetch, fetchNextPage } =
     trpc.bookRouter.filter.useInfiniteQuery(
@@ -61,9 +62,10 @@ const SearchModal = ({ userId }: SearchModalProps) => {
       )}
       <Modal
         size='xl'
-        radius='sm'
+        radius='none'
         scrollBehavior='inside'
         placement='center'
+        backdrop='blur'
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         onClose={() =>
@@ -71,18 +73,20 @@ const SearchModal = ({ userId }: SearchModalProps) => {
         }
         classNames={{
           closeButton: 'hidden',
+          base: 'rounded-lg',
         }}
         className='border-1 border-foreground-100 bg-background'
       >
         <ModalContent>
-          <ModalHeader className='p-0'>
+          <ModalHeader className='rounded-t-sm p-0'>
             <SearchInput isOpen={isOpen} />
           </ModalHeader>
 
-          <ModalBody className='p-2'>
+          <ModalBody className='p-4 scrollbar scrollbar-track-foreground-100 scrollbar-thumb-gray-700 scrollbar-thumb-rounded-full scrollbar-w-1'>
             {debouncedValue.length >= 0 && debouncedValue.length < 2 ? (
               <>
-                {bookGenres.slice(0, 5).map((genre, index) => (
+                <h2 className='text-lg font-semibold text-primary'>Book Genres</h2>
+                {bookGenres.map((genre, index) => (
                   <Button
                     key={index}
                     onClick={() => {
@@ -93,13 +97,22 @@ const SearchModal = ({ userId }: SearchModalProps) => {
                     radius='sm'
                     className='min-h-[4rem] w-full justify-start bg-default-50 pl-4 text-foreground-500 hover:bg-primary hover:text-white'
                   >
-                    <BookHeart className='h-6 w-6' />
+                    <Book className='h-6 w-6' />
                     {genre}
                   </Button>
                 ))}
               </>
             ) : (
-              books?.map((book) => <SearchedResults key={book.id} book={book} />)
+              books?.map((book) => (
+                <SearchedResults
+                  key={book.id}
+                  book={book}
+                  onClick={() => {
+                    router.push(`/books/${book.id}`);
+                    onClose();
+                  }}
+                />
+              ))
             )}
             {(isFetching || isFetchingNextPage) && <SearchResultSkeleton />}
             {!(debouncedValue.length >= 0 && debouncedValue.length < 2) &&

@@ -6,13 +6,15 @@ import { Chip } from '@nextui-org/chip';
 
 type SearchedResultsProps = {
   book: PublishedBook;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   ref?: (element: any) => void;
 };
 
-const SearchedResults = ({ book, ref }: SearchedResultsProps) => {
+const SearchedResults = ({ book, ref, onClick }: SearchedResultsProps) => {
   return (
     <div ref={ref}>
       <Button
+        onClick={onClick}
         radius='sm'
         className='min-h-[4rem] w-full justify-between bg-default-50 pl-4 text-foreground-600 hover:bg-default/60 hover:text-white'
       >

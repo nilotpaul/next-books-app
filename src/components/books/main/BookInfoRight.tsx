@@ -1,6 +1,7 @@
 'use client';
 
 import { format } from 'date-fns';
+import { convertPrice } from '@/utils/utils';
 
 import Divider from '@/components/ui/Divider';
 import { BookInfo } from '@/types/book.types';
@@ -19,19 +20,19 @@ const BookInfoRight = ({ book }: BookInfoRight) => {
       <div className='space-y-2'>
         <h2 className='text-2xl font-bold'>{book?.title}</h2>
         <p className='truncate pb-4'>by {book?.authorName}</p>
-        <Divider className='h-[1px]' />
+        <Divider className='h-[1px] bg-foreground-400' />
       </div>
 
       <div className='flex flex-col gap-4'>
-        <span className='text-foreground-500'>Price: $ {book?.pricing || '00.00'}</span>
+        <span className='text-foreground-500'>Price: {convertPrice(book?.pricing || '00.00')}</span>
         <div className='mb-2 flex items-center gap-1.5'>
           <Stars stars={book?.stars || 0} />
         </div>
 
         <div className='space-y-2 text-sm'>
           <div className='flex items-center gap-1'>
-            Genres:
-            <p>
+            <span className='font-semibold text-primary'>Genres:</span>
+            <p className='text-foreground-700'>
               {book?.genres?.map((genre, index) => {
                 if (index === book.genres!.length - 1) {
                   return genre;
@@ -41,13 +42,35 @@ const BookInfoRight = ({ book }: BookInfoRight) => {
             </p>
           </div>
 
-          <p>Language: {book?.language}</p>
-          <p>
-            Published: From {format(book?.publicationDate!, 'do, MMM, yyyy')} to{' '}
-            {format(book?.updatedAt!, 'do, MMM, yyyy')}
+          <p className='text-foreground-700'>
+            <span className='font-semibold text-primary'>Language:</span> {book?.language}
           </p>
-          <p>{book?.collaborations?.toString() || 'collab'}</p>
-          <p>{book?.series.toString() || 'series'}</p>
+          <p className='text-foreground-700'>
+            <span className='font-semibold text-primary'>Published:</span>{' '}
+            {format(book?.publicationDate!, 'do, MMM, yyyy')}{' '}
+          </p>
+          {book?.collaborations?.length !== 0 && (
+            <p className='text-foreground-700'>
+              <span className='font-semibold text-primary'>Collaborations: </span>
+              {book?.collaborations?.map((item, index) => {
+                if (index === book.collaborations!.length - 1) {
+                  return item;
+                }
+                return item + ',' + ' ';
+              })}
+            </p>
+          )}
+          {book?.series?.length !== 0 && (
+            <p className='text-foreground-700'>
+              <span className='font-semibold text-primary'>Related:</span>{' '}
+              {book?.series?.map((item, index) => {
+                if (index === book.series.length - 1) {
+                  return item;
+                }
+                return item + ',' + ' ';
+              })}
+            </p>
+          )}
         </div>
       </div>
 
@@ -64,7 +87,7 @@ const BookInfoRight = ({ book }: BookInfoRight) => {
           Buy Now
         </Button>
       </div>
-      <Divider className='h-[1px]' />
+      <Divider className='h-[1px] bg-foreground-400' />
 
       <Accordion
         className='px-0'

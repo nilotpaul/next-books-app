@@ -17,3 +17,12 @@ export function capitalizeString(string: string) {
 
   return firstLetter + rest;
 }
+
+export function convertPrice(price: string | number) {
+  const priceToConvert = Number(price);
+
+  return priceToConvert.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
+}

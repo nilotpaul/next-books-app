@@ -1,7 +1,7 @@
 import useSearchParams from '@/hooks/useSearchParams';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { Input } from '@nextui-org/react';
+import { Input, Kbd } from '@nextui-org/react';
 import { Search } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
@@ -32,9 +32,10 @@ const SearchInput = ({ isOpen }: SearchInputProps) => {
       size='lg'
       color='primary'
       startContent={<Search className='mr-2 h-6 w-6 text-foreground-500' />}
+      endContent={<Kbd key='escape'>Esc</Kbd>}
       placeholder='Search for a book title'
       classNames={{
-        inputWrapper: 'rounded-md rounded-b-none border-b-1 border-b-danger',
+        inputWrapper: 'rounded-none rounded-t-sm border-b-1 border-b-danger',
         clearButton: 'text-danger',
       }}
       className='bg-background'

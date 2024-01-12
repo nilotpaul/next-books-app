@@ -98,11 +98,11 @@ const RectangeImageDropzone = ({
                 }
               )}
             >
-              {!previewImage || isLoading ? (
+              {!previewImage ? (
                 <UploadCloud className={cn('h-10 w-10', classNames?.icon)} />
               ) : (
                 <Image
-                  src={previewImage || ''}
+                  src={previewImage}
                   alt='Preview Image'
                   width={64}
                   height={64}

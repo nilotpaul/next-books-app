@@ -15,15 +15,15 @@ const BookInfoPage = ({ params }: BookInfoPageProps) => {
   }
 
   return (
-    <>
-      <BookInfo
-        getBook={async () => {
-          const book = await getBookInfoById(bookId);
-          if (!book?.authorName || !book.id) return notFound();
-          return book;
-        }}
-      />
-    </>
+    <BookInfo
+      getBook={async () => {
+        const book = await getBookInfoById(bookId);
+        if (!book?.id) {
+          return notFound();
+        }
+        return book;
+      }}
+    />
   );
 };
 
