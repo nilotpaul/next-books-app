@@ -8,9 +8,11 @@ import { cache } from 'react';
 export const getBookInfoById = cache(async (bookId: string) => {
   const row = await db
     .select({
+      clerkId: books.clerkId,
       id: books.id,
       title: books.bookTitle,
       authorName: authors.authorName,
+      synopsis: books.synopsis,
       availability: books.availability,
       collaborations: books.collaborations,
       frontArtwork: books.frontArtwork,

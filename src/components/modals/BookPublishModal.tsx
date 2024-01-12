@@ -20,7 +20,7 @@ import { Switch } from '@nextui-org/switch';
 import { cn } from '@/utils/utils';
 import { Select, SelectItem } from '@nextui-org/select';
 import { Autocomplete, AutocompleteItem } from '@nextui-org/autocomplete';
-import { Input } from '@nextui-org/input';
+import { Input, Textarea } from '@nextui-org/input';
 import RectangeImageDropzone from '../dropzones/RectangeImageDropzone';
 import { toast } from 'sonner';
 
@@ -46,6 +46,7 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
       bookId: book.id,
       bookTitle: '',
       content: undefined,
+      synopsis: book.synopsis || undefined,
       language: undefined,
       status: isSelected ? 'published' : 'draft',
       series: [],
@@ -54,7 +55,7 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
       backArtwork: book?.backArtwork || undefined,
       collaborations: [],
       availability: 'Free',
-      pricing: '00.00',
+      pricing: book.pricing || '00.00',
     },
   });
 
@@ -112,6 +113,13 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                 </div>
               </div>
 
+              <Textarea
+                {...register('synopsis')}
+                defaultValue={book.synopsis || ''}
+                minRows={3}
+                label='Synopsis'
+                placeholder='Enter a brief description about the book'
+              />
               <div className='grid grid-cols-3 gap-3'>
                 <Autocomplete
                   defaultInputValue={book.language}
@@ -230,7 +238,6 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
 
                 <Button
                   onClick={async (e) => {
-                    e.preventDefault();
                     const { title, data } = await requestSubmit();
                     setValue('bookTitle', title);
                     setValue('content', data?.blocks);

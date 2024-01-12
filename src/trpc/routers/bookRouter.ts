@@ -15,13 +15,10 @@ import {
   publishBookValidation,
 } from '@/validations/bookValidation';
 import { TRPCError } from '@trpc/server';
-import { DrizzleError, like, or } from 'drizzle-orm';
+import { DrizzleError } from 'drizzle-orm';
 import { z } from 'zod';
 import { nanoid } from 'nanoid';
 import { normaliseTitle } from '@/utils/utils';
-import { BOOK_STATUS } from '@/config/constants/books';
-import { db } from '@/lib/db/conn';
-import { books } from '@/lib/db/schema';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 
 export const bookRouter = router({
@@ -102,7 +99,7 @@ export const bookRouter = router({
       try {
         const { bookId, ...rest } = (
           body?.status === 'draft' ? draftBookValidation : publishBookValidation
-        ).parse(input);
+        ).parse(body);
 
         const book = await getBookById(bookId);
 
@@ -131,6 +128,7 @@ export const bookRouter = router({
           frontArtwork: rest.frontArtwork,
           collaborations: rest.collaborations,
           content: rest.content,
+          synopsis: rest.synopsis,
           genres: rest.genres,
           pricing: rest.pricing,
           normalised_title: book.normalised_title,

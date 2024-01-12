@@ -8,6 +8,7 @@ import {
   int,
   json,
   decimal,
+  text,
 } from 'drizzle-orm/mysql-core';
 import { BookGenres } from '@/types/author.types';
 import { BOOK_AVAILABALITY, BOOK_LANGUAGES, BOOK_STATUS } from '../../config/constants/books';
@@ -21,6 +22,8 @@ export const users = mysqlTable('users', {
   imageUrl: varchar('image_url', { length: 255 }),
   strategy: varchar('strategy', { length: 50 }).notNull(),
   isAuthor: boolean('is_author').default(false),
+  purchasedBooks: json('purchased_books').$type<string[]>().default([]),
+  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
 });
@@ -43,6 +46,7 @@ export const books = mysqlTable('books', {
   clerkId: varchar('clerk_id', { length: 255 }).notNull(),
   bookTitle: varchar('book_name', { length: 70 }).unique().notNull(),
   content: json('content').$type<any>(),
+  synopsis: text('synopsis'),
   normalised_title: varchar('normalised_title', { length: 100 }).unique().notNull(),
   frontArtwork: varchar('front_artwork', { length: 255 }),
   backArtwork: varchar('back_artwork', { length: 255 }),

@@ -1,8 +1,9 @@
 import { getPublishedBookWithAuthorById } from '@/services/books.services';
 import { getcontentByChapter } from '@/lib/blocksParser';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 import ReaderWrapper from '@/components/books/read/ReaderWrapper';
+import { purchaseStatus } from '@/utils/purchaseStatus';
 
 type pageProps = {
   params: {
@@ -12,10 +13,17 @@ type pageProps = {
 
 const page = async ({ params }: pageProps) => {
   const { bookId } = params;
-  const dbBook = await getPublishedBookWithAuthorById(bookId);
+  const [{ isPurchased, userId }, dbBook] = await Promise.all([
+    purchaseStatus(bookId),
+    getPublishedBookWithAuthorById(bookId),
+  ]);
 
-  if (!bookId || !dbBook?.authorName || !dbBook.book.id) {
+  if (!dbBook?.authorName || !dbBook.book.id) {
     return notFound();
+  }
+
+  if (!isPurchased && dbBook.book.clerkId !== userId) {
+    redirect(`/books/${bookId}`);
   }
 
   const { authorName, book } = dbBook;

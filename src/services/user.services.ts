@@ -5,6 +5,23 @@ import { cache } from 'react';
 
 import 'server-only';
 
+export const getUserPurchases = cache(async (userId: string) => {
+  const row = await db
+    .select({
+      userId: users.clerkId,
+      stripeCustomerId: users.stripeCustomerId,
+      purchasedBooks: users.purchasedBooks,
+    })
+    .from(users)
+    .where(eq(users.clerkId, userId));
+
+  if (!row || row.length === 0 || !row[0].userId) {
+    return null;
+  }
+
+  return row[0];
+});
+
 export const getUserById = cache(async (userId: string) => {
   const row = await db.select().from(users).where(eq(users.clerkId, userId));
 
@@ -53,3 +70,22 @@ export async function updateUser(
 
   return updatedUser;
 }
+
+export const purchaseBook = async (
+  bookId: string,
+  userId: string,
+  prevPurchasedBooks: string[]
+) => {
+  const purchasedBook = await db
+    .update(users)
+    .set({
+      purchasedBooks: [...prevPurchasedBooks, bookId],
+    })
+    .where(eq(users.clerkId, userId));
+
+  if (purchasedBook.rowsAffected === 0) {
+    return { success: false };
+  }
+
+  return { success: true };
+};

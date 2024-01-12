@@ -29,6 +29,7 @@ export const publishBookValidation = z.object({
     })
     .max(70, { message: 'Title cannot be more than 70 character(s)' }),
   content: z.any(),
+  synopsis: z.string().min(30, { message: 'Synopsis should be at least of 30 character(s)' }),
   frontArtwork: z.string().url().min(2),
   backArtwork: z.string().url().min(2),
   status: z.enum(BOOK_STATUS, {
@@ -76,6 +77,7 @@ export const draftBookValidation = z.object({
     })
     .max(70, { message: 'Title cannot be more than 70 character(s)' }),
   content: z.any().optional(),
+  synopsis: z.string().optional(),
   frontArtwork: z.string().url().min(2).optional(),
   backArtwork: z.string().url().min(2).optional(),
   status: z.enum(BOOK_STATUS, {

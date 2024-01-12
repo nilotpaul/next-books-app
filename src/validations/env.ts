@@ -15,11 +15,14 @@ export const env = createEnv({
     AWS_ACCESS_KEY: z.string().min(1),
     AWS_SECRET_KEY: z.string().min(1),
     AWS_BUCKET_NAME: z.string().min(1),
+    STRIPE_SERECT_KEY: z.string().min(1),
+    STRIPE_WEBHOOK_SECRET: z.string().min(1),
     NEXT_URL: z.string().url().min(1),
   },
 
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
   },
 
   runtimeEnv: {
@@ -36,6 +39,9 @@ export const env = createEnv({
     AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
     AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
     AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    STRIPE_SERECT_KEY: process.env.STRIPE_SERECT_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NEXT_URL: process.env.NEXT_URL,
   },
 });

@@ -9,12 +9,14 @@ import { Button } from '@nextui-org/button';
 import { Accordion, AccordionItem } from '@nextui-org/accordion';
 import Link from '@/components/ui/Link';
 import Stars from './Stars';
+import PurchaseBook from '../PurchaseBook';
 
 type BookInfoRight = {
   book: BookInfo;
+  isPurchased: boolean;
 };
 
-const BookInfoRight = ({ book }: BookInfoRight) => {
+const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
   return (
     <div className='h-full w-full space-y-4'>
       <div className='space-y-2'>
@@ -83,9 +85,11 @@ const BookInfoRight = ({ book }: BookInfoRight) => {
         >
           Read Now
         </Button>
-        <Button variant='bordered' className='font-medium text-danger'>
-          Buy Now
-        </Button>
+        {!isPurchased && (
+          <PurchaseBook bookId={book?.id!} variant='bordered' className='font-medium text-danger'>
+            Buy Now
+          </PurchaseBook>
+        )}
       </div>
       <Divider className='h-[1px] bg-foreground-400' />
 
@@ -94,8 +98,13 @@ const BookInfoRight = ({ book }: BookInfoRight) => {
         defaultExpandedKeys={['1']}
         itemClasses={{ title: 'text-md font-medium' }}
       >
-        <AccordionItem key='1' aria-label='Book Description' title='Book Description'>
-          synopsis
+        <AccordionItem
+          className='text-sm leading-7'
+          key='1'
+          aria-label='Book Description'
+          title='Book Description'
+        >
+          {book?.synopsis}
         </AccordionItem>
       </Accordion>
     </div>

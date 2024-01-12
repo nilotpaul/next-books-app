@@ -4,11 +4,11 @@ import BookInfoRight from './BookInfoRight';
 import BookInfoLeft from './BookInfoLeft';
 
 type BookInfoProps = {
-  getBook: () => Promise<BookInfo>;
+  getBook: () => Promise<{ book: BookInfo; isPurchased: boolean }>;
 };
 
 const BookInfo = async ({ getBook }: BookInfoProps) => {
-  const book = await getBook();
+  const { book, isPurchased } = await getBook();
 
   return (
     <div className='grid h-full w-full place-content-between place-items-start gap-12 md:grid-cols-2'>
@@ -18,7 +18,7 @@ const BookInfo = async ({ getBook }: BookInfoProps) => {
         title={book?.title!}
       />
 
-      <BookInfoRight book={book} />
+      <BookInfoRight book={book} isPurchased={isPurchased} />
     </div>
   );
 };
