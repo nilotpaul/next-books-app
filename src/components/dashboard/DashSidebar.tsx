@@ -1,19 +1,29 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useToggleTabStore } from '@/hooks/useToggleTabStore';
 
 import { Tabs, Tab } from '@nextui-org/tabs';
+import WriteBooksTabSkeleton from '../loadings/WriteBooksTabSkeleton';
 
 type DashSidebarProps = {
   isAuthor: boolean;
 };
 
 const DashSidebar = ({ isAuthor }: DashSidebarProps) => {
-  const { tab, changeTab } = useToggleTabStore();
+  const { tab, changeTab } = useToggleTabStore((state) => state);
+
+  useEffect(() => {
+    changeTab('My Books');
+  }, []);
+
+  if (tab?.length === 0) {
+    return <WriteBooksTabSkeleton />;
+  }
 
   return (
     <Tabs
-      defaultSelectedKey='WriteBook'
+      defaultSelectedKey='My Books'
       selectedKey={tab}
       onSelectionChange={(key) => changeTab(key.toString())}
       classNames={{
@@ -27,19 +37,19 @@ const DashSidebar = ({ isAuthor }: DashSidebarProps) => {
     >
       {isAuthor && (
         <Tab
-          key='WriteBooks'
+          key='My Books'
           title={
             <div className='flex items-center space-x-2'>
-              <span className='text-sm font-medium'>Write Books</span>
+              <span className='text-sm font-medium'>My Books</span>
             </div>
           }
         />
       )}
       <Tab
-        key='Reading'
+        key='Purchases'
         title={
           <div className='flex items-center space-x-2'>
-            <span className='text-sm font-medium'>Reading</span>
+            <span className='text-sm font-medium'>Purchases</span>
           </div>
         }
       />

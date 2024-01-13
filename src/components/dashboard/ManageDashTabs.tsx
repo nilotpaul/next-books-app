@@ -10,6 +10,7 @@ import ReadingTab from './ReadingTab';
 import CreateBookModal from '../modals/CreateBookModal';
 import Image from '../ui/Image';
 import WriteBooksTabSkeleton from '../loadings/WriteBooksTabSkeleton';
+import PurchaseTab from './PurchaseTab';
 
 type ManageDashTabsProps = {
   userId: string;
@@ -31,9 +32,9 @@ const ManageDashTabs = ({ userId, books, isAuthor }: ManageDashTabsProps) => {
 
   return (
     <>
-      <header className='flex flex-col items-end justify-center space-y-1.5 pb-3'>
-        {tab === 'WriteBooks' && isAuthor && (
-          <>
+      {tab === 'My Books' && isAuthor && (
+        <>
+          <header className='flex flex-col items-end justify-center space-y-1.5 pb-3'>
             <div className='flex w-full items-center justify-between'>
               <div className='flex items-center gap-3'>
                 <Image
@@ -49,15 +50,13 @@ const ManageDashTabs = ({ userId, books, isAuthor }: ManageDashTabsProps) => {
             </div>
 
             <Divider className='h-[1px] rounded-md bg-default' />
-          </>
-        )}
-      </header>
+          </header>
 
-      {tab === 'WriteBooks' && isAuthor ? (
-        <>{books.length > 0 && <WriteBooksTab books={books} />}</>
-      ) : (
-        <ReadingTab />
+          {books.length > 0 && <WriteBooksTab books={books} />}
+        </>
       )}
+
+      {tab === 'Purchases' && <PurchaseTab />}
     </>
   );
 };

@@ -36,7 +36,6 @@ const SearchModal = ({ userId }: SearchModalProps) => {
       {
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
         keepPreviousData: true,
-        suspense: true,
         initialData: {
           pageParams: [undefined],
           pages: [{ books: [], nextCursor: undefined }],
