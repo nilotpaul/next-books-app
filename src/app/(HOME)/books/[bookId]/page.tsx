@@ -25,7 +25,7 @@ const BookInfoPage = ({ params }: BookInfoPageProps) => {
             await getBookInfoById(bookId),
             purchaseStatus(bookId),
           ]);
-          if (!book?.id) {
+          if (!book || !book?.id) {
             return notFound();
           }
           return {

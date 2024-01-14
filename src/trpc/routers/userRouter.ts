@@ -173,7 +173,31 @@ export const userRouter = router({
           nextCursor,
         };
       } catch (err) {
-        console.error('PURCHASES_ERROR:', err);
+        console.error('PURCHASED_BOOKS_ERROR:', err);
+
+        if (err instanceof z.ZodError) {
+          throw new TRPCError({
+            code: 'PARSE_ERROR',
+            message: 'Data passed in incorrect format',
+          });
+        }
+        if (err instanceof DrizzleError) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to make changes to the db',
+          });
+        }
+        if (err instanceof TRPCError) {
+          throw new TRPCError({
+            code: err.code,
+            message: err.message,
+          });
+        }
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong',
+        });
       }
     }),
 });

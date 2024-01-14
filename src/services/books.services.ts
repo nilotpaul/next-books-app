@@ -1,9 +1,24 @@
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { db } from '@/lib/db/conn';
-import { authors, books } from '@/lib/db/schema';
+import { authors, books, ratedBooks } from '@/lib/db/schema';
 import { BookFilters, CreateBook } from '@/validations/bookValidation';
 import { and, asc, desc, eq, gt, like, sql } from 'drizzle-orm';
 import { cache } from 'react';
+
+export const getLikedBookById = cache(
+  async ({ userId, bookId }: { userId: string; bookId: string }) => {
+    const row = await db
+      .select()
+      .from(ratedBooks)
+      .where(and(eq(ratedBooks.clerkId, userId), eq(ratedBooks.bookId, bookId)));
+
+    if (!row || !row[0]?.clerkId) {
+      return null;
+    }
+
+    return row[0];
+  }
+);
 
 export const getBookInfoById = cache(async (bookId: string) => {
   const row = await db
@@ -150,6 +165,120 @@ export const getBookByTitle = cache(async (bookTitle: string) => {
 
   return row[0];
 });
+
+// types for rateBook fn
+type RateBook = {
+  action: 'Rate';
+  bookId: string;
+  userId: string;
+  stars: number;
+  bookTitle: string;
+  currentBookStars: number;
+};
+
+type UpdateBook = {
+  action: 'Update';
+  bookId: string;
+  userId: string;
+  stars: number;
+  prevStars: number;
+  currentBookStars: number;
+};
+
+type DeleteBook = {
+  action: 'Delete';
+  bookId: string;
+  userId: string;
+  stars: number;
+  currentBookStars: number;
+};
+
+export const rateBook = async (
+  opts: RateBook | UpdateBook | DeleteBook
+): Promise<{ success: boolean }> => {
+  const rateBookTx = await db.transaction(async (tx) => {
+    if (opts.action === 'Rate') {
+      console.log('rate');
+      const ratedBook = await tx.insert(ratedBooks).values({
+        bookId: opts.bookId,
+        bookTitle: opts.bookTitle,
+        clerkId: opts.userId,
+        stars: opts.stars,
+      });
+
+      if (ratedBook.rowsAffected === 0) {
+        tx.rollback();
+        return { success: false };
+      }
+
+      const ratedAuthorBook = await tx
+        .update(books)
+        .set({ stars: opts.currentBookStars + opts.stars })
+        .where(eq(books.id, opts.bookId));
+
+      if (ratedAuthorBook.rowsAffected === 0) {
+        tx.rollback();
+        return { success: false };
+      }
+
+      return { success: true };
+    }
+
+    if (opts.action === 'Update') {
+      console.log('update');
+      const updatedRating = await db
+        .update(ratedBooks)
+        .set({
+          stars: opts.stars,
+        })
+        .where(and(eq(ratedBooks.clerkId, opts.userId), eq(ratedBooks.bookId, opts.bookId)));
+
+      if (updatedRating.rowsAffected === 0) {
+        tx.rollback();
+        return { success: false };
+      }
+
+      const updatedAuthorBook = await tx
+        .update(books)
+        .set({ stars: opts.currentBookStars + (opts.stars - opts.prevStars) })
+        .where(eq(books.id, opts.bookId));
+
+      if (updatedAuthorBook.rowsAffected === 0) {
+        tx.rollback();
+        return { success: false };
+      }
+
+      return { success: true };
+    }
+    console.log('delete');
+    const deletedRating = await tx
+      .delete(ratedBooks)
+      .where(and(eq(ratedBooks.bookId, opts.bookId), eq(ratedBooks.clerkId, opts.userId)));
+
+    if (deletedRating.rowsAffected === 0) {
+      tx.rollback();
+      return { success: false };
+    }
+
+    const updatedAuthorBook = await tx
+      .update(books)
+      .set({ stars: opts.currentBookStars - opts.stars })
+      .where(eq(books.id, opts.bookId));
+
+    if (updatedAuthorBook.rowsAffected === 0) {
+      tx.rollback();
+      return { success: false };
+    }
+
+    return { success: true };
+  });
+
+  if (!rateBookTx.success) {
+    return { success: false };
+  }
+
+  return { success: true };
+};
 
 export const publishBook = async (payload: (typeof books)['$inferInsert']) => {
   const publish = await db.update(books).set(payload).where(eq(books.id, payload.id));

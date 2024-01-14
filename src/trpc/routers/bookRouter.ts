@@ -3,10 +3,13 @@ import {
   deleteBookById,
   getBookById,
   getBookByTitle,
+  getBookInfoById,
   getBooksByFilters,
+  getLikedBookById,
   publishBook,
+  rateBook,
 } from '@/services/books.services';
-import { isAuthor, publicProcedure, router } from '../trpc';
+import { isAuthor, privateProcedure, publicProcedure, router } from '../trpc';
 
 import {
   bookFilterValidation,
@@ -299,4 +302,125 @@ export const bookRouter = router({
       });
     }
   }),
+
+  rateBook: privateProcedure
+    .input(
+      z.object({
+        bookId: z.string().min(2, {
+          message: 'Invalid id',
+        }),
+        stars: z.coerce
+          .number()
+          .min(1, {
+            message: 'Rating must be atleast 1',
+          })
+          .max(5, {
+            message: 'Rating must be max of 5',
+          }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { bookId, stars } = input;
+
+      try {
+        const [ratedBook, book] = await Promise.all([
+          getLikedBookById({
+            bookId,
+            userId: user.id,
+          }),
+          getBookInfoById(bookId),
+        ]);
+
+        if (!book || !book?.id) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'No book found with this id',
+          });
+        }
+
+        if (!ratedBook || !ratedBook.bookId) {
+          const { success } = await rateBook({
+            userId: user.id,
+            bookId,
+            bookTitle: book.title,
+            stars,
+            currentBookStars: book.stars ?? 0,
+            action: 'Rate',
+          });
+
+          if (!success) {
+            throw new TRPCError({
+              code: 'INTERNAL_SERVER_ERROR',
+              message: 'Failed to rate the book',
+            });
+          }
+
+          return { success: true };
+        }
+
+        if (ratedBook.bookId === bookId && ratedBook.stars === stars) {
+          const { success } = await rateBook({
+            bookId,
+            userId: user.id,
+            stars,
+            currentBookStars: book.stars ?? 0,
+            action: 'Delete',
+          });
+
+          if (!success) {
+            throw new TRPCError({
+              code: 'INTERNAL_SERVER_ERROR',
+              message: 'Failed to rate the book',
+            });
+          }
+
+          return { success: true };
+        }
+
+        const { success } = await rateBook({
+          bookId,
+          userId: user.id,
+          stars,
+          prevStars: ratedBook.stars,
+          currentBookStars: book.stars ?? 0,
+          action: 'Update',
+        });
+
+        if (!success) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to rate the book',
+          });
+        }
+
+        return { success: true };
+      } catch (err) {
+        console.error('[BOOK_RATING_ERROR]:', err);
+
+        if (err instanceof z.ZodError) {
+          throw new TRPCError({
+            code: 'PARSE_ERROR',
+            message: 'Data not passed in correct format',
+          });
+        }
+        if (err instanceof DrizzleError) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to make changes to the db',
+          });
+        }
+        if (err instanceof TRPCError) {
+          throw new TRPCError({
+            code: err.code,
+            message: err.message,
+          });
+        }
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong',
+        });
+      }
+    }),
 });

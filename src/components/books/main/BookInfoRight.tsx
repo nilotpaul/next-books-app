@@ -12,7 +12,7 @@ import Stars from './Stars';
 import PurchaseBook from '../PurchaseBook';
 
 type BookInfoRight = {
-  book: BookInfo;
+  book: NonNullable<BookInfo>;
   isPurchased: boolean;
 };
 
@@ -20,22 +20,22 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
   return (
     <div className='h-full w-full space-y-4'>
       <div className='space-y-2'>
-        <h2 className='text-2xl font-bold'>{book?.title}</h2>
-        <p className='truncate pb-4'>by {book?.authorName}</p>
+        <h2 className='text-2xl font-bold'>{book.title}</h2>
+        <p className='truncate pb-4'>by {book.authorName}</p>
         <Divider className='h-[1px] bg-foreground-400' />
       </div>
 
       <div className='flex flex-col gap-4'>
-        <span className='text-foreground-500'>Price: {convertPrice(book?.pricing || '00.00')}</span>
+        <span className='text-foreground-500'>Price: {convertPrice(book.pricing || '00.00')}</span>
         <div className='mb-2 flex items-center gap-1.5'>
-          <Stars stars={book?.stars || 0} />
+          <Stars stars={book.stars || 0} bookId={book.id} />
         </div>
 
         <div className='space-y-2 text-sm'>
           <div className='flex items-center gap-1'>
             <span className='font-semibold text-primary'>Genres:</span>
             <p className='text-foreground-700'>
-              {book?.genres?.map((genre, index) => {
+              {book.genres!.map((genre, index) => {
                 if (index === book.genres!.length - 1) {
                   return genre;
                 }
@@ -51,10 +51,10 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
             <span className='font-semibold text-primary'>Published:</span>{' '}
             {format(book?.publicationDate!, 'do, MMM, yyyy')}{' '}
           </p>
-          {book?.collaborations?.length !== 0 && (
+          {book.collaborations?.length !== 0 && (
             <p className='text-foreground-700'>
               <span className='font-semibold text-primary'>Collaborations: </span>
-              {book?.collaborations?.map((item, index) => {
+              {book.collaborations?.map((item, index) => {
                 if (index === book.collaborations!.length - 1) {
                   return item;
                 }
@@ -62,10 +62,10 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
               })}
             </p>
           )}
-          {book?.series?.length !== 0 && (
+          {book.series?.length !== 0 && (
             <p className='text-foreground-700'>
               <span className='font-semibold text-primary'>Related:</span>{' '}
-              {book?.series?.map((item, index) => {
+              {book.series?.map((item, index) => {
                 if (index === book.series.length - 1) {
                   return item;
                 }

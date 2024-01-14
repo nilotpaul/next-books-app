@@ -63,10 +63,20 @@ export const books = mysqlTable('books', {
   updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
 });
 
-export const likes = mysqlTable('likes', {
+export const ratedBooks = mysqlTable('rated_books', {
   clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
+  bookId: varchar('book_id', { length: 255 }).notNull(),
+  bookTitle: varchar('book_name', { length: 70 }).notNull(),
+  stars: int('stars').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
+});
+
+export const ratedAuthors = mysqlTable('rated_authors', {
+  clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
+  authorId: varchar('author_id', { length: 255 }).notNull(),
+  authorName: varchar('author_name', { length: 70 }).notNull(),
+  stars: int('stars').default(0).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const socialLinks = mysqlTable('social_links', {
@@ -81,7 +91,8 @@ export const userRelations = relations(users, ({ one, many }) => ({
     fields: [users.clerkId],
     references: [authors.clerkId],
   }),
-  likes: many(likes),
+  likedBooks: many(ratedBooks),
+  likedAuthors: many(ratedAuthors),
 }));
 
 export const authorRelations = relations(authors, ({ many, one }) => ({
@@ -95,18 +106,6 @@ export const authorRelations = relations(authors, ({ many, one }) => ({
 export const booksRealtions = relations(books, ({ one }) => ({
   author: one(authors, {
     fields: [books.id],
-    references: [authors.clerkId],
-  }),
-}));
-
-export const likesRelations = relations(likes, ({ many }) => ({
-  likedAuthors: many(authors),
-  likedBooks: many(books),
-}));
-
-export const socialLinksRelations = relations(socialLinks, ({ one }) => ({
-  author: one(authors, {
-    fields: [socialLinks.clerkId],
     references: [authors.clerkId],
   }),
 }));
