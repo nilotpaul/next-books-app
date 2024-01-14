@@ -1,0 +1,1 @@
+ALTER TABLE `books` ADD `rated_by` int DEFAULT 0;

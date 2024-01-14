@@ -39,6 +39,7 @@ export const getBookInfoById = cache(async (bookId: string) => {
       updatedAt: books.updatedAt,
       series: books.series,
       stars: books.stars,
+      ratedBy: books.ratedBy,
     })
     .from(books)
     .where(and(eq(books.id, bookId), eq(books.status, 'published')))
@@ -173,6 +174,7 @@ type RateBook = {
   userId: string;
   stars: number;
   bookTitle: string;
+  prevRatedBy: number;
   currentBookStars: number;
 };
 
@@ -190,6 +192,7 @@ type DeleteBook = {
   bookId: string;
   userId: string;
   stars: number;
+  prevRatedBy: number;
   currentBookStars: number;
 };
 
@@ -213,7 +216,7 @@ export const rateBook = async (
 
       const ratedAuthorBook = await tx
         .update(books)
-        .set({ stars: opts.currentBookStars + opts.stars })
+        .set({ stars: opts.currentBookStars + opts.stars, ratedBy: opts.prevRatedBy + 1 })
         .where(eq(books.id, opts.bookId));
 
       if (ratedAuthorBook.rowsAffected === 0) {
@@ -262,7 +265,7 @@ export const rateBook = async (
 
     const updatedAuthorBook = await tx
       .update(books)
-      .set({ stars: opts.currentBookStars - opts.stars })
+      .set({ stars: opts.currentBookStars - opts.stars, ratedBy: opts.prevRatedBy - 1 })
       .where(eq(books.id, opts.bookId));
 
     if (updatedAuthorBook.rowsAffected === 0) {

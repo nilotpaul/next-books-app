@@ -346,6 +346,7 @@ export const bookRouter = router({
             bookTitle: book.title,
             stars,
             currentBookStars: book.stars ?? 0,
+            prevRatedBy: book.ratedBy ?? 0,
             action: 'Rate',
           });
 
@@ -365,6 +366,7 @@ export const bookRouter = router({
             userId: user.id,
             stars,
             currentBookStars: book.stars ?? 0,
+            prevRatedBy: book.ratedBy ?? 0,
             action: 'Delete',
           });
 

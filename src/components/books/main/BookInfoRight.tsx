@@ -1,7 +1,7 @@
 'use client';
 
 import { format } from 'date-fns';
-import { convertPrice } from '@/utils/utils';
+import { calculateAverageRating, convertPrice } from '@/utils/utils';
 
 import Divider from '@/components/ui/Divider';
 import { BookInfo } from '@/types/book.types';
@@ -28,9 +28,16 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
       <div className='flex flex-col gap-4'>
         <span className='text-foreground-500'>Price: {convertPrice(book.pricing || '00.00')}</span>
         <div className='mb-2 flex items-center gap-1.5'>
-          <Stars stars={book.stars || 0} bookId={book.id} />
+          <Stars
+            displayOnly
+            stars={calculateAverageRating({
+              rating: book.stars || 0,
+              ratingCount: book.ratedBy || 0,
+              scale: 5,
+            })}
+            bookId={book.id}
+          />
         </div>
-
         <div className='space-y-2 text-sm'>
           <div className='flex items-center gap-1'>
             <span className='font-semibold text-primary'>Genres:</span>

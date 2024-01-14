@@ -58,6 +58,7 @@ export const books = mysqlTable('books', {
   series: json('series').$type<string[]>().default([]).notNull(),
   collaborations: json('collaborations').$type<string[]>(),
   stars: int('stars').default(0),
+  ratedBy: int('rated_by').default(0),
   publicationDate: timestamp('publication_date'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
@@ -91,8 +92,8 @@ export const userRelations = relations(users, ({ one, many }) => ({
     fields: [users.clerkId],
     references: [authors.clerkId],
   }),
-  likedBooks: many(ratedBooks),
-  likedAuthors: many(ratedAuthors),
+  ratedBooks: many(ratedBooks),
+  ratedAuthors: many(ratedAuthors),
 }));
 
 export const authorRelations = relations(authors, ({ many, one }) => ({

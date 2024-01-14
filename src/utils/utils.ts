@@ -26,3 +26,17 @@ export function convertPrice(price: string | number) {
     currency: 'USD',
   });
 }
+
+export function calculateAverageRating({
+  rating,
+  ratingCount,
+  scale,
+}: {
+  rating: number;
+  ratingCount: number;
+  scale: number;
+}) {
+  const averageRating = ratingCount > 0 ? rating / ratingCount : 0;
+
+  return (averageRating / scale) * scale;
+}
