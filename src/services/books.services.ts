@@ -5,7 +5,7 @@ import { BookFilters, CreateBook } from '@/validations/bookValidation';
 import { and, asc, desc, eq, gt, like, sql } from 'drizzle-orm';
 import { cache } from 'react';
 
-export const getLikedBookById = cache(
+export const getRatedBookById = cache(
   async ({ userId, bookId }: { userId: string; bookId: string }) => {
     const row = await db
       .select()

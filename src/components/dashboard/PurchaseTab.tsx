@@ -7,6 +7,7 @@ import { Button } from '@nextui-org/button';
 import Link from '../ui/Link';
 import { Skeleton } from '@nextui-org/skeleton';
 import { toast } from 'sonner';
+import Stars from '../books/main/Stars';
 
 const PurchaseTab = () => {
   const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
@@ -33,7 +34,7 @@ const PurchaseTab = () => {
     return <Skeleton className='h-36 w-full rounded-lg' />;
   }
 
-  const opts = ['Artwork', 'Title', 'Published', 'Options'];
+  const opts = ['Artwork', 'Title', 'Published', 'Rating', 'Options'];
   const books = data?.pages.flatMap((pages) => pages?.books);
   const isEmpty = data?.pages.flatMap((pages) => pages?.books).length === 0;
 
@@ -61,6 +62,16 @@ const PurchaseTab = () => {
               <TableCell className='text-base'>{book?.title}</TableCell>
               <TableCell className='text-base'>
                 {book?.publishedDate && format(book?.publishedDate!, 'dd / mm / yy')}
+              </TableCell>
+              <TableCell>
+                <div className='flex items-center gap-1.5'>
+                  <Stars
+                    key={new Date().toDateString()}
+                    size='sm'
+                    stars={book.stars || 0}
+                    bookId={book.id}
+                  />
+                </div>
               </TableCell>
               <TableCell>
                 <Button

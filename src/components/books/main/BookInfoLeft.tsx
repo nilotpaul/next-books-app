@@ -45,22 +45,21 @@ const BookInfoLeft = ({ backArtwork, frontArtwork, title, isLoading }: BookInfoL
   }, [api]);
 
   return (
-    <Carousel setApi={setApi}>
-      <CarouselContent>
+    <Carousel setApi={setApi} className='w-full'>
+      <CarouselContent className='rounded-md pl-4'>
         {carouselItems.map((item, index) => (
-          <CarouselItem key={item.image}>
+          <CarouselItem key={item.image} className='relative mx-auto min-h-[650px] w-full'>
             <Image
               src={item.image}
               alt={`${item.title} image ${index + 1}`}
-              height={2400}
-              width={1600}
+              fill
               isLoading={isLoading}
               isBlurred
               radius='sm'
-              className='max-h-[650px] rounded-md'
+              className='h-full w-full rounded-md'
               classNames={{
-                blurredImg: 'rounded-md',
-                wrapper: 'rounded-md',
+                wrapper: 'rounded-md static',
+                blurredImg: 'rounded-md scale-95',
                 img: 'rounded-md',
               }}
             />

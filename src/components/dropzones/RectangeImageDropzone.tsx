@@ -37,10 +37,10 @@ const RectangeImageDropzone = ({
     maxFiles: 1,
     maxSize: MAX_FILE_SIZE,
     onDrop: async (acceptedFiles) => {
-      const preview = URL.createObjectURL(acceptedFiles[0]);
-      setPreviewImage(preview);
-
       try {
+        const preview = URL.createObjectURL(acceptedFiles[0]);
+        setPreviewImage(preview);
+
         setIsLoading(true);
         if (!acceptedFiles || acceptedFiles.length === 0) {
           throw new Error('File not found');
@@ -51,11 +51,6 @@ const RectangeImageDropzone = ({
         setImage(data?.publicUrl ?? '');
       } catch (err) {
         console.error(err);
-
-        if (err instanceof Error) {
-          toast.error(err.message);
-          return;
-        }
 
         toast.error('Failed to upload image');
       } finally {

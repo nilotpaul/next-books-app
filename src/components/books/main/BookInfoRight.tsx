@@ -26,7 +26,9 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
       </div>
 
       <div className='flex flex-col gap-4'>
-        <span className='text-foreground-500'>Price: {convertPrice(book.pricing || '00.00')}</span>
+        <span className='font-medium text-danger'>
+          Price: {convertPrice(book.pricing || '00.00')}
+        </span>
         <div className='mb-2 flex items-center gap-1.5'>
           <Stars
             displayOnly
@@ -37,6 +39,7 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
             })}
             bookId={book.id}
           />
+          <span className='ml-4 text-xs text-foreground-600'>Rated By: {book.ratedBy}</span>
         </div>
         <div className='space-y-2 text-sm'>
           <div className='flex items-center gap-1'>

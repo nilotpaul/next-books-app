@@ -5,7 +5,7 @@ import {
   getBookByTitle,
   getBookInfoById,
   getBooksByFilters,
-  getLikedBookById,
+  getRatedBookById,
   publishBook,
   rateBook,
 } from '@/services/books.services';
@@ -325,7 +325,7 @@ export const bookRouter = router({
 
       try {
         const [ratedBook, book] = await Promise.all([
-          getLikedBookById({
+          getRatedBookById({
             bookId,
             userId: user.id,
           }),
@@ -357,7 +357,7 @@ export const bookRouter = router({
             });
           }
 
-          return { success: true };
+          return { success: true, msg: 'Rated' };
         }
 
         if (ratedBook.bookId === bookId && ratedBook.stars === stars) {
@@ -377,7 +377,7 @@ export const bookRouter = router({
             });
           }
 
-          return { success: true };
+          return { success: true, msg: 'Removed Rating' };
         }
 
         const { success } = await rateBook({
@@ -396,7 +396,7 @@ export const bookRouter = router({
           });
         }
 
-        return { success: true };
+        return { success: true, msg: 'Updated Rating' };
       } catch (err) {
         console.error('[BOOK_RATING_ERROR]:', err);
 

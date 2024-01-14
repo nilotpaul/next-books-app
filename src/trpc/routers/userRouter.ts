@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { privateProcedure, router } from '../trpc';
-import { getBookById, getBookInfoById } from '@/services/books.services';
+import { getBookById, getBookInfoById, getRatedBookById } from '@/services/books.services';
 import getUrl from '@/utils/getUrl';
 import { TRPCError } from '@trpc/server';
 import { getUserPurchases } from '@/services/user.services';
@@ -153,7 +153,12 @@ export const userRouter = router({
         const newPurchasesArr = purchases.purchasedBooks.slice(startIndex, lastIndex);
 
         const booksPromise = newPurchasesArr.map(async (bookId) => {
-          return getBookInfoById(bookId);
+          const book = await getBookInfoById(bookId);
+          const userBookRating = await getRatedBookById({
+            bookId,
+            userId: user.id,
+          });
+          return { book, stars: userBookRating?.stars };
         });
 
         let nextCursor: typeof cursor | undefined = purchases.purchasedBooks[lastIndex - 1];
@@ -161,10 +166,11 @@ export const userRouter = router({
           nextCursor = undefined;
         }
 
-        const books = (await Promise.all(booksPromise)).map((book) => ({
+        const books = (await Promise.all(booksPromise)).map(({ book, stars }) => ({
           id: book?.id,
           title: book?.title,
           frontArtwork: book?.frontArtwork,
+          stars,
           publishedDate: book?.publicationDate,
         }));
 
@@ -173,7 +179,7 @@ export const userRouter = router({
           nextCursor,
         };
       } catch (err) {
-        console.error('PURCHASED_BOOKS_ERROR:', err);
+        console.error('[PURCHASED_BOOKS_ERROR]:', err);
 
         if (err instanceof z.ZodError) {
           throw new TRPCError({
