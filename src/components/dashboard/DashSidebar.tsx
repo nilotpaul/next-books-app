@@ -21,6 +21,8 @@ const DashSidebar = ({ isAuthor }: DashSidebarProps) => {
     return <WriteBooksTabSkeleton />;
   }
 
+  const menu = ['My Books', 'Purchases', 'Reviews'];
+
   return (
     <Tabs
       defaultSelectedKey='My Books'
@@ -35,24 +37,30 @@ const DashSidebar = ({ isAuthor }: DashSidebarProps) => {
       color='secondary'
       variant='light'
     >
-      {isAuthor && (
-        <Tab
-          key='My Books'
-          title={
-            <div className='flex items-center space-x-2'>
-              <span className='text-sm font-medium'>My Books</span>
-            </div>
-          }
-        />
-      )}
-      <Tab
-        key='Purchases'
-        title={
-          <div className='flex items-center space-x-2'>
-            <span className='text-sm font-medium'>Purchases</span>
-          </div>
+      {menu.map((item) => {
+        if (item === 'My Books' && isAuthor) {
+          return (
+            <Tab
+              key={item}
+              title={
+                <div className='flex items-center space-x-2'>
+                  <span className='text-sm font-medium'>{item}</span>
+                </div>
+              }
+            />
+          );
         }
-      />
+        return (
+          <Tab
+            key={item}
+            title={
+              <div className='flex items-center space-x-2'>
+                <span className='text-sm font-medium'>{item}</span>
+              </div>
+            }
+          />
+        );
+      })}
     </Tabs>
   );
 };

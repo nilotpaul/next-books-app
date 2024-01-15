@@ -151,25 +151,14 @@ const ReaderTab = ({ firstName, lastName, username, email, image }: ReaderTabPro
         }}
       >
         <CardHeader className='flex flex-col items-start pb-1 text-lg font-semibold text-foreground-600'>
-          Extras <Divider className='w-[85px]' />
+          More Preferences <Divider className='w-[85px]' />
         </CardHeader>
 
-        <CardBody className='flex flex-col gap-4'>
-          <div className='space-x-3'>
-            <Button className='w-max' size='sm' variant='ghost'>
-              Bookmarks
-            </Button>
-            <Button className='w-max' size='sm' variant='ghost'>
-              History
-            </Button>
-          </div>
-
-          <div className='flex flex-col gap-2'>
-            <ThemeSwitcher size='sm'>Theme Mode</ThemeSwitcher>
-            <Switch size='sm'>Public</Switch>
-            <Switch size='sm'>Notifications</Switch>
-            <Switch size='sm'>Recommendations</Switch>
-          </div>
+        <CardBody className='flex flex-col gap-2'>
+          <ThemeSwitcher size='sm'>Theme Mode</ThemeSwitcher>
+          <Switch size='sm'>Public</Switch>
+          <Switch size='sm'>Notifications</Switch>
+          <Switch size='sm'>Recommendations</Switch>
         </CardBody>
       </Card>
     </div>

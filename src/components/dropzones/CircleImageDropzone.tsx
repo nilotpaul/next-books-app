@@ -11,6 +11,7 @@ import { cn } from '@/utils/utils';
 
 type CircleImageDropzone = {
   onUpload?: (publicUrl: string, key: string) => Promise<void> | void;
+  initialImage?: string;
   classNames?: {
     wrapper?: string;
     image?: string;
@@ -20,9 +21,9 @@ type CircleImageDropzone = {
   };
 };
 
-const CircleImageDropzone = ({ onUpload, classNames }: CircleImageDropzone) => {
+const CircleImageDropzone = ({ onUpload, classNames, initialImage }: CircleImageDropzone) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(initialImage || '');
 
   const { uploadImage } = useUploadImage();
 
@@ -75,17 +76,21 @@ const CircleImageDropzone = ({ onUpload, classNames }: CircleImageDropzone) => {
       {image && (
         <Image
           isLoading={isLoading}
+          isBlurred
           src={image}
           alt='Profile Image'
           radius='full'
           className={cn('h-28 w-28 cursor-pointer', classNames?.image)}
+          classNames={{
+            blurredImg: 'scale-95',
+          }}
           height={112}
           width={112}
           priority
           loading='eager'
         />
       )}
-      {isLoading && (
+      {isLoading && !image && (
         <>
           <Skeleton
             className={cn('absolute h-28 w-28 cursor-pointer rounded-full', classNames?.skeleton)}

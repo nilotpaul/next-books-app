@@ -9,6 +9,7 @@ import { Input, Textarea } from '@nextui-org/input';
 import { Chip } from '@nextui-org/chip';
 import { Button } from '@nextui-org/button';
 import { cn } from '@/utils/utils';
+import AuthorProfileUpdateModal from '../modals/AuthorProfileUpdateModal';
 
 type AuthorTabtProps = {
   isAuthor: boolean;
@@ -17,7 +18,14 @@ type AuthorTabtProps = {
 };
 
 const AuthorTab = ({ isAuthor, author, links }: AuthorTabtProps) => {
-  const { author_image: image, authorName, stars, confirm_email: email, bio } = author!;
+  const {
+    author_image: image,
+    authorName,
+    stars,
+    confirm_email: email,
+    bio,
+    artistGenres,
+  } = author!;
 
   return (
     <>
@@ -94,9 +102,20 @@ const AuthorTab = ({ isAuthor, author, links }: AuthorTabtProps) => {
             </div>
 
             <CardFooter className='flex w-full items-center justify-end gap-3 pl-1.5 sm:px-0'>
-              <Button size='sm' variant='bordered' color='primary'>
+              <AuthorProfileUpdateModal
+                type='Author Profile'
+                authorImage={image || undefined}
+                authorName={authorName}
+                bio={bio}
+                genres={artistGenres}
+                links={{
+                  instagram: links?.instagram || undefined,
+                  twitter: links?.twitter || undefined,
+                }}
+              >
                 Edit Profile
-              </Button>
+              </AuthorProfileUpdateModal>
+
               <Button size='sm' color='danger'>
                 Delete
               </Button>
@@ -112,7 +131,8 @@ const AuthorTab = ({ isAuthor, author, links }: AuthorTabtProps) => {
           }}
         >
           <CardHeader className='flex w-[150px] flex-col items-start pb-1 text-lg font-semibold text-foreground-600'>
-            Links and bio <Divider className='w-[150px]' />
+            Social Links
+            <Divider className='w-[150px]' />
           </CardHeader>
 
           <CardBody className='py-2 pl-0 sm:pl-3'>
@@ -158,9 +178,19 @@ const AuthorTab = ({ isAuthor, author, links }: AuthorTabtProps) => {
             </div>
 
             <CardFooter className='flex w-full items-center justify-end gap-3 pl-1.5 sm:px-0'>
-              <Button size='sm' variant='bordered' color='primary'>
+              <AuthorProfileUpdateModal
+                type='Social Links'
+                authorImage={image || undefined}
+                authorName={authorName}
+                bio={bio}
+                genres={artistGenres}
+                links={{
+                  instagram: links?.instagram || undefined,
+                  twitter: links?.twitter || undefined,
+                }}
+              >
                 Edit
-              </Button>
+              </AuthorProfileUpdateModal>
             </CardFooter>
           </CardBody>
         </Card>

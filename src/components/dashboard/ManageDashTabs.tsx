@@ -6,11 +6,11 @@ import { BooksWithoutNT } from '@/types/book.types';
 
 import WriteBooksTab from './WriteBooksTab';
 import Divider from '../ui/Divider';
-import ReadingTab from './ReadingTab';
 import CreateBookModal from '../modals/CreateBookModal';
 import Image from '../ui/Image';
 import WriteBooksTabSkeleton from '../loadings/WriteBooksTabSkeleton';
 import PurchaseTab from './PurchaseTab';
+import ReviewTab from './ReviewTab';
 
 type ManageDashTabsProps = {
   userId: string;
@@ -57,6 +57,7 @@ const ManageDashTabs = ({ userId, books, isAuthor }: ManageDashTabsProps) => {
       )}
 
       {tab === 'Purchases' && <PurchaseTab />}
+      {tab === 'Review' && <ReviewTab />}
     </>
   );
 };

@@ -40,5 +40,34 @@ export const verifyAuthorValidation = z.object({
     .min(2, { message: 'Min 2 characters required' }),
 });
 
+export const updateAuthorProfileValidation = z.object({
+  authorName: z
+    .string({
+      invalid_type_error: 'Only string is allowed',
+      required_error: 'Author name required',
+    })
+    .min(2, { message: 'Min 2 characters required' })
+    .optional(),
+  authorImage: z
+    .string()
+    .url({
+      message: 'Enter a valid url',
+    })
+    .optional(),
+  bio: z
+    .string({
+      invalid_type_error: 'Only string is allowed',
+      required_error: 'Bio required',
+    })
+    .min(20, { message: 'Min 20 characters required' })
+    .optional(),
+  genres: z.array(z.enum(bookGenres)).optional(),
+  links: z.object({
+    instagram: z.string().url({ message: 'Enter a valid link' }).optional(),
+    Twitter: z.string().url({ message: 'Enter a valid link' }).optional(),
+  }),
+});
+
 export type RegisterAuthor = z.infer<typeof registerAuthorValidation>;
 export type VerifyAuthor = z.infer<typeof verifyAuthorValidation>;
+export type UpdateAuthorProfile = z.infer<typeof updateAuthorProfileValidation>;

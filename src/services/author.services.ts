@@ -1,8 +1,11 @@
 import { db } from '@/lib/db/conn';
 import { authors, books, socialLinks, users } from '@/lib/db/schema';
+import { UpdateAuthorProfile } from '@/validations/authorValidations';
 import { env } from '@/validations/env';
 import { eq, like } from 'drizzle-orm';
 import { cache } from 'react';
+
+import 'server-only';
 
 export const getAuthorByName = cache(async (authorName: string) => {
   const row = await db
@@ -80,6 +83,24 @@ export const getAuthorByIdWithLinks = cache(async (userId: string) => {
     links: row[0].social_links,
   };
 });
+
+export const updateAuthorProfile = async (values: UpdateAuthorProfile, userId: string) => {
+  const updatedAuthor = await db
+    .update(authors)
+    .set({
+      authorName: values.authorName,
+      author_image: values.authorImage,
+      artistGenres: values.genres,
+      bio: values.bio,
+    })
+    .where(eq(authors.clerkId, userId));
+
+  if (updatedAuthor.rowsAffected === 0) {
+    return { success: false };
+  }
+
+  return { success: true };
+};
 
 export async function verifyAuthor(userId: string) {
   await db.transaction(async (tx) => {

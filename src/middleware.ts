@@ -1,6 +1,8 @@
 import { authMiddleware, redirectToSignIn } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
+export const runtime = 'experimental-edge';
+
 export default authMiddleware({
   publicRoutes: ['/', '/api/webhooks(.*)', '/books', '/authors', '/discover', '/forum', '/docs'],
   afterAuth: async (auth, req) => {
