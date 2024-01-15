@@ -22,3 +22,31 @@ export type PublishedBook = {
 };
 
 export type BookInfo = Awaited<ReturnType<typeof getBookInfoById>>;
+
+export type RateBook = {
+  action: 'Rate';
+  bookId: string;
+  userId: string;
+  stars: number;
+  bookTitle: string;
+  prevRatedBy: number;
+  currentBookStars: number;
+};
+
+export type UpdateBook = {
+  action: 'Update';
+  id: string;
+  bookId: string;
+  stars: number;
+  prevStars: number;
+  currentBookStars: number;
+};
+
+export type DeleteBook = {
+  action: 'Delete';
+  id: string;
+  bookId: string;
+  stars: number;
+  prevRatedBy: number;
+  currentBookStars: number;
+};

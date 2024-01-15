@@ -363,7 +363,7 @@ export const bookRouter = router({
         if (ratedBook.bookId === bookId && ratedBook.stars === stars) {
           const { success } = await rateBook({
             bookId,
-            userId: user.id,
+            id: ratedBook.id,
             stars,
             currentBookStars: book.stars ?? 0,
             prevRatedBy: book.ratedBy ?? 0,
@@ -382,7 +382,7 @@ export const bookRouter = router({
 
         const { success } = await rateBook({
           bookId,
-          userId: user.id,
+          id: ratedBook.id,
           stars,
           prevStars: ratedBook.stars,
           currentBookStars: book.stars ?? 0,

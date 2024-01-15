@@ -65,7 +65,8 @@ export const books = mysqlTable('books', {
 });
 
 export const ratedBooks = mysqlTable('rated_books', {
-  clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
+  id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
+  clerkId: varchar('clerk_id', { length: 255 }),
   bookId: varchar('book_id', { length: 255 }).notNull(),
   bookTitle: varchar('book_name', { length: 70 }).notNull(),
   stars: int('stars').default(0).notNull(),
@@ -73,7 +74,8 @@ export const ratedBooks = mysqlTable('rated_books', {
 });
 
 export const ratedAuthors = mysqlTable('rated_authors', {
-  clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
+  id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
+  clerkId: varchar('clerk_id', { length: 255 }),
   authorId: varchar('author_id', { length: 255 }).notNull(),
   authorName: varchar('author_name', { length: 70 }).notNull(),
   stars: int('stars').default(0).notNull(),

@@ -1,8 +1,10 @@
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { db } from '@/lib/db/conn';
 import { authors, books, ratedBooks } from '@/lib/db/schema';
+import { DeleteBook, RateBook, UpdateBook } from '@/types/book.types';
 import { BookFilters, CreateBook } from '@/validations/bookValidation';
 import { and, asc, desc, eq, gt, like, sql } from 'drizzle-orm';
+import { nanoid } from 'nanoid';
 import { cache } from 'react';
 
 export const getRatedBookById = cache(
@@ -167,35 +169,6 @@ export const getBookByTitle = cache(async (bookTitle: string) => {
   return row[0];
 });
 
-// types for rateBook fn
-type RateBook = {
-  action: 'Rate';
-  bookId: string;
-  userId: string;
-  stars: number;
-  bookTitle: string;
-  prevRatedBy: number;
-  currentBookStars: number;
-};
-
-type UpdateBook = {
-  action: 'Update';
-  bookId: string;
-  userId: string;
-  stars: number;
-  prevStars: number;
-  currentBookStars: number;
-};
-
-type DeleteBook = {
-  action: 'Delete';
-  bookId: string;
-  userId: string;
-  stars: number;
-  prevRatedBy: number;
-  currentBookStars: number;
-};
-
 export const rateBook = async (
   opts: RateBook | UpdateBook | DeleteBook
 ): Promise<{ success: boolean }> => {
@@ -203,6 +176,7 @@ export const rateBook = async (
     if (opts.action === 'Rate') {
       console.log('rate');
       const ratedBook = await tx.insert(ratedBooks).values({
+        id: nanoid(),
         bookId: opts.bookId,
         bookTitle: opts.bookTitle,
         clerkId: opts.userId,
@@ -234,7 +208,7 @@ export const rateBook = async (
         .set({
           stars: opts.stars,
         })
-        .where(and(eq(ratedBooks.clerkId, opts.userId), eq(ratedBooks.bookId, opts.bookId)));
+        .where(and(eq(ratedBooks.id, opts.id), eq(ratedBooks.bookId, opts.bookId)));
 
       if (updatedRating.rowsAffected === 0) {
         tx.rollback();
@@ -256,7 +230,7 @@ export const rateBook = async (
     console.log('delete');
     const deletedRating = await tx
       .delete(ratedBooks)
-      .where(and(eq(ratedBooks.bookId, opts.bookId), eq(ratedBooks.clerkId, opts.userId)));
+      .where(and(eq(ratedBooks.bookId, opts.bookId), eq(ratedBooks.id, opts.id)));
 
     if (deletedRating.rowsAffected === 0) {
       tx.rollback();

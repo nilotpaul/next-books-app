@@ -18,13 +18,7 @@ CREATE TABLE `books` (
 	`updated_at` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `books_id` PRIMARY KEY(`id`)
 );
---> statement-breakpoint
-CREATE TABLE `likes` (
-	`clerk_id` varchar(255) NOT NULL,
-	`created_at` timestamp NOT NULL DEFAULT (now()),
-	`updated_at` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-	CONSTRAINT `likes_clerk_id` PRIMARY KEY(`clerk_id`)
-);
+
 --> statement-breakpoint
 CREATE TABLE `users` (
 	`clerk_id` varchar(255) NOT NULL,
