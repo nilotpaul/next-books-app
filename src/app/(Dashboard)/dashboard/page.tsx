@@ -3,6 +3,7 @@ import { User } from '@clerk/nextjs/server';
 import { Suspense } from 'react';
 import DashSidebarSkeleton from '@/components/loadings/DashSidebarSkeleton';
 import { getUserById } from '@/services/user.services';
+import { getUserName } from '@/utils/getUserFullName';
 
 import SidebarWrapper from '@/components/dashboard/SidebarWrapper';
 import TabsWrapper from '@/components/dashboard/TabsWrapper';
@@ -27,7 +28,11 @@ const dashboard = () => {
               const user = (await userSession()) as User;
               const isAuthor = (await getUserById(user.id))?.isAuthor!;
               return {
-                userId: user.id,
+                user: {
+                  userId: user.id,
+                  userImage: user.imageUrl,
+                  name: getUserName(user.firstName || '', user.lastName || '').fullName,
+                },
                 isAuthor,
               };
             }}

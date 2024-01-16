@@ -1,8 +1,10 @@
 'use client';
 
+import { useContext } from 'react';
 import { useToggleTabStore } from '@/hooks/useToggleTabStore';
 import { useMounted } from '@/hooks/useMounted';
 import { BooksWithoutNT } from '@/types/book.types';
+import { MyDashboardContext } from '../context/DashboardContext';
 
 import WriteBooksTab from './WriteBooksTab';
 import Divider from '../ui/Divider';
@@ -11,17 +13,15 @@ import Image from '../ui/Image';
 import WriteBooksTabSkeleton from '../loadings/WriteBooksTabSkeleton';
 import PurchaseTab from './PurchaseTab';
 import ReviewTab from './ReviewTab';
+import ForumPosts from './ForumPosts';
 
-type ManageDashTabsProps = {
-  userId: string;
-  books: (BooksWithoutNT[number] & {
-    authorImage: string | null;
-    authorName: string | null;
-  })[];
-  isAuthor: boolean;
-};
-
-const ManageDashTabs = ({ userId, books, isAuthor }: ManageDashTabsProps) => {
+const ManageDashTabs = () => {
+  const {
+    isAuthor,
+    authorBooks,
+    user: { userId },
+  } = useContext(MyDashboardContext);
+  const books = authorBooks || [];
   const tab = useToggleTabStore((state) => state.tab);
 
   const [isMounted] = useMounted();
@@ -40,9 +40,10 @@ const ManageDashTabs = ({ userId, books, isAuthor }: ManageDashTabsProps) => {
                 <Image
                   src={books[0].authorImage || ''}
                   alt={books[0].authorName!}
-                  width={30}
-                  height={30}
+                  fill
                   isBlurred
+                  radius='full'
+                  classNames={{ wrapper: 'min-h-[30px] min-w-[30px]' }}
                 />
                 <p className='text-sm'>{books[0].authorName}</p>
               </div>
@@ -52,11 +53,12 @@ const ManageDashTabs = ({ userId, books, isAuthor }: ManageDashTabsProps) => {
             <Divider className='h-[1px] rounded-md bg-default' />
           </header>
 
-          {books.length > 0 && <WriteBooksTab books={books} />}
+          {books.length > 0 && <WriteBooksTab />}
         </>
       )}
 
       {tab === 'Purchases' && <PurchaseTab />}
+      {tab === 'Forum Posts' && <ForumPosts />}
       {tab === 'Review' && <ReviewTab />}
     </>
   );

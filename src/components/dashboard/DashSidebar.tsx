@@ -21,7 +21,7 @@ const DashSidebar = ({ isAuthor }: DashSidebarProps) => {
     return <WriteBooksTabSkeleton />;
   }
 
-  const menu = ['My Books', 'Purchases', 'Reviews'];
+  const menu = ['My Books', 'Purchases', 'Forum Posts', 'Reviews'];
 
   return (
     <Tabs
