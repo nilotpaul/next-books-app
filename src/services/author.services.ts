@@ -2,10 +2,38 @@ import { db } from '@/lib/db/conn';
 import { authors, books, socialLinks, users } from '@/lib/db/schema';
 import { UpdateAuthorProfile } from '@/validations/authorValidations';
 import { env } from '@/validations/env';
-import { eq, like } from 'drizzle-orm';
+import { asc, desc, eq, like, sql } from 'drizzle-orm';
 import { cache } from 'react';
 
 import 'server-only';
+
+export const getAuthorsByStars = cache(
+  async (opts?: { sort?: 'stars' | 'authorName'; order?: 'desc' | 'asc' }) => {
+    const filterBy =
+      opts?.order && opts?.sort
+        ? opts?.sort === 'stars'
+          ? sql`stars`
+          : sql`author_name`.append(sql` `).append(opts?.order === 'asc' ? sql`asc` : sql`desc`)
+        : undefined;
+
+    const row = await db
+      .select({
+        id: authors.clerkId,
+        authorName: authors.authorName,
+        authorImage: authors.author_image,
+        stars: authors.stars,
+      })
+      .from(authors)
+      .orderBy(sql`authors.`.append(filterBy ?? sql`stars desc`))
+      .limit(10);
+
+    if (!row || !row[0].id) {
+      return null;
+    }
+
+    return row;
+  }
+);
 
 export const getAuthorByName = cache(async (authorName: string) => {
   const row = await db

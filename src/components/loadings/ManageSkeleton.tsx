@@ -1,4 +1,4 @@
-import { Skeleton } from '../ui/Skeleton';
+import { Skeleton } from '@nextui-org/skeleton';
 
 const ManageSkeleton = () => {
   return (
@@ -6,7 +6,7 @@ const ManageSkeleton = () => {
       {Array(3)
         .fill(0)
         .map((_, index) => (
-          <Skeleton key={index} className='h-60 w-full rounded-lg bg-foreground-50' />
+          <Skeleton key={index} className='h-60 w-full rounded-lg' />
         ))}
     </div>
   );

@@ -54,7 +54,7 @@ const BookCard = ({ books, mantineRef }: BookCardProps) => {
                     <Chip
                       color='danger'
                       variant='flat'
-                      className='absolute right-2 top-2 min-w-[40px] truncate p-0 text-xs xs:static'
+                      className='absolute right-2 top-2 min-w-[40px] truncate p-0 text-xs font-medium xs:static'
                     >
                       {/* {book.availability === 'Free' ? book.availability : book.price} */}
                       Free

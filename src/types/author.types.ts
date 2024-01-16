@@ -9,3 +9,10 @@ export type BookGenres = (typeof bookGenres)[number][];
 export type SocialLinks = (typeof socialLinks)['$inferSelect'];
 
 export type AuthorWithBooks = Awaited<ReturnType<typeof getAuthorWithBooksById>>;
+
+export type AuthorByStars = {
+  id: string;
+  authorName: string;
+  authorImage: string | null;
+  stars: number;
+};

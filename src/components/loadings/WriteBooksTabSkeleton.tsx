@@ -1,6 +1,6 @@
 import { Button } from '@nextui-org/button';
 import Divider from '../ui/Divider';
-import { Skeleton } from '../ui/Skeleton';
+import { Skeleton } from '@nextui-org/skeleton';
 import { Plus } from 'lucide-react';
 import Image from '../ui/Image';
 
@@ -23,7 +23,7 @@ const WriteBooksTabSkeleton = () => {
 
       <Divider className='h-[1px] rounded-md bg-default' />
 
-      <Skeleton className='mt-2 h-36 w-full rounded-lg bg-content1' />
+      <Skeleton className='mt-2 h-36 w-full rounded-lg' />
     </div>
   );
 };
