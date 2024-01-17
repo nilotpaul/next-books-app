@@ -5,7 +5,7 @@ import {
   createForumPost,
   getForumPostById,
   getUserForumPostByTitle,
-} from '@/services/formPosts.services';
+} from '@/services/forumPosts.services';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { DrizzleError } from 'drizzle-orm';

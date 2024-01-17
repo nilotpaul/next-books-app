@@ -1,10 +1,34 @@
 import { db } from '@/lib/db/conn';
-import { forumPosts } from '@/lib/db/schema';
+import { forumPosts, users } from '@/lib/db/schema';
 import { ForumPost } from '@/validations/forumPostValidations';
-import { like, and, eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { cache } from 'react';
 
 import 'server-only';
+
+export const getForumPosts = cache(async (limit?: number) => {
+  const row = await db
+    .select({
+      clerkId: forumPosts.clerkId,
+      id: forumPosts.id,
+      image: forumPosts.image,
+      postTitle: forumPosts.postTitle,
+      content: forumPosts.content,
+      createdAt: forumPosts.createdAt,
+      tags: forumPosts.tags,
+      firstName: users.firstName,
+      lastName: users.lastName,
+    })
+    .from(forumPosts)
+    .leftJoin(users, eq(users.clerkId, forumPosts.clerkId))
+    .limit(limit ?? 10);
+
+  if (row.length === 0 || !row[0].id) {
+    return null;
+  }
+
+  return row;
+});
 
 export const getUserForumPosts = cache(async (userId: string, limit?: number) => {
   const row = await db
@@ -17,7 +41,7 @@ export const getUserForumPosts = cache(async (userId: string, limit?: number) =>
     })
     .from(forumPosts)
     .where(eq(forumPosts.clerkId, userId))
-    .limit(limit ?? 6);
+    .limit(limit ?? 10);
 
   if (row.length === 0 || !row[0]?.postId) {
     return null;

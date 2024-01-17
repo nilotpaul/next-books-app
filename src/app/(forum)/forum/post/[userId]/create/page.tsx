@@ -2,6 +2,7 @@ import { getUserById } from '@/services/user.services';
 import { redirect } from 'next/navigation';
 
 import CreatePostWrapper from '@/components/forum/CreatePostWrapper';
+import { userSession } from '@/services/auth.services';
 
 type ForumPostCreatePageProps = {
   params: {
@@ -12,9 +13,9 @@ type ForumPostCreatePageProps = {
 const ForumPostCreatePage = async ({ params }: ForumPostCreatePageProps) => {
   const { userId } = params;
 
-  const user = await getUserById(userId);
+  const [user, session] = await Promise.all([getUserById(userId), userSession()]);
 
-  if (user?.clerkId !== userId) {
+  if (!user || user?.clerkId !== session?.id) {
     return redirect('/dashboard');
   }
 

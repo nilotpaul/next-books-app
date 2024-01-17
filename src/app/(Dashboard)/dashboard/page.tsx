@@ -8,7 +8,7 @@ import { getUserName } from '@/utils/getUserFullName';
 import SidebarWrapper from '@/components/dashboard/SidebarWrapper';
 import TabsWrapper from '@/components/dashboard/TabsWrapper';
 import WriteBooksTabSkeleton from '@/components/loadings/WriteBooksTabSkeleton';
-import { getUserForumPosts } from '@/services/formPosts.services';
+import { getUserForumPosts } from '@/services/forumPosts.services';
 
 const dashboard = () => {
   return (
