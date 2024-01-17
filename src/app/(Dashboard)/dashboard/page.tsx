@@ -8,6 +8,7 @@ import { getUserName } from '@/utils/getUserFullName';
 import SidebarWrapper from '@/components/dashboard/SidebarWrapper';
 import TabsWrapper from '@/components/dashboard/TabsWrapper';
 import WriteBooksTabSkeleton from '@/components/loadings/WriteBooksTabSkeleton';
+import { getUserForumPosts } from '@/services/formPosts.services';
 
 const dashboard = () => {
   return (
@@ -26,14 +27,18 @@ const dashboard = () => {
           <TabsWrapper
             getData={async () => {
               const user = (await userSession()) as User;
-              const isAuthor = (await getUserById(user.id))?.isAuthor!;
+              const [dbUser, forumPosts] = await Promise.all([
+                getUserById(user.id),
+                getUserForumPosts(user.id, 6),
+              ]);
               return {
                 user: {
                   userId: user.id,
                   userImage: user.imageUrl,
                   name: getUserName(user.firstName || '', user.lastName || '').fullName,
                 },
-                isAuthor,
+                isAuthor: dbUser?.isAuthor || false,
+                forumPosts: forumPosts || [],
               };
             }}
           />

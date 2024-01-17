@@ -11,6 +11,7 @@ import { cn } from '@/utils/utils';
 type RectangleImageDropzoneProps = {
   classNames?: {
     icon?: string;
+    label?: string;
   };
   label?: string;
   initialImage?: string;
@@ -78,7 +79,10 @@ const RectangeImageDropzone = ({
         {!image || isLoading ? (
           <>
             {label && (
-              <label htmlFor='dropzone' className='cursor-pointer text-sm text-foreground-700'>
+              <label
+                htmlFor='dropzone'
+                className={cn('cursor-pointer text-sm text-foreground-600', classNames?.label)}
+              >
                 {label}
               </label>
             )}

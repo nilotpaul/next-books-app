@@ -22,5 +22,3 @@ export const BOOK_LANGUAGES = [
   'Polish',
   'Thai',
 ] as const;
-
-export const bookTableColumns = ['title', 'last updated', 'status', 'options'];

@@ -66,7 +66,7 @@ export const books = mysqlTable('books', {
 
 export const ratedBooks = mysqlTable('rated_books', {
   id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
-  clerkId: varchar('clerk_id', { length: 255 }),
+  clerkId: varchar('clerk_id', { length: 255 }).notNull(),
   bookId: varchar('book_id', { length: 255 }).notNull(),
   bookTitle: varchar('book_name', { length: 70 }).notNull(),
   stars: int('stars').default(0).notNull(),
@@ -75,7 +75,7 @@ export const ratedBooks = mysqlTable('rated_books', {
 
 export const ratedAuthors = mysqlTable('rated_authors', {
   id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
-  clerkId: varchar('clerk_id', { length: 255 }),
+  clerkId: varchar('clerk_id', { length: 255 }).notNull(),
   authorId: varchar('author_id', { length: 255 }).notNull(),
   authorName: varchar('author_name', { length: 70 }).notNull(),
   stars: int('stars').default(0).notNull(),
@@ -89,6 +89,17 @@ export const socialLinks = mysqlTable('social_links', {
   other: varchar('other', { length: 255 }),
 });
 
+export const forumPosts = mysqlTable('forum_posts', {
+  id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
+  clerkId: varchar('clerk_id', { length: 255 }).notNull(),
+  isAuthor: boolean('is_author').default(false),
+  postTitle: varchar('post_title', { length: 70 }).notNull(),
+  content: json('post_content').$type<any>().notNull(),
+  image: varchar('post_image', { length: 255 }),
+  tags: json('tags').$type<string[]>(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export const userRelations = relations(users, ({ one, many }) => ({
   author: one(authors, {
     fields: [users.clerkId],
@@ -96,6 +107,7 @@ export const userRelations = relations(users, ({ one, many }) => ({
   }),
   ratedBooks: many(ratedBooks),
   ratedAuthors: many(ratedAuthors),
+  forumPosts: many(forumPosts),
 }));
 
 export const authorRelations = relations(authors, ({ many, one }) => ({
@@ -106,9 +118,16 @@ export const authorRelations = relations(authors, ({ many, one }) => ({
   }),
 }));
 
-export const booksRealtions = relations(books, ({ one }) => ({
+export const booksRelations = relations(books, ({ one }) => ({
   author: one(authors, {
     fields: [books.id],
     references: [authors.clerkId],
+  }),
+}));
+
+export const forumPostsRelations = relations(forumPosts, ({ one }) => ({
+  user: one(users, {
+    fields: [forumPosts.clerkId],
+    references: [users.clerkId],
   }),
 }));

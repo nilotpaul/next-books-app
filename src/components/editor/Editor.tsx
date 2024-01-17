@@ -8,7 +8,7 @@ import { getFileDimensions } from '@/lib/getImageDimensions';
 
 import { toast } from 'sonner';
 import { Kbd } from '@nextui-org/kbd';
-import { Skeleton } from '@nextui-org/react';
+import { Skeleton } from '@nextui-org/skeleton';
 import '@/styles/editor.css';
 
 type EditorProps = {
@@ -172,7 +172,7 @@ const Editor = ({ defaultValues, placeholder, label, titleRef, editorRef, data }
             {Array(4)
               .fill(0)
               .map((_, index) => (
-                <Skeleton key={index} className='h-4 w-full rounded-md' />
+                <Skeleton key={index} className='h-2.5 w-full rounded-md' />
               ))}
           </div>
         )}

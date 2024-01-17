@@ -1,5 +1,6 @@
 import { getAuthorWithBooksById } from '@/services/author.services';
 import { DashboardContext } from '../context/DashboardContext';
+import { ForumPost } from '@/types/forumPost.types';
 import { omit } from 'lodash';
 
 import ManageDashTabs from './ManageDashTabs';
@@ -12,11 +13,12 @@ type TabsWrapperProps = {
       name: string;
     };
     isAuthor: boolean;
+    forumPosts: ForumPost[];
   }>;
 };
 
 const TabsWrapper = async ({ getData }: TabsWrapperProps) => {
-  const { isAuthor, user } = await getData();
+  const { isAuthor, user, forumPosts } = await getData();
 
   if (isAuthor) {
     const { books, author } = await getAuthorWithBooksById(user.userId);
@@ -34,7 +36,7 @@ const TabsWrapper = async ({ getData }: TabsWrapperProps) => {
           user,
           isAuthor,
           authorBooks: newbooks,
-          forumPosts: [],
+          forumPosts,
           purchases: [],
           reviews: [],
         }}
@@ -49,7 +51,7 @@ const TabsWrapper = async ({ getData }: TabsWrapperProps) => {
       values={{
         user,
         isAuthor,
-        forumPosts: [],
+        forumPosts,
         purchases: [],
         reviews: [],
       }}

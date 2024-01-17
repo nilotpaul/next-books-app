@@ -1,6 +1,7 @@
 'use client';
 
 import { BooksWithoutNT } from '@/types/book.types';
+import { ForumPost } from '@/types/forumPost.types';
 import { createContext } from 'react';
 
 type DashboardContextProps = {
@@ -20,7 +21,7 @@ type DashboadContext = {
     authorName: string | null;
   })[];
   purchases: any[];
-  forumPosts: any[];
+  forumPosts: ForumPost[];
   reviews: any[];
 };
 

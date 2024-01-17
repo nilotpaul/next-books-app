@@ -3,7 +3,6 @@
 import { useContext } from 'react';
 import { useToggleTabStore } from '@/hooks/useToggleTabStore';
 import { useMounted } from '@/hooks/useMounted';
-import { BooksWithoutNT } from '@/types/book.types';
 import { MyDashboardContext } from '../context/DashboardContext';
 
 import WriteBooksTab from './WriteBooksTab';
@@ -13,7 +12,7 @@ import Image from '../ui/Image';
 import WriteBooksTabSkeleton from '../loadings/WriteBooksTabSkeleton';
 import PurchaseTab from './PurchaseTab';
 import ReviewTab from './ReviewTab';
-import ForumPosts from './ForumPosts';
+import ForumPostsTab from './ForumPostsTab';
 
 const ManageDashTabs = () => {
   const {
@@ -58,7 +57,7 @@ const ManageDashTabs = () => {
       )}
 
       {tab === 'Purchases' && <PurchaseTab />}
-      {tab === 'Forum Posts' && <ForumPosts />}
+      {tab === 'Forum Posts' && <ForumPostsTab />}
       {tab === 'Review' && <ReviewTab />}
     </>
   );
