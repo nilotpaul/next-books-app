@@ -18,7 +18,7 @@ type DashboadContext = {
   isAuthor: boolean;
   authorBooks?: (BooksWithoutNT[number] & {
     authorImage: string | null;
-    authorName: string | null;
+    authorName: string;
   })[];
   purchases: any[];
   forumPosts: ForumPost[];

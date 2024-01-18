@@ -97,6 +97,7 @@ export const forumPosts = mysqlTable('forum_posts', {
   content: json('post_content').$type<any>().notNull(),
   image: varchar('post_image', { length: 255 }),
   tags: json('tags').$type<string[]>(),
+  likes: json('likes').$type<string[]>(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

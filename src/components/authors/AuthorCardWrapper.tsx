@@ -1,6 +1,6 @@
 import { AuthorByStars } from '@/types/author.types';
 
-import AuthorCard from './AuthorCard';
+import ReusableCard, { GridContainer } from '../ReusableCard';
 
 type AuthorCardWrapperProps = {
   getAuthorData: () => Promise<AuthorByStars[]>;
@@ -9,7 +9,23 @@ type AuthorCardWrapperProps = {
 const AuthorCardWrapper = async ({ getAuthorData }: AuthorCardWrapperProps) => {
   const authors = await getAuthorData();
 
-  return <AuthorCard authors={authors} />;
+  return (
+    <GridContainer>
+      {Array(10)
+        .fill(authors[0])
+        .map((author) => (
+          <ReusableCard
+            data={{
+              id: author.id,
+              title: author.authorName,
+              thumbnail: author.authorImage || '',
+              href: '',
+              chip: `Stars: ${author.stars || 0}`,
+            }}
+          />
+        ))}
+    </GridContainer>
+  );
 };
 
 export default AuthorCardWrapper;

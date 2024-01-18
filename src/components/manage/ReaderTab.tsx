@@ -53,6 +53,7 @@ const ReaderTab = ({ firstName, lastName, username, email, image }: ReaderTabPro
                 wrapper: 'relative min-h-[150px] min-w-[150px] rounded-full',
                 blurredImg: 'scale-[0.9]',
               }}
+              className='object-cover'
             />
 
             <div className='flex w-full flex-col items-center gap-y-1 space-y-2 sm:block'>

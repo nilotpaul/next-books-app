@@ -36,14 +36,17 @@ const ManageDashTabs = () => {
           <header className='flex flex-col items-end justify-center space-y-1.5 pb-3'>
             <div className='flex w-full items-center justify-between'>
               <div className='flex items-center gap-3'>
-                <Image
-                  src={books[0].authorImage || ''}
-                  alt={books[0].authorName!}
-                  fill
-                  isBlurred
-                  radius='full'
-                  classNames={{ wrapper: 'min-h-[30px] min-w-[30px]' }}
-                />
+                {books[0].authorImage && (
+                  <Image
+                    src={books[0].authorImage}
+                    alt={books[0].authorName}
+                    fill
+                    isBlurred
+                    radius='full'
+                    classNames={{ wrapper: 'min-h-[30px] min-w-[30px]' }}
+                    className='object-cover'
+                  />
+                )}
                 <p className='text-sm'>{books[0].authorName}</p>
               </div>
               <CreateBookModal userId={userId} />

@@ -4,7 +4,7 @@ import BookInfoRight from './BookInfoRight';
 import BookInfoLeft from './BookInfoLeft';
 
 type BookInfoProps = {
-  getBook: () => Promise<{ book: BookInfo; isPurchased: boolean }>;
+  getBook: () => Promise<{ book: NonNullable<BookInfo>; isPurchased: boolean }>;
 };
 
 const BookInfo = async ({ getBook }: BookInfoProps) => {
@@ -15,7 +15,7 @@ const BookInfo = async ({ getBook }: BookInfoProps) => {
       <BookInfoLeft
         frontArtwork={book?.frontArtwork!}
         backArtwork={book?.backArtwork!}
-        title={book?.title!}
+        title={book.title}
       />
 
       <BookInfoRight book={book} isPurchased={isPurchased} />

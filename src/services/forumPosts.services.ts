@@ -1,7 +1,8 @@
 import { db } from '@/lib/db/conn';
 import { forumPosts, users } from '@/lib/db/schema';
+import { ForumPostLikeAction } from '@/types/forumPost.types';
 import { ForumPost } from '@/validations/forumPostValidations';
-import { and, eq } from 'drizzle-orm';
+import { and, desc, eq, exists } from 'drizzle-orm';
 import { cache } from 'react';
 
 import 'server-only';
@@ -16,11 +17,13 @@ export const getForumPosts = cache(async (limit?: number) => {
       content: forumPosts.content,
       createdAt: forumPosts.createdAt,
       tags: forumPosts.tags,
+      likes: forumPosts.likes,
       firstName: users.firstName,
       lastName: users.lastName,
     })
     .from(forumPosts)
     .leftJoin(users, eq(users.clerkId, forumPosts.clerkId))
+    .orderBy(desc(forumPosts.image), desc(forumPosts.createdAt))
     .limit(limit ?? 10);
 
   if (row.length === 0 || !row[0].id) {
@@ -68,6 +71,54 @@ export const getUserForumPostByTitle = cache(async (postTitle: string, userId: s
 
   return row[0];
 });
+
+export const likeForumPost = async ({
+  action,
+  postId,
+  userId,
+  prevTotalLikes,
+}: ForumPostLikeAction & {
+  postId: string;
+  userId: string;
+  prevTotalLikes: string[];
+}) => {
+  if (action === 'Like') {
+    console.log('Like');
+    const updated = await db
+      .update(forumPosts)
+      .set({ likes: [...prevTotalLikes, userId] })
+      .where(eq(forumPosts.id, postId));
+
+    if (updated.rowsAffected === 0) {
+      return { success: false };
+    }
+
+    return { success: true };
+  }
+  console.log('Delete');
+  const updated = await db
+    .update(forumPosts)
+    .set({ likes: prevTotalLikes.filter((item) => item !== userId) })
+    .where(eq(forumPosts.id, postId));
+
+  if (updated.rowsAffected === 0) {
+    return { success: false };
+  }
+
+  return { success: true };
+};
+
+export const deleteForumPost = async (postId: string, userId: string) => {
+  const deletedPost = await db
+    .delete(forumPosts)
+    .where(and(eq(forumPosts.id, postId), eq(forumPosts.clerkId, userId)));
+
+  if (deletedPost.rowsAffected === 0) {
+    return { success: false };
+  }
+
+  return { success: true };
+};
 
 export const createForumPost = async (values: ForumPost & { userId: string }) => {
   const createdPost = await db.insert(forumPosts).values({

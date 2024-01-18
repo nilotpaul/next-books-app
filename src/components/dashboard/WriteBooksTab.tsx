@@ -21,9 +21,10 @@ const WriteBooksTab = () => {
   const sortedBooks = books.sort((a, b) => a.status.length - b.status.length);
 
   const { mutate: deleteBook, isLoading } = trpc.bookRouter.delete.useMutation({
+    onMutate: ({ bookId }) => setIsDeleting(bookId),
     onSuccess: () => {
       router.refresh();
-      toast.success('Successfully deleted the book');
+      toast.success('Book Deleted');
       setIsDeleting('');
     },
     onError: (err) => {
@@ -53,7 +54,7 @@ const WriteBooksTab = () => {
             )}
           </TableCell>
           <TableCell>
-            <span className='flex items-center gap-2'>
+            <div className='flex items-center gap-2'>
               <Link href={`/books/read/${book.id}`}>
                 <Eye className='h-5 w-5 scale-95 cursor-pointer text-default-400 active:opacity-50' />
               </Link>
@@ -72,19 +73,13 @@ const WriteBooksTab = () => {
                   headerContent='Are you are?'
                   bodyContent='This action cannot be undone. This will delete the book permanently.'
                   footerContent={
-                    <Button
-                      onClick={() => {
-                        setIsDeleting(book.id);
-                        deleteBook({ bookId: book.id });
-                      }}
-                      color='danger'
-                    >
+                    <Button onClick={() => deleteBook({ bookId: book.id })} color='danger'>
                       Delete
                     </Button>
                   }
                 />
               </Button>
-            </span>
+            </div>
           </TableCell>
         </TableRow>
       )}

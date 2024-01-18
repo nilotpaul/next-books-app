@@ -7,8 +7,8 @@ import { useIntersection } from '@mantine/hooks';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { PublishedBook } from '@/types/book.types';
 
-import BookCard from '../books/main/BookCard';
 import BookCardSkeleton from '../loadings/BookCardSkeleton';
+import ReusableCard, { GridContainer } from '../ReusableCard';
 
 type ResultWrapperProps = {
   books: PublishedBook[];
@@ -59,8 +59,28 @@ const ResultWrapper = ({ books, filters }: ResultWrapperProps) => {
     return <BookCardSkeleton cards={3} />;
   }
 
+  const fetchedBooks = data?.pages.flatMap((pages) => pages.books);
+  const isBookEmpty = data?.pages.length === 0;
+
   return (
-    <BookCard mantineRef={mantineRef} books={data?.pages.flatMap((pages) => pages.books) || []} />
+    <GridContainer notFound={!fetchedBooks || isBookEmpty}>
+      {fetchedBooks?.map((book) => (
+        <div
+          key={book.id}
+          ref={fetchedBooks.slice(0, -1)[0].id === book.id ? mantineRef : undefined}
+        >
+          <ReusableCard
+            data={{
+              id: book.id,
+              title: book.title,
+              thumbnail: book.artwork || '',
+              href: `/books/${book.id}`,
+              chip: book.availability || 'Free',
+            }}
+          />
+        </div>
+      ))}
+    </GridContainer>
   );
 };
 

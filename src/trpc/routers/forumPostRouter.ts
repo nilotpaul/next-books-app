@@ -1,10 +1,13 @@
 import { forumPostValidation } from '@/validations/forumPostValidations';
-import { router } from '../trpc';
+import { publicProcedure, router } from '../trpc';
 import { privateProcedure } from '../trpc';
 import {
   createForumPost,
+  deleteForumPost,
   getForumPostById,
+  getForumPosts,
   getUserForumPostByTitle,
+  likeForumPost,
 } from '@/services/forumPosts.services';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
@@ -66,6 +69,167 @@ export const forumPostRouter = router({
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Something went wrong',
+      });
+    }
+  }),
+
+  delete: privateProcedure
+    .input(z.object({ postId: z.string().min(2, { message: 'Enter a valid id' }) }))
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { postId } = input;
+
+      try {
+        const post = await getForumPostById(postId);
+
+        if (!post) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'No post found by this id',
+          });
+        }
+
+        if (post.clerkId !== user.id) {
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'No cannot delete this post',
+          });
+        }
+
+        const { success } = await deleteForumPost(post.id, user.id);
+
+        if (!success) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to delete the post',
+          });
+        }
+
+        return { success: true };
+      } catch (err) {
+        console.error('[FORUM_POST_DELETE_ERROR]:', err);
+
+        if (err instanceof z.ZodError) {
+          throw new TRPCError({
+            code: 'PARSE_ERROR',
+            message: 'Data not passed in correct format',
+          });
+        }
+        if (err instanceof DrizzleError) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to make changes to the db',
+          });
+        }
+        if (err instanceof TRPCError) {
+          throw new TRPCError({
+            code: err.code,
+            message: err.message,
+          });
+        }
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong',
+        });
+      }
+    }),
+
+  like: privateProcedure
+    .input(
+      z.object({
+        postId: z.string().min(2, { message: 'Enter a valid id' }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { postId } = input;
+
+      try {
+        const post = await getForumPostById(postId);
+
+        if (!post || !post.id) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Post not found',
+          });
+        }
+
+        if (!post.likes?.includes(user.id)) {
+          const { success } = await likeForumPost({
+            action: 'Like',
+            userId: user.id,
+            postId: post.id,
+            prevTotalLikes: post.likes || [],
+          });
+
+          if (!success) {
+            throw new TRPCError({
+              code: 'INTERNAL_SERVER_ERROR',
+              message: 'Failed to like the post',
+            });
+          }
+
+          return { success: true, msg: 'Liked Post' };
+        }
+
+        const { success } = await likeForumPost({
+          action: 'Delete',
+          postId: post.id,
+          userId: user.id,
+          prevTotalLikes: post.likes,
+        });
+
+        if (!success) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to like the post',
+          });
+        }
+
+        return { success: true, msg: 'Liked Removed' };
+      } catch (err) {
+        console.error('[FORUM_POST_LIKE_ERROR]:', err);
+
+        if (err instanceof z.ZodError) {
+          throw new TRPCError({
+            code: 'PARSE_ERROR',
+            message: 'Data not passed in correct format',
+          });
+        }
+        if (err instanceof DrizzleError) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to make changes to the db',
+          });
+        }
+        if (err instanceof TRPCError) {
+          throw new TRPCError({
+            code: err.code,
+            message: err.message,
+          });
+        }
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong',
+        });
+      }
+    }),
+
+  getPosts: publicProcedure.query(async () => {
+    try {
+      const posts = await getForumPosts(10);
+
+      if (!posts) return [];
+
+      return posts;
+    } catch (err) {
+      console.error('[FORUM_POST_GET_POSTS_ERROR]:', err);
+
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get the posts',
       });
     }
   }),

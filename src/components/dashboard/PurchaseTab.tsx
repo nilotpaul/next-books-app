@@ -55,7 +55,7 @@ const PurchaseTab = () => {
                   wrapper: 'min-h-[65px] min-w-[45px]',
                 }}
                 radius='none'
-                className='rounded-md'
+                className='rounded-md object-cover'
               />
             </TableCell>
             <TableCell className='text-base'>{book?.title}</TableCell>

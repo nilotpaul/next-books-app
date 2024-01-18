@@ -13,7 +13,7 @@ export const navItems = [
   },
   {
     name: 'Forum',
-    path: '/forum',
+    path: '/forum/posts',
   },
 ];
 

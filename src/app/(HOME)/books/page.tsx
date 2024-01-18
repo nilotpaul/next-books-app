@@ -1,8 +1,9 @@
+import { getPublishedBooks } from '@/services/books.services';
+import { Suspense } from 'react';
+
 import BookCardWrapper from '@/components/books/main/BookCardWrapper';
 import BookCardSkeleton from '@/components/loadings/BookCardSkeleton';
 import Divider from '@/components/ui/Divider';
-import { getPublishedBooks } from '@/services/books.services';
-import { Suspense } from 'react';
 
 const BooksPage = () => {
   return (

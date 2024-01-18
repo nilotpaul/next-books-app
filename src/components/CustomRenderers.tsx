@@ -31,11 +31,13 @@ export const HeaderRenderer = ({
 
 export const ImageRenderer = ({
   data,
+  className,
 }: {
   data: {
     file: { url: string; height: number; width: number; title?: string; author?: string };
     caption: string;
   };
+  className?: string;
 }) => {
   const isCover =
     data.file.width === 1800 && data.file.height === 2700 && data.file.title?.length !== 0;
@@ -46,7 +48,8 @@ export const ImageRenderer = ({
         'relative my-4 flex max-h-[700px] min-w-[350px] flex-col justify-center gap-2 rounded-lg bg-default/30 p-1.5',
         {
           'mx-auto mt-3 p-0 md:w-[630px]': isCover,
-        }
+        },
+        className
       )}
     >
       <Image
