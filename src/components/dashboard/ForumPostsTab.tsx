@@ -106,7 +106,7 @@ const ForumPostsTab = () => {
                 <div className='flex w-full items-center gap-3'>
                   <Link
                     // href={`/forum/post/${item.id}`} i'll add a dedicated post page maybe
-                    href='/forum/posts'
+                    href={`/forum/posts#${item.title.replace(' ', '').toLowerCase()}`}
                   >
                     <Eye className='h-5 w-5 scale-95 cursor-pointer text-default-400 active:opacity-50' />
                   </Link>

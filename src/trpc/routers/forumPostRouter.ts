@@ -12,6 +12,7 @@ import {
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { DrizzleError } from 'drizzle-orm';
+import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 
 export const forumPostRouter = router({
   create: privateProcedure.input(forumPostValidation).mutation(async ({ ctx, input }) => {
@@ -217,20 +218,48 @@ export const forumPostRouter = router({
       }
     }),
 
-  getPosts: publicProcedure.query(async () => {
-    try {
-      const posts = await getForumPosts(10);
+  getPosts: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().optional(),
+        cursor: z.string().optional(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { cursor } = input;
+      const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
 
-      if (!posts) return [];
+      try {
+        const posts = await getForumPosts(limit + 1, cursor);
 
-      return posts;
-    } catch (err) {
-      console.error('[FORUM_POST_GET_POSTS_ERROR]:', err);
+        if (!posts)
+          return {
+            nextCursor: undefined,
+            posts: [],
+          };
 
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to get the posts',
-      });
-    }
-  }),
+        let nextCursor: typeof cursor | undefined = undefined;
+        let lastItem: (typeof posts)[number] | null = null;
+        if (posts.length > limit) {
+          if (nextCursor === undefined) {
+            lastItem = posts.slice(-1)[0];
+          }
+          const nextItem = posts.pop();
+          nextCursor = nextItem?.id;
+        }
+
+        return {
+          posts,
+          nextCursor,
+          lastItem,
+        };
+      } catch (err) {
+        console.error('[FORUM_POST_GET_POSTS_ERROR]:', err);
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to get the posts',
+        });
+      }
+    }),
 });

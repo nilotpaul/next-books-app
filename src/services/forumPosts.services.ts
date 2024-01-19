@@ -2,12 +2,12 @@ import { db } from '@/lib/db/conn';
 import { forumPosts, users } from '@/lib/db/schema';
 import { ForumPostLikeAction } from '@/types/forumPost.types';
 import { ForumPost } from '@/validations/forumPostValidations';
-import { and, desc, eq, exists } from 'drizzle-orm';
+import { and, desc, eq, gt } from 'drizzle-orm';
 import { cache } from 'react';
 
 import 'server-only';
 
-export const getForumPosts = cache(async (limit?: number) => {
+export const getForumPosts = cache(async (limit?: number, cursor?: string) => {
   const row = await db
     .select({
       clerkId: forumPosts.clerkId,
@@ -23,6 +23,7 @@ export const getForumPosts = cache(async (limit?: number) => {
     })
     .from(forumPosts)
     .leftJoin(users, eq(users.clerkId, forumPosts.clerkId))
+    .where(cursor ? gt(forumPosts.id, cursor) : undefined)
     .orderBy(desc(forumPosts.image), desc(forumPosts.createdAt))
     .limit(limit ?? 10);
 
