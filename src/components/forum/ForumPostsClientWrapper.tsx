@@ -49,40 +49,42 @@ const ForumPostsClientWrapper = ({ posts: initialPosts, userId }: ForumPostsClie
     );
 
   useEffect(() => {
-    if (entry?.isIntersecting) {
+    if (entry?.isIntersecting && hasNextPage) {
       fetchNextPage();
     }
   }, [hasNextPage, fetchNextPage, entry]);
 
   const posts = data?.pages.flatMap((page) => page.posts) || [];
   const lastPost = initialPosts.slice(-1)[0];
-  const lastItemIsInPost = posts.find((post) => post.id === lastPost.id);
-  if (!hasNextPage && !lastItemIsInPost) {
+  const uniquePostIds = new Set(posts.map((post) => post.id));
+  if (!hasNextPage && !uniquePostIds.has(lastPost.id)) {
     posts.push(lastPost);
   }
 
   return (
     <div className='relative mb-6'>
       {posts.length !== 0 ? (
-        [...new Set(posts)]?.map((post) => {
-          return (
-            <div ref={posts.slice(-1)[0].id === post.id ? ref : undefined} key={post.id}>
-              <ResuablePostList
-                data={{
-                  id: post.id,
-                  title: post.postTitle,
-                  thumbnail: post.image,
-                  date: post.createdAt,
-                }}
-                content={post.content}
-                lastItem={posts.slice(-1)[0].id === post.id}
-                topRightElement={
-                  <PostLikeButton likes={post.likes || []} userId={userId} postId={post.id} />
-                }
-              />
-            </div>
-          );
-        })
+        [...posts]
+          .filter((post, idx, self) => idx === self.findIndex((p) => p.id === post.id))
+          ?.map((post) => {
+            return (
+              <div ref={posts.slice(-1)[0].id === post.id ? ref : undefined} key={post.id}>
+                <ResuablePostList
+                  data={{
+                    id: post.id,
+                    title: post.postTitle,
+                    thumbnail: post.image,
+                    date: post.createdAt,
+                  }}
+                  content={post.content}
+                  lastItem={posts.slice(-1)[0].id === post.id}
+                  topRightElement={
+                    <PostLikeButton likes={post.likes || []} userId={userId} postId={post.id} />
+                  }
+                />
+              </div>
+            );
+          })
       ) : (
         <EmptyArrayFallback className='left-0 -translate-x-0' message='No posts to show' />
       )}

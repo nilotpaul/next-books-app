@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { trpc } from '@/lib/trpc/TRPCProvider';
 
 import { ThumbsUp } from 'lucide-react';
 import { cn } from '@/utils/utils';
 import { toast } from 'sonner';
+import { TRPCError } from '@trpc/server';
 
 type PostLikeButtonProps = {
   postId: string;
@@ -13,49 +15,27 @@ type PostLikeButtonProps = {
   className?: string;
 };
 
-const PostLikeButton = ({ className, postId, likes, userId }: PostLikeButtonProps) => {
+const PostLikeButton = ({
+  className,
+  postId,
+  likes: initialLikes,
+  userId,
+}: PostLikeButtonProps) => {
+  const [likes, setLikes] = useState<typeof initialLikes>(initialLikes);
   const utils = trpc.useUtils();
 
   const { mutate: likePost } = trpc.forumPostRouter.like.useMutation({
-    onMutate: async ({ postId }) => {
+    onMutate: async () => {
+      const prevLikes = [...initialLikes];
       await utils.forumPostRouter.getPosts.cancel();
-      const prevData = utils.forumPostRouter.getPosts.getData();
 
-      const post = prevData?.find((post) => post.id === postId);
-
-      if (!post?.likes?.includes(userId)) {
-        utils.forumPostRouter.getPosts.setData(undefined, () => {
-          const newPosts = prevData?.map(({ id, ...rest }) => {
-            if (post?.id === id) {
-              rest.likes?.push(userId);
-              return { id, ...rest };
-            }
-
-            return { id, ...rest };
-          });
-
-          return newPosts;
-        });
-        return;
+      if (!likes.includes(userId)) {
+        setLikes((prev) => [...prev, userId]);
+      } else {
+        setLikes((prev) => prev.filter((item) => item !== userId));
       }
 
-      utils.forumPostRouter.getPosts.setData(undefined, () => {
-        const newPosts = prevData?.map(({ id, ...rest }) => {
-          if (post?.id === id) {
-            return {
-              ...rest,
-              id,
-              likes: rest.likes?.filter((item) => item !== userId) || rest.likes,
-            };
-          }
-
-          return { id, ...rest };
-        });
-
-        return newPosts;
-      });
-
-      return { prevData };
+      return { prevLikes };
     },
     onSuccess: ({ success, msg }) => {
       if (success) {
@@ -65,10 +45,16 @@ const PostLikeButton = ({ className, postId, likes, userId }: PostLikeButtonProp
     },
     onError: (err, _, prevData) => {
       console.error(err);
-      utils.forumPostRouter.getPosts.setData(undefined, () => prevData?.prevData);
+      setLikes(prevData?.prevLikes || initialLikes);
+
       utils.forumPostRouter.getPosts.invalidate();
 
-      toast.error(err.message);
+      if (err instanceof TRPCError) {
+        toast(err.message);
+        return;
+      }
+
+      toast.error('Failed to like the post');
     },
   });
 

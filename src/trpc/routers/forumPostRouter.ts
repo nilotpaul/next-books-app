@@ -241,9 +241,7 @@ export const forumPostRouter = router({
         let nextCursor: typeof cursor | undefined = undefined;
         let lastItem: (typeof posts)[number] | null = null;
         if (posts.length > limit) {
-          if (nextCursor === undefined) {
-            lastItem = posts.slice(-1)[0];
-          }
+          lastItem = posts.slice(-1)[0];
           const nextItem = posts.pop();
           nextCursor = nextItem?.id;
         }
