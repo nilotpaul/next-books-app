@@ -56,7 +56,7 @@ const BookInfoLeft = ({ backArtwork, frontArtwork, title, isLoading }: BookInfoL
               isLoading={isLoading}
               isBlurred
               radius='sm'
-              className='h-full w-full rounded-md object-cover'
+              className='h-full w-full rounded-md object-scale-down'
               classNames={{
                 wrapper: 'rounded-md static',
                 blurredImg: 'rounded-md scale-95',

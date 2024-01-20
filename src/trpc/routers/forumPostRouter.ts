@@ -13,6 +13,7 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { DrizzleError } from 'drizzle-orm';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
+import { infiniteSearchValidaion } from '@/validations';
 
 export const forumPostRouter = router({
   create: privateProcedure.input(forumPostValidation).mutation(async ({ ctx, input }) => {
@@ -218,46 +219,47 @@ export const forumPostRouter = router({
       }
     }),
 
-  getPosts: publicProcedure
-    .input(
-      z.object({
-        limit: z.number().optional(),
-        cursor: z.string().optional(),
-      })
-    )
-    .query(async ({ input }) => {
-      const { cursor } = input;
-      const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
+  getPosts: publicProcedure.input(infiniteSearchValidaion).query(async ({ input }) => {
+    const { cursor } = input;
+    const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
 
-      try {
-        const posts = await getForumPosts(limit + 1, cursor);
+    try {
+      const posts = await getForumPosts(limit + 1, cursor);
 
-        if (!posts)
-          return {
-            nextCursor: undefined,
-            posts: [],
-          };
-
-        let nextCursor: typeof cursor | undefined = undefined;
-        let lastItem: (typeof posts)[number] | null = null;
-        if (posts.length > limit) {
-          lastItem = posts.slice(-1)[0];
-          const nextItem = posts.pop();
-          nextCursor = nextItem?.id;
-        }
-
+      if (!posts)
         return {
-          posts,
-          nextCursor,
-          lastItem,
+          nextCursor: undefined,
+          posts: [],
+          lastItem: null,
         };
-      } catch (err) {
-        console.error('[FORUM_POST_GET_POSTS_ERROR]:', err);
 
+      let nextCursor: typeof cursor | undefined = undefined;
+      let lastItem: (typeof posts)[number] | null = null;
+      if (posts.length > limit) {
+        lastItem = posts.slice(-1)[0];
+        const nextItem = posts.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        posts,
+        nextCursor,
+        lastItem,
+      };
+    } catch (err) {
+      console.error('[FORUM_POST_GET_POSTS_ERROR]:', err);
+
+      if (err instanceof z.ZodError) {
         throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to get the posts',
+          code: 'PARSE_ERROR',
+          message: 'data not passed in correct format',
         });
       }
-    }),
+
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get the posts',
+      });
+    }
+  }),
 });

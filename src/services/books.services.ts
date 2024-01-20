@@ -3,7 +3,7 @@ import { db } from '@/lib/db/conn';
 import { authors, books, ratedBooks } from '@/lib/db/schema';
 import { DeleteBook, RateBook, UpdateBook } from '@/types/book.types';
 import { BookFilters, CreateBook } from '@/validations/bookValidation';
-import { and, asc, desc, eq, gt, like, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, like, lt, or, sql } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { cache } from 'react';
 
@@ -96,7 +96,7 @@ export const getBooksByFilters = cache(
   }
 );
 
-export const getPublishedBooks = cache(async () => {
+export const getPublishedBooks = cache(async (limit?: number, cursor?: string) => {
   const row = await db
     .select({
       id: books.id,
@@ -106,8 +106,13 @@ export const getPublishedBooks = cache(async () => {
       price: books.pricing,
     })
     .from(books)
-    .orderBy(desc(books.stars))
-    .limit(10);
+    .where(and(eq(books.status, 'published'), cursor ? lt(books.id, cursor) : undefined))
+    .orderBy(desc(books.id))
+    .limit(limit ?? 10);
+
+  if (row.length === 0 || !row[0].id) {
+    return null;
+  }
 
   return row;
 });

@@ -5,6 +5,7 @@ import {
   getBookByTitle,
   getBookInfoById,
   getBooksByFilters,
+  getPublishedBooks,
   getRatedBookById,
   publishBook,
   rateBook,
@@ -23,6 +24,7 @@ import { z } from 'zod';
 import { nanoid } from 'nanoid';
 import { normaliseTitle } from '@/utils/utils';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
+import { infiniteSearchValidaion } from '@/validations';
 
 export const bookRouter = router({
   create: publicProcedure
@@ -425,4 +427,49 @@ export const bookRouter = router({
         });
       }
     }),
+
+  getBooks: publicProcedure.input(infiniteSearchValidaion).query(async ({ input }) => {
+    const limit = input.limit ?? 2;
+    const cursor = input.cursor;
+
+    try {
+      const books = await getPublishedBooks(limit + 1, cursor);
+
+      if (!books)
+        return {
+          nextCursor: undefined,
+          books: [],
+          lastItem: null,
+        };
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      let lastItem: (typeof books)[number] | null = null;
+
+      if (books.length > limit) {
+        lastItem = books.slice(-1)[0];
+        const nextItem = books.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        nextCursor,
+        books,
+        lastItem,
+      };
+    } catch (err) {
+      console.error('[BOOK_ROUTER_GET_BOOKS_ERROR]:', err);
+
+      if (err instanceof z.ZodError) {
+        throw new TRPCError({
+          code: 'PARSE_ERROR',
+          message: 'data not passed in correct format',
+        });
+      }
+
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get the books',
+      });
+    }
+  }),
 });
