@@ -243,13 +243,13 @@ export const bookRouter = router({
     }),
 
   filter: publicProcedure.input(bookFilterValidation).query(async ({ input }) => {
-    const { cursor } = input;
     const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
+    const cursor = input.cursor;
 
     try {
       const filters = Object.fromEntries(
         Object.entries(input).filter(([key, value]) => {
-          if (key !== ('cursor' && 'limit')) {
+          if (key !== 'cursor' && key !== 'limit') {
             return value;
           }
         })
@@ -264,17 +264,28 @@ export const bookRouter = router({
         });
       }
 
-      const books = await getBooksByFilters(filters, cursor, limit);
+      const books = await getBooksByFilters(filters, cursor, limit + 1);
+
+      if (!books)
+        return {
+          nextCursor: undefined,
+          books: [],
+          lastItem: null,
+        };
 
       let nextCursor: typeof cursor | undefined = undefined;
+      let lastItem: (typeof books)[number] | null = null;
+
       if (books.length > limit) {
-        const nextItem = books[books.length - 1];
+        lastItem = books.slice(-1)[0];
+        const nextItem = books.pop();
         nextCursor = nextItem?.id;
       }
 
       return {
         books,
         nextCursor,
+        lastItem,
       };
     } catch (err) {
       console.error('[BOOK_FILTER_ERROR]:', err);
@@ -285,12 +296,7 @@ export const bookRouter = router({
           message: 'Data not passed in correct format',
         });
       }
-      if (err instanceof DrizzleError) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to make changes to the db',
-        });
-      }
+
       if (err instanceof TRPCError) {
         throw new TRPCError({
           code: err.code,
@@ -429,7 +435,7 @@ export const bookRouter = router({
     }),
 
   getBooks: publicProcedure.input(infiniteSearchValidaion).query(async ({ input }) => {
-    const limit = input.limit ?? 2;
+    const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
     const cursor = input.cursor;
 
     try {

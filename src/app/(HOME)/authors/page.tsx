@@ -1,9 +1,9 @@
 import { getAuthorsByStars } from '@/services/author.services';
 import { Suspense } from 'react';
 
+import { GridContainer } from '@/components/ReusableCard';
 import AuthorCardWrapper from '@/components/authors/AuthorCardWrapper';
 import AuthorCardSkeleton from '@/components/loadings/AuthorCardSkeleton';
-import AuthorPageFilters from '@/components/authors/AuthorPageFilters';
 import Divider from '@/components/ui/Divider';
 
 const AuthorsPage = ({
@@ -18,19 +18,20 @@ const AuthorsPage = ({
           Popular Authors <Divider className='mt-1' />
         </h2>
 
-        <AuthorPageFilters />
+        {/* <AuthorPageFilters /> will do the filters later */}
       </div>
 
       <div className='mt-4'>
-        <Suspense fallback={<AuthorCardSkeleton />}>
+        <Suspense
+          fallback={
+            <GridContainer>
+              <AuthorCardSkeleton />
+            </GridContainer>
+          }
+        >
           <AuthorCardWrapper
             getAuthorData={async () => {
-              const sort = searchParams?.sort === 'stars' ? 'stars' : 'authorName';
-              const order = searchParams?.sort === 'a-z' ? 'asc' : 'desc';
-              const authors = await getAuthorsByStars({
-                order,
-                sort,
-              });
+              const authors = await getAuthorsByStars();
               if (!authors || !authors[0].id) return [];
               return authors.map((author) => ({
                 id: author.id,

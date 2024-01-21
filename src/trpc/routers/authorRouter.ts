@@ -1,5 +1,4 @@
 import { isAuthor, privateProcedure, publicProcedure, router } from '../trpc';
-
 import {
   registerAuthorValidation,
   updateAuthorProfileValidation,
@@ -8,6 +7,8 @@ import {
 import {
   getAuthorById,
   getAuthorByName,
+  getAuthorWithBooksById,
+  getAuthorsByStars,
   registerAuthor,
   updateAuthorProfile,
   verifyAuthor,
@@ -18,6 +19,9 @@ import { DrizzleError } from 'drizzle-orm';
 import { emailTemplate } from '@/utils/emailTemplate';
 import { nanoid } from 'nanoid';
 import { AxiosError } from 'axios';
+import { infiniteSearchValidaion } from '@/validations';
+import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
+import { omit } from 'lodash';
 
 export const authorRouter = router({
   register: privateProcedure.input(registerAuthorValidation).mutation(async ({ input, ctx }) => {
@@ -268,6 +272,109 @@ export const authorRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Something went wrong',
+        });
+      }
+    }),
+
+  getAuthors: publicProcedure.input(infiniteSearchValidaion).query(async ({ input }) => {
+    const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
+    const cursor = input.cursor;
+
+    try {
+      const authors = await getAuthorsByStars(limit + 1, cursor);
+
+      if (!authors)
+        return {
+          nextCursor: undefined,
+          authors: [],
+          lastItem: null,
+        };
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      let lastItem: (typeof authors)[number] | null = null;
+
+      if (authors.length > limit) {
+        lastItem = authors.slice(-1)[0];
+        const nextItem = authors.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        nextCursor,
+        authors,
+        lastItem,
+      };
+    } catch (err) {
+      console.error('[AUTHOR_ROUTER_GET_AUTHORS_ERROR]:', err);
+
+      if (err instanceof z.ZodError) {
+        throw new TRPCError({
+          code: 'PARSE_ERROR',
+          message: 'data not passed in correct order',
+        });
+      }
+
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get the authors',
+      });
+    }
+  }),
+
+  getAuthorBooks: publicProcedure
+    .use(isAuthor)
+    .input(infiniteSearchValidaion)
+    .query(async ({ input, ctx }) => {
+      const { user } = ctx;
+
+      const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
+      const cursor = input.cursor;
+
+      try {
+        const { books, author } = await getAuthorWithBooksById(user.clerkId, limit + 1, cursor);
+        const newbooks = books.map((book) => {
+          return {
+            authorImage: author.author_image,
+            authorName: author.authorName,
+            ...omit(book, ['normalised_title']),
+          };
+        });
+
+        if (!newbooks || newbooks.length === 0) {
+          return {
+            nextCursor: undefined,
+            newbooks: [],
+            lastItem: null,
+          };
+        }
+
+        let nextCursor: typeof cursor | undefined = undefined;
+        let lastItem: (typeof newbooks)[number] | null = null;
+
+        if (newbooks.length > limit) {
+          lastItem = newbooks.slice(-1)[0];
+          const nextItem = newbooks.pop();
+          nextCursor = nextItem?.id;
+        }
+
+        return {
+          nextCursor,
+          newbooks,
+          lastItem,
+        };
+      } catch (err) {
+        console.error('[AUTHOR_ROUTER_GET_AUTHOR_BOOKS_ERROR]:', err);
+
+        if (err instanceof z.ZodError) {
+          throw new TRPCError({
+            code: 'PARSE_ERROR',
+            message: 'data not passed in correct order',
+          });
+        }
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to get the books',
         });
       }
     }),

@@ -2,38 +2,37 @@ import { db } from '@/lib/db/conn';
 import { authors, books, socialLinks, users } from '@/lib/db/schema';
 import { UpdateAuthorProfile } from '@/validations/authorValidations';
 import { env } from '@/validations/env';
-import { asc, desc, eq, like, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, like, lt, sql } from 'drizzle-orm';
 import { cache } from 'react';
 
 import 'server-only';
 
-export const getAuthorsByStars = cache(
-  async (opts?: { sort?: 'stars' | 'authorName'; order?: 'desc' | 'asc' }) => {
-    const filterBy =
-      opts?.order && opts?.sort
-        ? opts?.sort === 'stars'
-          ? sql`stars`
-          : sql`author_name`.append(sql` `).append(opts?.order === 'asc' ? sql`asc` : sql`desc`)
-        : undefined;
+export const getAuthorsByStars = cache(async (limit?: number, cursor?: string) => {
+  // const filterBy =
+  //   opts?.order && opts?.sort
+  //     ? opts?.sort === 'stars'
+  //       ? sql`stars`
+  //       : sql`author_name`.append(sql` `).append(opts?.order === 'asc' ? sql`asc` : sql`desc`)
+  //     : undefined;
 
-    const row = await db
-      .select({
-        id: authors.clerkId,
-        authorName: authors.authorName,
-        authorImage: authors.author_image,
-        stars: authors.stars,
-      })
-      .from(authors)
-      .orderBy(sql`authors.`.append(filterBy ?? sql`stars desc`))
-      .limit(10);
+  const row = await db
+    .select({
+      id: authors.clerkId,
+      authorName: authors.authorName,
+      authorImage: authors.author_image,
+      stars: authors.stars,
+    })
+    .from(authors)
+    .where(cursor ? gt(authors.clerkId, cursor) : undefined)
+    .orderBy(asc(authors.clerkId))
+    .limit(limit ?? 10);
 
-    if (!row || !row[0].id) {
-      return null;
-    }
-
-    return row;
+  if (!row || !row[0].id) {
+    return null;
   }
-);
+
+  return row;
+});
 
 export const getAuthorByName = cache(async (authorName: string) => {
   const row = await db
@@ -48,25 +47,29 @@ export const getAuthorByName = cache(async (authorName: string) => {
   return row;
 });
 
-export const getAuthorWithBooksById = cache(async (userId: string) => {
-  const row = await db
-    .select()
-    .from(authors)
-    .where(eq(authors.clerkId, userId))
-    .leftJoin(books, eq(books.clerkId, userId));
+export const getAuthorWithBooksById = cache(
+  async (userId: string, limit?: number, cursor?: string) => {
+    const row = await db
+      .select()
+      .from(authors)
+      .where(and(eq(authors.clerkId, userId), cursor ? lt(books.id, cursor) : undefined))
+      .leftJoin(books, eq(books.clerkId, userId))
+      .orderBy(desc(books.id))
+      .limit(limit ?? 10);
 
-  const allBooks = row.map((book) => book.books);
+    const allBooks = row.map((book) => book.books);
 
-  if (row.length === 0 || !row[0].authors.isConfirmed || !row[0].books?.id) {
-    return {
-      isAuthor: false,
-      author: row[0].authors,
-      books: allBooks,
-    };
+    if (row.length === 0 || !row[0].authors.isConfirmed || !row[0].books?.id) {
+      return {
+        isAuthor: false,
+        author: row[0].authors,
+        books: allBooks || [],
+      };
+    }
+
+    return { isAuthor: true, author: row[0].authors, books: allBooks || [] };
   }
-
-  return { isAuthor: true, author: row[0].authors, books: allBooks };
-});
+);
 
 export const getAuthorById = cache(async (userId: string) => {
   const author = await db

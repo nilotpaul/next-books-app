@@ -55,11 +55,7 @@ export const getBookInfoById = cache(async (bookId: string) => {
 });
 
 export const getBooksByFilters = cache(
-  async (
-    filters: Partial<BookFilters>,
-    cursor?: string,
-    limit: number = MAX_SEARCH_RESULTS_LIMIT
-  ) => {
+  async (filters: Partial<BookFilters>, cursor?: string, limit?: number) => {
     const genresQuery = filters?.genres?.map((genre) => genre).join('|');
 
     const row = await db
@@ -73,6 +69,8 @@ export const getBooksByFilters = cache(
       .from(books)
       .where(
         and(
+          eq(books.status, 'published'),
+          cursor ? gt(books.id, cursor) : undefined,
           filters.genres?.length
             ? sql`books.genres REGEXP`.append(
                 sql`${genresQuery}`.append(sql`COLLATE utf8mb4_general_ci`)
@@ -83,14 +81,19 @@ export const getBooksByFilters = cache(
           filters.price ? like(books.pricing, `%${filters.price}%`) : undefined,
           filters.language ? like(books.language, `%${filters.language}%`) : undefined,
           filters.series ? like(books.series, `%${filters.series}%`) : undefined,
-          filters.availability ? eq(books.availability, filters.availability) : undefined,
+          filters.availability
+            ? eq(books.availability, filters.availability as 'Free' | 'Paid')
+            : undefined,
           filters.authorName ? eq(books.clerkId, filters.authorName) : undefined,
-          filters.q ? like(books.bookTitle, `%${filters.q}%`) : undefined,
-          cursor ? gt(books.id, cursor) : undefined
+          filters.q ? like(books.bookTitle, `%${filters.q}%`) : undefined
         )
       )
-      .limit(limit + 1)
+      .limit(limit ?? 10)
       .orderBy(asc(books.id));
+
+    if (!row || !row[0]?.id) {
+      return null;
+    }
 
     return row;
   }

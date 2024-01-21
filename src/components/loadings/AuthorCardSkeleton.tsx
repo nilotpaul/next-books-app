@@ -4,7 +4,7 @@ import { Skeleton } from '@nextui-org/skeleton';
 
 const AuthorCardSkeleton = () => {
   return (
-    <div className='relative grid grid-cols-2 place-items-center gap-x-4 gap-y-4 xs:grid-cols-3 sm:grid-cols-3  sm:gap-x-2 md:grid-cols-4 md:place-items-start md:gap-x-4 md:gap-y-4 xl:grid-cols-5'>
+    <>
       {Array(3)
         .fill(0)
         .map((_, index) => (
@@ -38,7 +38,7 @@ const AuthorCardSkeleton = () => {
             </CardFooter>
           </Card>
         ))}
-    </div>
+    </>
   );
 };
 

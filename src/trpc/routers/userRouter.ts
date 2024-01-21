@@ -7,6 +7,7 @@ import { getUserPurchases } from '@/services/user.services';
 import { DrizzleError } from 'drizzle-orm';
 import { stripe } from '@/lib/payments/stripeServer';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
+import { infiniteSearchValidaion } from '@/validations';
 
 export const userRouter = router({
   purchaseBook: privateProcedure
@@ -122,88 +123,74 @@ export const userRouter = router({
       }
     }),
 
-  purchases: privateProcedure
-    .input(
-      z.object({
-        limit: z.number().optional(),
-        cursor: z.string().optional(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const { user } = ctx;
-      const { cursor } = input;
-      const limit = Number(input.limit) ?? MAX_SEARCH_RESULTS_LIMIT;
+  purchases: privateProcedure.input(infiniteSearchValidaion).query(async ({ ctx, input }) => {
+    const { user } = ctx;
+    const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
+    const cursor = input.cursor;
 
-      try {
-        const purchases = await getUserPurchases(user.id);
+    try {
+      const purchases = await getUserPurchases(user.id);
 
-        if (!purchases) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'User purchases not found',
-          });
-        }
-
-        if (!purchases.purchasedBooks || purchases.purchasedBooks?.length === 0) {
-          return { books: [], nextCursor: undefined };
-        }
-
-        const startIndex = cursor ? purchases.purchasedBooks.indexOf(cursor) + 1 : 0;
-        const lastIndex = startIndex + limit;
-        const newPurchasesArr = purchases.purchasedBooks.slice(startIndex, lastIndex);
-
-        const booksPromise = newPurchasesArr.map(async (bookId) => {
-          const book = await getBookInfoById(bookId);
-          const userBookRating = await getRatedBookById({
-            bookId,
-            userId: user.id,
-          });
-          return { book, stars: userBookRating?.stars };
-        });
-
-        let nextCursor: typeof cursor | undefined = purchases.purchasedBooks[lastIndex - 1];
-        if (lastIndex >= purchases.purchasedBooks.length) {
-          nextCursor = undefined;
-        }
-
-        const books = (await Promise.all(booksPromise)).map(({ book, stars }) => ({
-          id: book?.id,
-          title: book?.title,
-          frontArtwork: book?.frontArtwork,
-          stars,
-          publishedDate: book?.publicationDate,
-        }));
-
+      if (!purchases || !purchases.purchasedBooks) {
         return {
-          books,
-          nextCursor,
+          nextCursor: undefined,
+          books: [],
+          lastItem: null,
         };
-      } catch (err) {
-        console.error('[PURCHASED_BOOKS_ERROR]:', err);
+      }
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'Data passed in incorrect format',
-          });
-        }
-        if (err instanceof DrizzleError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to make changes to the db',
-          });
-        }
-        if (err instanceof TRPCError) {
-          throw new TRPCError({
-            code: err.code,
-            message: err.message,
-          });
-        }
+      const { purchasedBooks } = purchases;
 
+      const startIndex = cursor ? purchasedBooks.indexOf(cursor) + 1 : 0;
+      const endIndex = Math.min(startIndex + limit + 1, purchasedBooks.length);
+
+      const newPurchasesArr = purchasedBooks.slice(startIndex, endIndex);
+
+      const booksPromise = newPurchasesArr.map(async (bookId) => {
+        const book = await getBookInfoById(bookId);
+        const userBookRating = await getRatedBookById({
+          bookId,
+          userId: user.id,
+        });
+        return { book, stars: userBookRating?.stars };
+      });
+
+      const books = (await Promise.all(booksPromise)).map(({ book, stars }) => ({
+        id: book?.id,
+        title: book?.title,
+        frontArtwork: book?.frontArtwork,
+        stars,
+        publishedDate: book?.publicationDate,
+      }));
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      let lastItem: (typeof books)[number] | null = null;
+
+      if (books.length > limit) {
+        lastItem = books.slice(-1)[0];
+        const nextItem = books.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        books,
+        nextCursor,
+        lastItem,
+      };
+    } catch (err) {
+      console.error('[PURCHASED_BOOKS_ERROR]:', err);
+
+      if (err instanceof z.ZodError) {
         throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Something went wrong',
+          code: 'PARSE_ERROR',
+          message: 'Data passed in incorrect format',
         });
       }
-    }),
+
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get the purchases',
+      });
+    }
+  }),
 });

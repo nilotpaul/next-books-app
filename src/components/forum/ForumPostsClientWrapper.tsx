@@ -39,7 +39,7 @@ const ForumPostsClientWrapper = ({ posts: initialPosts, userId }: ForumPostsClie
                   ? initialPosts.slice(-1)[0].id
                   : undefined,
               posts: initialPosts.slice(0, -1),
-              lastItem: null,
+              lastItem: initialPosts.slice(-1)[0],
             },
           ],
         },
@@ -55,11 +55,12 @@ const ForumPostsClientWrapper = ({ posts: initialPosts, userId }: ForumPostsClie
   }, [hasNextPage, fetchNextPage, entry]);
 
   const posts = data?.pages.flatMap((page) => page.posts) || [];
-  const lastPost = initialPosts.slice(-1)[0];
   const uniquePostIds = new Set(posts.map((post) => post.id));
-  if (!hasNextPage && !uniquePostIds.has(lastPost.id)) {
-    posts.push(lastPost);
-  }
+  data?.pages.flatMap(({ lastItem }) => {
+    if (!hasNextPage && lastItem?.id && !uniquePostIds.has(lastItem.id)) {
+      posts.push(lastItem);
+    }
+  });
 
   return (
     <div className='relative mb-6'>

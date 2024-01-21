@@ -38,7 +38,7 @@ const SearchModal = ({ userId }: SearchModalProps) => {
         keepPreviousData: true,
         initialData: {
           pageParams: [undefined],
-          pages: [{ books: [], nextCursor: undefined }],
+          pages: [{ books: [], nextCursor: undefined, lastItem: null }],
         },
         enabled: false,
         refetchOnWindowFocus: false,
@@ -50,7 +50,13 @@ const SearchModal = ({ userId }: SearchModalProps) => {
     refetch();
   }, [debouncedValue, refetch]);
 
-  const books = data?.pages.flatMap((pages) => pages.books);
+  const books = data?.pages.flatMap((page) => page.books) || [];
+  const uniqueBookIds = new Set(books.map((book) => book.id));
+  data?.pages.flatMap(({ lastItem }) => {
+    if (!hasNextPage && lastItem?.id && !uniqueBookIds.has(lastItem.id)) {
+      books.push(lastItem);
+    }
+  });
 
   return (
     <>
@@ -67,9 +73,10 @@ const SearchModal = ({ userId }: SearchModalProps) => {
         backdrop='blur'
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        onClose={() =>
-          deleteQueryParams('q')?.length && router.replace(pathname + '?' + deleteQueryParams('q'))
-        }
+        onClose={() => {
+          const params = deleteQueryParams('q');
+          params !== undefined && router.replace(pathname + '?' + deleteQueryParams('q'));
+        }}
         classNames={{
           closeButton: 'hidden',
           base: 'rounded-lg',
@@ -90,7 +97,7 @@ const SearchModal = ({ userId }: SearchModalProps) => {
                     key={index}
                     onClick={() => {
                       onClose();
-                      router.push(`/discover?genres=${genre.toLowerCase()}`);
+                      router.push(`/discover?genres=${genre.toLowerCase().replace(' ', '+')}`);
                     }}
                     size='lg'
                     radius='sm'
@@ -102,16 +109,18 @@ const SearchModal = ({ userId }: SearchModalProps) => {
                 ))}
               </>
             ) : (
-              books?.map((book) => (
-                <SearchedResults
-                  key={book.id}
-                  book={book}
-                  onClick={() => {
-                    router.push(`/books/${book.id}`);
-                    onClose();
-                  }}
-                />
-              ))
+              [...books]
+                .filter((book, idx, self) => idx === self.findIndex((b) => b.id === book.id))
+                .map((book) => (
+                  <SearchedResults
+                    key={book.id}
+                    book={book}
+                    onClick={() => {
+                      router.push(`/books/${book.id}`);
+                      onClose();
+                    }}
+                  />
+                ))
             )}
             {(isFetching || isFetchingNextPage) && <SearchResultSkeleton />}
             {!(debouncedValue.length >= 0 && debouncedValue.length < 2) &&

@@ -50,3 +50,11 @@ export type DeleteBook = {
   prevRatedBy: number;
   currentBookStars: number;
 };
+
+export type PurchasedBook = {
+  id: string | undefined;
+  title: string | undefined;
+  frontArtwork: string | null | undefined;
+  stars: number | undefined;
+  publishedDate: Date | null | undefined;
+};

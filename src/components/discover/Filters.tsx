@@ -1,12 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
 import { bookGenres } from '@/config/constants/author';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type BookFilters, bookFilterValidation } from '@/validations/bookValidation';
 import { BOOK_AVAILABALITY, BOOK_LANGUAGES } from '@/config/constants/books';
 import useSearchParams from '@/hooks/useSearchParams';
+import { constructFilters, onSearchParamsChange } from '@/lib/constructFilters';
 import { usePathname, useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 import { Select, SelectItem } from '@nextui-org/select';
 import { Button, Input } from '@nextui-org/react';
@@ -14,7 +17,7 @@ import { FilterX, Search } from 'lucide-react';
 import AuthorFilter from './AuthorFilter';
 
 const Filters = () => {
-  const { setQueryParams } = useSearchParams();
+  const { deleteQueryParams } = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -37,16 +40,35 @@ const Filters = () => {
     },
   });
 
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      Object.entries(errors).forEach(([_, value]) => {
+        toast.error(value.message?.toString());
+      });
+    }
+  }, [errors]);
+
+  const handleFilterSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    handleSubmit((values) => {
+      const cleanedObj = Object.fromEntries(Object.entries(values).filter(([_, value]) => value));
+      const { genres, availability, authorName, language, price, publication, rating, series } =
+        constructFilters(cleanedObj);
+      const params = new URLSearchParams({
+        ...(genres && { genres: genres.toString().toLowerCase() }),
+        ...(availability && { availability: availability.toLowerCase() }),
+        ...(authorName && { authorName: authorName.toLowerCase() }),
+        ...(language && { language: language.toLowerCase() }),
+        ...(price && { price }),
+        ...(publication && { publication: publication.toString() }),
+        ...(rating && { rating: rating.toString() }),
+        ...(series && { series: series.toLowerCase() }),
+      });
+      router.replace(pathname + '?' + params);
+    })(e);
+  };
+
   return (
-    <form
-      onSubmit={handleSubmit((values) => {
-        const cleanedObj = Object.fromEntries(Object.entries(values).filter(([_, value]) => value));
-        Object.entries(cleanedObj).map(([key, value]) => {
-          router.replace(pathname + '?' + setQueryParams(key, value.toString().toLowerCase()));
-        });
-      })}
-      className='relative grid grid-cols-4 gap-4 rounded-lg border border-danger/70 bg-foreground-50/70 p-4 py-5'
-    >
+    <div className='relative grid grid-cols-4 gap-4 rounded-lg border border-danger/70 bg-foreground-50/70 p-4 py-5'>
       <Select
         multiple
         selectionMode='multiple'
@@ -55,7 +77,14 @@ const Filters = () => {
         label='Select Genre(s)'
         placeholder='Enter genres'
         onChange={(e) =>
-          setValue('genres', [...e.target?.value.split(',')] as BookFilters['genres'])
+          onSearchParamsChange({
+            name: 'genres',
+            value: e.target.value,
+            deleteQueryParams,
+            pathname,
+            router,
+            action: (value) => setValue('genres', value.split(',')),
+          })
         }
       >
         {bookGenres.map((genre) => (
@@ -67,9 +96,16 @@ const Filters = () => {
 
       <AuthorFilter setValue={setValue} />
       <Input
-        onChange={(e) => {
-          setValue('publication', Number(e.target.value));
-        }}
+        onChange={(e) =>
+          onSearchParamsChange({
+            name: 'publication',
+            value: e.target.value,
+            deleteQueryParams,
+            pathname,
+            router,
+            action: (value) => setValue('publication', Number(value)),
+          })
+        }
         label='Publication Year'
         placeholder='Enter publication year'
         labelPlacement='outside'
@@ -77,9 +113,16 @@ const Filters = () => {
       />
 
       <Select
-        onChange={(e) => {
-          setValue('rating', Number(e.target.value));
-        }}
+        onChange={(e) =>
+          onSearchParamsChange({
+            name: 'rating',
+            value: e.target.value,
+            deleteQueryParams,
+            pathname,
+            router,
+            action: (value) => setValue('rating', Number(value)),
+          })
+        }
         label='Rating'
         placeholder='Select a rating'
         labelPlacement='outside'
@@ -94,9 +137,16 @@ const Filters = () => {
           ))}
       </Select>
       <Input
-        onChange={(e) => {
-          setValue('price', e.target.value);
-        }}
+        onChange={(e) =>
+          onSearchParamsChange({
+            name: 'price',
+            value: e.target.value,
+            deleteQueryParams,
+            pathname,
+            router,
+            action: (value) => setValue('price', value),
+          })
+        }
         label='Price'
         placeholder='Enter a price'
         labelPlacement='outside'
@@ -104,11 +154,16 @@ const Filters = () => {
       />
 
       <Select
-        onChange={(e) => {
-          if (e.target.value.length !== 0) {
-            setValue('language', e.target.value as BookFilters['language']);
-          }
-        }}
+        onChange={(e) =>
+          onSearchParamsChange({
+            name: 'language',
+            value: e.target.value,
+            deleteQueryParams,
+            pathname,
+            router,
+            action: (value) => setValue('language', value),
+          })
+        }
         label='Language'
         placeholder='Select a language'
         labelPlacement='outside'
@@ -121,22 +176,32 @@ const Filters = () => {
         ))}
       </Select>
       <Input
-        onChange={(e) => {
-          if (e.target.value.length !== 0) {
-            setValue('series', e.target.value);
-          }
-        }}
+        onChange={(e) =>
+          onSearchParamsChange({
+            name: 'series',
+            value: e.target.value,
+            deleteQueryParams,
+            pathname,
+            router,
+            action: (value) => setValue('series', value),
+          })
+        }
         label='Series'
         placeholder='Enter a series'
         labelPlacement='outside'
         radius='sm'
       />
       <Select
-        onChange={(e) => {
-          if (e.target.value.length !== 0) {
-            setValue('availability', e.target.value as 'Free' | 'Paid');
-          }
-        }}
+        onChange={(e) =>
+          onSearchParamsChange({
+            name: 'availability',
+            value: e.target.value,
+            deleteQueryParams,
+            pathname,
+            router,
+            action: (value) => setValue('availability', value),
+          })
+        }
         label='Availability'
         placeholder='Enter a availability'
         labelPlacement='outside'
@@ -153,11 +218,11 @@ const Filters = () => {
         <Button onClick={() => router.replace(pathname)} size='sm' variant='light' isIconOnly>
           <FilterX className='h-4 w-4 text-danger' />
         </Button>
-        <Button type='submit' size='sm' variant='flat' isIconOnly>
+        <Button onClick={handleFilterSubmit} size='sm' variant='flat' isIconOnly>
           <Search className='h-4 w-4' />
         </Button>
       </div>
-    </form>
+    </div>
   );
 };
 

@@ -4,6 +4,11 @@ const nextConfig = {
     // ppr: true,
     // esmExternals: 'loose',
   },
+  // logging: {
+  //   fetches: {
+  //     fullUrl: true,
+  //   },
+  // },
   images: {
     remotePatterns: [
       {

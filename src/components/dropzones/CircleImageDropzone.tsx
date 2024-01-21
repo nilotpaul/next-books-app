@@ -80,7 +80,7 @@ const CircleImageDropzone = ({ onUpload, classNames, initialImage }: CircleImage
           src={image}
           alt='Profile Image'
           radius='full'
-          className={cn('h-28 w-28 cursor-pointer', classNames?.image)}
+          className={cn('h-28 w-28 cursor-pointer object-cover', classNames?.image)}
           classNames={{
             blurredImg: 'scale-95',
           }}

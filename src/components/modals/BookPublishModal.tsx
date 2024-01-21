@@ -44,17 +44,17 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
     mode: 'onChange',
     defaultValues: {
       bookId: book.id,
-      bookTitle: '',
-      content: undefined,
+      bookTitle: book.bookTitle || '',
+      content: book.content || undefined,
       synopsis: book.synopsis || undefined,
-      language: undefined,
-      status: isSelected ? 'published' : 'draft',
-      series: [],
+      language: book.language || undefined,
+      status: book.status || (isSelected ? 'published' : 'draft'),
+      series: book.series || [],
       genres: book.genres || [],
       frontArtwork: book?.frontArtwork || undefined,
       backArtwork: book?.backArtwork || undefined,
-      collaborations: [],
-      availability: 'Free',
+      collaborations: book.collaborations || [],
+      availability: book.availability || 'Free',
       pricing: book.pricing || '00.00',
     },
   });
@@ -75,6 +75,14 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
       toast.error(err.message);
     },
   });
+
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      Object.entries(errors).forEach(([_, value]) => {
+        toast.error(value.message?.toString());
+      });
+    }
+  }, [errors]);
 
   return (
     <>
@@ -243,9 +251,6 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                     setValue('content', data?.blocks);
 
                     handleSubmit((values) => publishBook(values))(e);
-                    if (errors.frontArtwork?.message) {
-                      toast.error(errors.frontArtwork.message);
-                    } // todo: add error messages
                   }}
                   isLoading={isLoading}
                   color={!isSelected ? 'secondary' : 'warning'}

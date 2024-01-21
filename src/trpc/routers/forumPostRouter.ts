@@ -220,8 +220,8 @@ export const forumPostRouter = router({
     }),
 
   getPosts: publicProcedure.input(infiniteSearchValidaion).query(async ({ input }) => {
-    const { cursor } = input;
     const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
+    const cursor = input.cursor;
 
     try {
       const posts = await getForumPosts(limit + 1, cursor);
@@ -235,6 +235,7 @@ export const forumPostRouter = router({
 
       let nextCursor: typeof cursor | undefined = undefined;
       let lastItem: (typeof posts)[number] | null = null;
+
       if (posts.length > limit) {
         lastItem = posts.slice(-1)[0];
         const nextItem = posts.pop();

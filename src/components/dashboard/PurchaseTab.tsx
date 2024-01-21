@@ -1,49 +1,60 @@
 import { trpc } from '@/lib/trpc/TRPCProvider';
 import { format } from 'date-fns';
+import { useContext } from 'react';
+import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
+import { MyDashboardContext } from '../context/DashboardContext';
 
 import { TableCell, TableRow } from '@nextui-org/table';
 import Image from '../ui/Image';
 import { Button } from '@nextui-org/button';
 import Link from '../ui/Link';
-import { Skeleton } from '@nextui-org/skeleton';
-import { toast } from 'sonner';
 import Stars from '../books/main/Stars';
 import ReusableTable from '../ReusableTable';
 
 const PurchaseTab = () => {
-  const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
+  const initialPurchases = useContext(MyDashboardContext).purchases;
+
+  const { data, isFetchingNextPage, hasNextPage, fetchNextPage } =
     trpc.userRouter.purchases.useInfiniteQuery(
       {
-        limit: 6,
+        limit: MAX_SEARCH_RESULTS_LIMIT,
       },
       {
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
-        keepPreviousData: true,
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        retry: 2,
-        retryDelay: 800,
-        onSettled: (_, err) => {
-          if (err?.message.length) {
-            toast.error(err.message);
-          }
+        suspense: true,
+        initialData: {
+          pageParams: [undefined],
+          pages: [
+            {
+              books: initialPurchases.slice(0, -1),
+              nextCursor:
+                initialPurchases.length > MAX_SEARCH_RESULTS_LIMIT
+                  ? initialPurchases.slice(-1)[0].id
+                  : undefined,
+              lastItem: initialPurchases.slice(-1)[0],
+            },
+          ],
         },
+        enabled: false,
       }
     );
 
-  if (isFetching || isFetchingNextPage) {
-    return <Skeleton className='h-36 w-full rounded-lg' />;
-  }
-
-  const books = data?.pages.flatMap((pages) => pages?.books);
-  const isEmpty = data?.pages.flatMap((pages) => pages?.books).length === 0;
+  const books = data?.pages.flatMap((pages) => pages?.books) || [];
+  const uniqueBookIds = new Set(books.map((book) => book.id));
+  data?.pages.flatMap(({ lastItem }) => {
+    if (!hasNextPage && lastItem?.id && !uniqueBookIds.has(lastItem.id)) {
+      books.push(lastItem);
+    }
+  });
 
   return (
     <>
       <ReusableTable
         type='Purchased Books'
         columns={['Artwork', 'Title', 'Published', 'Rating', 'Options']}
-        rows={isEmpty ? [] : books!}
+        rows={[...books].filter(
+          (book, idx, self) => idx === self.findIndex((b) => b.id === book.id)
+        )}
         map={(book) => (
           <TableRow key={book?.id}>
             <TableCell>
@@ -87,7 +98,12 @@ const PurchaseTab = () => {
       />
       {hasNextPage && (
         <div className='mt-3 flex items-center justify-end'>
-          <Button size='sm' onClick={() => hasNextPage && fetchNextPage()}>
+          <Button
+            isLoading={isFetchingNextPage}
+            size='sm'
+            className='font-medium'
+            onClick={() => hasNextPage && fetchNextPage()}
+          >
             Load More
           </Button>
         </div>

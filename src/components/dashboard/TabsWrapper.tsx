@@ -1,6 +1,8 @@
 import { getAuthorWithBooksById } from '@/services/author.services';
 import { DashboardContext } from '../context/DashboardContext';
 import { ForumPost } from '@/types/forumPost.types';
+import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
+import { PurchasedBook } from '@/types/book.types';
 import { omit } from 'lodash';
 
 import ManageDashTabs from './ManageDashTabs';
@@ -14,14 +16,18 @@ type TabsWrapperProps = {
     };
     isAuthor: boolean;
     forumPosts: ForumPost[];
+    purchasedBooks: PurchasedBook[];
   }>;
 };
 
 const TabsWrapper = async ({ getData }: TabsWrapperProps) => {
-  const { isAuthor, user, forumPosts } = await getData();
+  const { isAuthor, user, forumPosts, purchasedBooks } = await getData();
 
   if (isAuthor) {
-    const { books, author } = await getAuthorWithBooksById(user.userId);
+    const { books, author } = await getAuthorWithBooksById(
+      user.userId,
+      MAX_SEARCH_RESULTS_LIMIT + 1
+    );
     const newbooks = books.map((book) => {
       return {
         authorImage: author.author_image,
@@ -37,7 +43,7 @@ const TabsWrapper = async ({ getData }: TabsWrapperProps) => {
           isAuthor,
           authorBooks: newbooks,
           forumPosts,
-          purchases: [],
+          purchases: purchasedBooks,
           reviews: [],
         }}
       >
@@ -52,7 +58,7 @@ const TabsWrapper = async ({ getData }: TabsWrapperProps) => {
         user,
         isAuthor,
         forumPosts,
-        purchases: [],
+        purchases: purchasedBooks,
         reviews: [],
       }}
     >

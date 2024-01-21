@@ -2,7 +2,7 @@ import { db } from '@/lib/db/conn';
 import { forumPosts, users } from '@/lib/db/schema';
 import { ForumPostLikeAction } from '@/types/forumPost.types';
 import { ForumPost } from '@/validations/forumPostValidations';
-import { and, desc, eq, gt } from 'drizzle-orm';
+import { and, desc, eq, gt, lt } from 'drizzle-orm';
 import { cache } from 'react';
 
 import 'server-only';
@@ -34,7 +34,7 @@ export const getForumPosts = cache(async (limit?: number, cursor?: string) => {
   return row;
 });
 
-export const getUserForumPosts = cache(async (userId: string, limit?: number) => {
+export const getUserForumPosts = cache(async (userId: string, limit?: number, cursor?: string) => {
   const row = await db
     .select({
       userId: forumPosts.clerkId,
@@ -44,7 +44,7 @@ export const getUserForumPosts = cache(async (userId: string, limit?: number) =>
       createdAt: forumPosts.createdAt,
     })
     .from(forumPosts)
-    .where(eq(forumPosts.clerkId, userId))
+    .where(and(eq(forumPosts.clerkId, userId), cursor ? lt(forumPosts.id, cursor) : undefined))
     .limit(limit ?? 10);
 
   if (row.length === 0 || !row[0]?.postId) {

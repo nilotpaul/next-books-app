@@ -4,6 +4,7 @@ import FilterResults from '@/components/discover/FilterResults';
 import Filters from '@/components/discover/Filters';
 import BookCardSkeleton from '@/components/loadings/BookCardSkeleton';
 import Divider from '@/components/ui/Divider';
+import { GridContainer } from '@/components/ReusableCard';
 
 type DiscoverPageProps = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -23,7 +24,13 @@ const DiscoverPage = ({ searchParams }: DiscoverPageProps) => {
         <h2 className='text-center text-lg font-semibold md:text-xl'>
           Book Results <Divider className='mx-auto mt-1 h-[1px] w-[200px]' />
         </h2>
-        <Suspense fallback={<BookCardSkeleton />}>
+        <Suspense
+          fallback={
+            <GridContainer>
+              <BookCardSkeleton />
+            </GridContainer>
+          }
+        >
           <FilterResults
             searchParams={Object.fromEntries(
               Object.entries(searchParams).filter(([key]) => key !== 'q')

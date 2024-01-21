@@ -3,6 +3,10 @@ import { trpc } from '@/lib/trpc/TRPCProvider';
 import { useDebounce } from '@/hooks/useDebounce';
 import { UseFormSetValue } from 'react-hook-form';
 import { type BookFilters } from '@/validations/bookValidation';
+import { onSearchParamsChange } from '@/lib/constructFilters';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import useSearchParams from '@/hooks/useSearchParams';
 
 import { Autocomplete, AutocompleteItem } from '@nextui-org/autocomplete';
 import { toast } from 'sonner';
@@ -20,18 +24,30 @@ const AuthorFilter = ({ setValue }: AuthorFilterProps) => {
     retry: 2,
     retryDelay: 800,
     refetchOnWindowFocus: false,
-    onSettled: (data, err) => {
-      if (!data || data.length === 0) {
-        toast.error(err?.message);
+    onSettled: (data) => {
+      if (!data || data?.length === 0) {
+        toast.error('No author found');
       }
     },
   });
 
+  const pathname = usePathname();
+  const router = useRouter();
+  const { deleteQueryParams } = useSearchParams();
+
   return (
     <Autocomplete
-      onSelectionChange={(value) => {
-        setValue('authorName', value.toString());
-      }}
+      onSelectionChange={(value) =>
+        onSearchParamsChange({
+          name: 'authorName',
+          value: value?.toString(),
+          deleteQueryParams,
+          pathname,
+          router,
+          action: (val) => setValue('authorName', val),
+        })
+      }
+      onClear={() => router.replace(pathname + '?' + deleteQueryParams('authorName'))}
       defaultItems={data || []}
       isLoading={isFetching}
       onInputChange={(input) => setInput(input)}
