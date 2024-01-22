@@ -15,18 +15,14 @@ const PostListSkeleton = ({ cards = 3 }: { cards?: number }) => {
           key={index}
           radius='sm'
           isBlurred
-          className='max-h-[30rem] min-h-[12rem] w-3/4 border-0 text-foreground-600 outline-none dark:bg-foreground-50/60'
+          className='max-h-[30rem] min-h-[12rem] w-full border-0 text-foreground-600 outline-none dark:bg-foreground-50/60 dark:transition-all dark:duration-1000 dark:hover:opacity-90 md:w-3/4'
         >
           <ScrollShadow hideScrollBar className='overflow-hidden'>
             <CardHeader className='flex h-full w-full flex-col items-start gap-4 text-foreground-800'>
-              <div className='flex w-full items-center justify-between truncate'>
-                <div className='space-y-1'>
-                  <div className='flex items-center'>
-                    <Skeleton className='h-3 w-64 rounded-full' />
-                    <Dot />
-
-                    <Skeleton className='h-2 w-24 rounded-full' />
-                  </div>
+              <div className='flex w-full flex-col justify-between gap-2.5 truncate md:flex-row md:items-center md:gap-0'>
+                <div className='flex flex-col gap-2 md:flex-row md:items-center'>
+                  <Skeleton className='h-3 w-64 rounded-full' />
+                  <Dot className='hidden md:block' />
                   <Skeleton className='h-2 w-32 rounded-full' />
                 </div>
 
@@ -36,12 +32,12 @@ const PostListSkeleton = ({ cards = 3 }: { cards?: number }) => {
                 </div>
               </div>
 
-              <Skeleton className='h-[450px] w-full rounded-lg' />
+              <Skeleton className='h-[350px] w-full rounded-lg md:h-[450px]' />
             </CardHeader>
           </ScrollShadow>
         </Card>
 
-        <Divider className='h-[0.5px] w-3/4 rounded-full bg-foreground-100' />
+        <Divider className='h-[0.5px] w-full rounded-full bg-foreground-100 md:w-3/4' />
       </>
     ));
 };

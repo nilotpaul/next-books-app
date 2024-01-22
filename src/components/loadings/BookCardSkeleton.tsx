@@ -16,7 +16,7 @@ const BookCardSkeleton = ({ cards = 8 }: BookCardSkeletonProps) => {
             shadow='sm'
             radius='sm'
             isPressable
-            className='relative h-[220px] w-[160px] sm:h-[250px] sm:w-[180px]'
+            className='relative h-[200px] max-w-[180px] md:h-[250px]'
           >
             <CardBody className='w-full overflow-visible p-0'>
               <Skeleton className='h-full w-full rounded-lg' />

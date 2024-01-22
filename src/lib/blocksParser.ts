@@ -1,12 +1,3 @@
-// import edjsParser from 'editorjs-html';
-
-// export function blocksToHtml(blocks: any) {
-//   const parser = edjsParser();
-//   const html = parser.parse({ blocks: blocks });
-
-//   return html;
-// }
-
 export function getcontentByChapter(blocks?: any) {
   const chapterList = blocks?.[0];
 

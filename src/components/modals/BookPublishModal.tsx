@@ -84,6 +84,19 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
     }
   }, [errors]);
 
+  const onSubmit = async (values: PublishBook | DraftBook) => {
+    const { title, data } = await requestSubmit();
+    setValue('bookTitle', title);
+    setValue('content', data?.blocks);
+
+    if (values.pricing === '0.00' && values.availability === 'Paid') {
+      toast.error('For a paid book, price cannot be zero');
+      return;
+    }
+
+    publishBook(values);
+  };
+
   return (
     <>
       <Button variant='bordered' className='font-semibold'>
@@ -245,13 +258,7 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                 </Switch>
 
                 <Button
-                  onClick={async (e) => {
-                    const { title, data } = await requestSubmit();
-                    setValue('bookTitle', title);
-                    setValue('content', data?.blocks);
-
-                    handleSubmit((values) => publishBook(values))(e);
-                  }}
+                  onClick={handleSubmit(onSubmit)}
                   isLoading={isLoading}
                   color={!isSelected ? 'secondary' : 'warning'}
                   className='font-medium'

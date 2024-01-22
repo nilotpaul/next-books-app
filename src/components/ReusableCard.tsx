@@ -23,28 +23,28 @@ const ReusableCard = ({ data }: ReusableCardProps) => {
     <Card
       key={id}
       as={Link}
-      href={`${href}`}
+      href={href}
       shadow='sm'
       radius='sm'
       isPressable
-      className='relative h-[220px] w-[160px] sm:h-[250px] sm:w-[180px]'
+      className='relative h-[200px]  md:h-[250px]'
     >
-      <CardBody className='w-full overflow-visible p-0'>
+      <CardBody className='overflow-visible p-0'>
         <Image
           shadow='sm'
           isBlurred
           radius='none'
           fill
+          alt={title}
           classNames={{
             wrapper: 'static',
           }}
-          alt={title}
           className='h-full w-full object-cover'
           src={thumbnail}
         />
       </CardBody>
       <CardFooter className='flex justify-between gap-4 text-sm'>
-        <p className='line-clamp-2 text-start font-bold'>{title}</p>
+        <p className='line-clamp-2 text-start text-xs font-bold'>{title}</p>
         <Chip
           color='danger'
           variant='flat'
@@ -72,7 +72,7 @@ export function GridContainer({
   return (
     <div
       className={cn(
-        'relative grid grid-cols-2 place-items-center gap-x-4 gap-y-4 xs:grid-cols-3 sm:grid-cols-3 sm:gap-x-2 md:grid-cols-4 md:place-items-start md:gap-x-4 md:gap-y-4 xl:grid-cols-5',
+        'relative grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-3 md:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] md:gap-5',
         classNames?.main
       )}
     >

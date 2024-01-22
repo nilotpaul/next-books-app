@@ -14,9 +14,9 @@ export async function POST(req: Request) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const body = await req.json();
-
   try {
+    const body = await req.json();
+
     const { type } = imagePresignValidation.parse(body);
 
     const uniqueId = nanoid();

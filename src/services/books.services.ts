@@ -91,7 +91,7 @@ export const getBooksByFilters = cache(
       .limit(limit ?? 10)
       .orderBy(asc(books.id));
 
-    if (!row || !row[0]?.id) {
+    if (!row) {
       return null;
     }
 
@@ -142,7 +142,7 @@ export const getPublishedBookWithAuthorById = cache(async (bookId: string) => {
 export const getBookById = cache(async (bookId: string) => {
   const row = await db.select().from(books).where(eq(books.id, bookId));
 
-  if (row.length === 0 || !row[0]?.id) {
+  if (row.length === 0) {
     return null;
   }
 
@@ -156,7 +156,7 @@ export const getAuthorBookById = cache(
       .from(books)
       .where(and(eq(books.id, bookId), eq(books.clerkId, authorId)));
 
-    if (row.length === 0 || !row[0]?.id) {
+    if (row.length === 0) {
       return null;
     }
 

@@ -30,21 +30,23 @@ const ResuablePostList = ({ data, content, topRightElement, lastItem }: ForumPos
           key={id}
           radius='sm'
           isBlurred
-          className='max-h-[30rem] min-h-[12rem] w-3/4 border-0 text-foreground-600 outline-none dark:bg-foreground-50/60 dark:transition-all dark:duration-1000 dark:hover:opacity-90'
+          className='max-h-[30rem] min-h-[12rem] w-full border-0 text-foreground-600 outline-none dark:bg-foreground-50/60 dark:transition-all dark:duration-1000 dark:hover:opacity-90 md:w-3/4'
         >
-          <CardHeader className='flex h-full w-full items-center justify-between gap-4 truncate text-foreground-800'>
-            <div className='flex items-center'>
+          <CardHeader className='flex h-full w-full items-start justify-between gap-4 text-foreground-800 md:items-center'>
+            <div className='line-clamp-2 flex flex-col gap-1.5 md:flex-row md:items-center md:gap-0'>
               <p
                 id={title.replaceAll(' ', '').toLowerCase()}
                 className='text-lg font-semibold md:text-xl'
               >
                 {title}
               </p>
-              <Dot />
-              <p className='text-xs italic'>{format(date, 'do, MMM yy (hh:mm)')}</p>
+              <Dot className='hidden md:block' />
+              <p className='text-xs italic text-foreground-600'>
+                {format(date, 'do, MMM yy (hh:mm)')}
+              </p>
             </div>
 
-            {topRightElement}
+            <span className='mt-1 md:mt-0'>{topRightElement}</span>
           </CardHeader>
 
           <CardBody
@@ -59,10 +61,10 @@ const ResuablePostList = ({ data, content, topRightElement, lastItem }: ForumPos
                 isBlurred
                 radius='sm'
                 classNames={{
-                  wrapper: 'min-h-[450px] min-w-full',
+                  wrapper: 'relative min-h-[350px] md:min-h-[450px] min-w-full',
                   blurredImg: 'scale-95 rounded-md',
                 }}
-                className='h-full w-full'
+                className='h-full w-full object-cover'
               />
             )}
 
@@ -90,7 +92,9 @@ const ResuablePostList = ({ data, content, topRightElement, lastItem }: ForumPos
         </Card>
       </ScrollShadow>
 
-      {!lastItem && <Divider className='my-8 h-[0.5px] w-3/4 rounded-full bg-foreground-100' />}
+      {!lastItem && (
+        <Divider className='my-3 h-[0.5px] w-full rounded-full bg-foreground-100 md:my-8 md:w-3/4' />
+      )}
     </>
   );
 };

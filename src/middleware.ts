@@ -4,7 +4,15 @@ import { NextResponse } from 'next/server';
 export const runtime = 'experimental-edge';
 
 export default authMiddleware({
-  publicRoutes: ['/', '/api/webhooks(.*)', '/books', '/authors', '/discover', '/forum', '/docs'],
+  publicRoutes: [
+    '/',
+    '/api/webhooks(.*)',
+    '/books',
+    '/authors',
+    '/discover',
+    '/forum/:path*',
+    '/docs',
+  ],
   afterAuth: async (auth, req) => {
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url });
