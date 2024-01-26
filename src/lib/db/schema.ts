@@ -36,18 +36,24 @@ export const users = mysqlTable(
   })
 );
 
-export const authors = mysqlTable('authors', {
-  clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
-  authorName: varchar('author_name', { length: 120 }).notNull(),
-  author_image: varchar('author_image', { length: 255 }),
-  bio: varchar('bio', { length: 255 }).notNull(),
-  artistGenres: json('artist_genres').$type<BookGenres>().notNull(),
-  confirm_email: varchar('confirmed_email', { length: 255 }).notNull(),
-  isConfirmed: boolean('is_confirmed').default(false),
-  secretKey: varchar('secret_key', { length: 255 }).notNull(),
-  stars: int('stars').default(0),
-  joinedOn: timestamp('joined_on').defaultNow().notNull(),
-});
+export const authors = mysqlTable(
+  'authors',
+  {
+    clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
+    authorName: varchar('author_name', { length: 120 }).notNull(),
+    author_image: varchar('author_image', { length: 255 }),
+    bio: varchar('bio', { length: 255 }).notNull(),
+    artistGenres: json('artist_genres').$type<BookGenres>().notNull(),
+    confirm_email: varchar('confirmed_email', { length: 255 }).notNull(),
+    isConfirmed: boolean('is_confirmed').default(false),
+    secretKey: varchar('secret_key', { length: 255 }).notNull(),
+    stars: int('stars').default(0),
+    joinedOn: timestamp('joined_on').defaultNow().notNull(),
+  },
+  (table) => ({
+    clerkIdx: index('clerk_idx').on(table.clerkId),
+  })
+);
 
 export const books = mysqlTable(
   'books',
@@ -81,42 +87,69 @@ export const books = mysqlTable(
   })
 );
 
-export const ratedBooks = mysqlTable('rated_books', {
-  id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
-  clerkId: varchar('clerk_id', { length: 255 }).notNull(),
-  bookId: varchar('book_id', { length: 255 }).notNull(),
-  bookTitle: varchar('book_name', { length: 70 }).notNull(),
-  stars: int('stars').default(0).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+export const ratedBooks = mysqlTable(
+  'rated_books',
+  {
+    id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
+    clerkId: varchar('clerk_id', { length: 255 }).notNull(),
+    bookId: varchar('book_id', { length: 255 }).notNull(),
+    bookTitle: varchar('book_name', { length: 70 }).notNull(),
+    stars: int('stars').default(0).notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    bookIdx: index('book_idx').on(table.id),
+    clerkIdx: index('clerk_idx').on(table.clerkId),
+    titleIdx: index('book_idx').on(table.bookTitle),
+  })
+);
 
-export const ratedAuthors = mysqlTable('rated_authors', {
-  id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
-  clerkId: varchar('clerk_id', { length: 255 }).notNull(),
-  authorId: varchar('author_id', { length: 255 }).notNull(),
-  authorName: varchar('author_name', { length: 70 }).notNull(),
-  stars: int('stars').default(0).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+export const ratedAuthors = mysqlTable(
+  'rated_authors',
+  {
+    id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
+    clerkId: varchar('clerk_id', { length: 255 }).notNull(),
+    authorId: varchar('author_id', { length: 255 }).notNull(),
+    authorName: varchar('author_name', { length: 70 }).notNull(),
+    stars: int('stars').default(0).notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    bookIdx: index('book_idx').on(table.id),
+    authorIdx: index('author_idx').on(table.clerkId),
+  })
+);
 
-export const socialLinks = mysqlTable('social_links', {
-  clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
-  instagram: varchar('instagram', { length: 255 }),
-  twitter: varchar('twitter', { length: 255 }),
-  other: varchar('other', { length: 255 }),
-});
+export const socialLinks = mysqlTable(
+  'social_links',
+  {
+    clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
+    instagram: varchar('instagram', { length: 255 }),
+    twitter: varchar('twitter', { length: 255 }),
+    other: varchar('other', { length: 255 }),
+  },
+  (table) => ({ clerkIdx: index('clerk_idx').on(table.clerkId) })
+);
 
-export const forumPosts = mysqlTable('forum_posts', {
-  id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
-  clerkId: varchar('clerk_id', { length: 255 }).notNull(),
-  isAuthor: boolean('is_author').default(false),
-  postTitle: varchar('post_title', { length: 70 }).notNull(),
-  content: json('post_content').$type<any>().notNull(),
-  image: varchar('post_image', { length: 255 }),
-  tags: json('tags').$type<string[]>(),
-  likes: json('likes').$type<string[]>(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+export const forumPosts = mysqlTable(
+  'forum_posts',
+  {
+    id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),
+    clerkId: varchar('clerk_id', { length: 255 }).notNull(),
+    isAuthor: boolean('is_author').default(false),
+    postTitle: varchar('post_title', { length: 70 }).notNull(),
+    content: json('post_content').$type<any>().notNull(),
+    image: varchar('post_image', { length: 255 }),
+    tags: json('tags').$type<string[]>(),
+    likes: json('likes').$type<string[]>(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    postIdx: index('post_idx').on(table.id),
+    clerkIdx: index('clerk_idx').on(table.clerkId),
+    titleIdx: index('title_idx').on(table.postTitle),
+  })
+);
 
 export const userRelations = relations(users, ({ one, many }) => ({
   author: one(authors, {

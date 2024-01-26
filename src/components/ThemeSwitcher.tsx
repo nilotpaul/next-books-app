@@ -50,7 +50,7 @@ export default function ThemeSwitcher({
       defaultSelected={defaultTheme === 'light'}
       size={size}
       color={color}
-      className={cn('', className)}
+      className={cn(className)}
       classNames={{
         ...classNames,
       }}

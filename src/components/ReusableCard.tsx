@@ -60,14 +60,20 @@ const ReusableCard = ({ data }: ReusableCardProps) => {
 export function GridContainer({
   children,
   className,
+  position,
 }: {
   children: React.ReactNode;
   className?: string;
+  position?: 'start' | 'center';
 }) {
   return (
     <div
       className={cn(
         'grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3 md:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] md:gap-5',
+        {
+          'grid-cols-[repeat(auto-fit,minmax(120px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]':
+            position === 'center',
+        },
         className
       )}
     >

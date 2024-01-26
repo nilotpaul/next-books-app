@@ -148,10 +148,12 @@ export const LinkRenderer = ({
       className='mt-4 grid grid-cols-2 items-start gap-4 rounded-lg bg-primary-50 p-3 dark:bg-slate-900/80'
     >
       <div className='space-y-2'>
-        <Heading classNames={{ divider: 'hidden', heading: 'font-semibold text-foreground-700' }}>
+        <Heading
+          classNames={{ divider: 'hidden', heading: 'font-semibold text-lg text-foreground-700' }}
+        >
           {data.meta.title}
         </Heading>
-        <p>{data.meta.description}</p>
+        <p className='text-sm xs:text-base'>{data.meta.description}</p>
       </div>
 
       {data.meta.image?.url && (

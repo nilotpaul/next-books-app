@@ -29,7 +29,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
         />
       </Header>
 
-      <Container className='mt-3'>{children}</Container>
+      <Container className='relative z-10 mt-3'>{children}</Container>
     </>
   );
 }

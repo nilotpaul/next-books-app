@@ -55,8 +55,8 @@ const DashNavbar = ({ children }: DashNavbarProps) => {
                   underline={isActive ? 'always' : 'none'}
                   href={item.path}
                   size='md'
-                  color='foreground'
-                  className='text-[0.95rem] leading-6 text-foreground-600'
+                  color='primary'
+                  className='text-[0.95rem] leading-6'
                 >
                   {item.name}
                 </Link>
@@ -79,10 +79,10 @@ const DashNavbar = ({ children }: DashNavbarProps) => {
               <NavbarMenuItem key={item.path} isActive={isActive}>
                 <Link
                   onClick={() => setIsMenuOpen(false)}
-                  color='foreground'
+                  color='primary'
                   underline={isActive ? 'always' : 'none'}
                   href={item.path}
-                  className='text-base text-foreground-600 xs:text-lg sm:text-base'
+                  className='text-base xs:text-lg sm:text-base'
                 >
                   {item.name}
                 </Link>
