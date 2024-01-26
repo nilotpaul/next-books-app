@@ -7,6 +7,9 @@ import BookCardSkeleton from '@/components/loadings/BookCardSkeleton';
 import { GridContainer } from '@/components/ReusableCard';
 import Heading from '@/components/Heading';
 
+export const runtime = 'edge';
+export const preferredRegion = ['sin1', 'cle1', 'fra1'];
+
 const BooksPage = () => {
   return (
     <div className='mt-4'>

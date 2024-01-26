@@ -161,7 +161,9 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                   defaultSelectedKeys={book?.genres || []}
                   {...register('genres')}
                   onChange={(e) =>
-                    setValue('genres', [...e.target?.value.split(',')] as PublishBook['genres'])
+                    setValue('genres', [
+                      ...(e.target?.value.split(',') || []),
+                    ] as PublishBook['genres'])
                   }
                   multiple
                   selectionMode='multiple'
@@ -207,7 +209,7 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                   label='Series'
                   placeholder='Select if this book is a part of a series'
                 >
-                  <SelectItem key={''}>''</SelectItem>
+                  <SelectItem key={''}></SelectItem>
                 </Select>
                 <Select
                   defaultSelectedKeys={book.collaborations || []}
@@ -217,9 +219,7 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                   label='Collaborations'
                   placeholder='Give credit to other author(s)'
                 >
-                  <SelectItem key={''} textValue={''}>
-                    ''
-                  </SelectItem>
+                  <SelectItem key={''} textValue={''}></SelectItem>
                 </Select>
               </div>
               <div className='flex flex-wrap items-center justify-between gap-5'>

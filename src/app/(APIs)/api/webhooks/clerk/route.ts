@@ -1,7 +1,6 @@
 import { WebhookEvent } from '@clerk/nextjs/server';
 import { Webhook } from 'svix';
 import { users } from '@/lib/db/schema';
-import { nanoid } from 'nanoid';
 import { env } from '@/validations/env';
 import { createUser, deleteUser, updateUser } from '@/services/user.services';
 

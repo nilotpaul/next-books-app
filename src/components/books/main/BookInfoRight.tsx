@@ -17,7 +17,7 @@ type BookInfoRight = {
   isPurchased: boolean;
 };
 
-const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
+const BooksInfoRight = ({ book, isPurchased }: BookInfoRight) => {
   return (
     <div className='h-full w-full space-y-4'>
       <div className='space-y-2'>
@@ -111,4 +111,4 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
   );
 };
 
-export default BookInfoRight;
+export default BooksInfoRight;

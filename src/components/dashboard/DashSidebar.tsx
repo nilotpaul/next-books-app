@@ -15,7 +15,7 @@ const DashSidebar = ({ isAuthor }: DashSidebarProps) => {
 
   useEffect(() => {
     changeTab('My Books');
-  }, []);
+  }, [changeTab]);
 
   if (tab?.length === 0) {
     return <DashSidebarSkeleton />;

@@ -6,11 +6,10 @@ import AuthorCardWrapper from '@/components/authors/AuthorCardWrapper';
 import AuthorCardSkeleton from '@/components/loadings/AuthorCardSkeleton';
 import Heading from '@/components/Heading';
 
-const AuthorsPage = ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) => {
+export const runtime = 'edge';
+export const preferredRegion = ['sin1', 'cle1', 'fra1'];
+
+const AuthorsPage = () => {
   return (
     <>
       <div className='flex items-center justify-between'>

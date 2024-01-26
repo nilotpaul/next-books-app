@@ -3,6 +3,9 @@ import { Suspense } from 'react';
 import ManageSkeleton from '@/components/loadings/ManageSkeleton';
 import ManageTabs from '@/components/manage/ManageTabs';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function ManageLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className='w-full space-y-4 sm:flex sm:gap-x-8 sm:space-y-0'>

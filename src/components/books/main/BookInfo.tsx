@@ -1,7 +1,7 @@
 import { BookInfo } from '@/types/book.types';
 
-import BookInfoRight from './BookInfoRight';
 import BookInfoLeft from './BookInfoLeft';
+import BooksInfoRight from './BookInfoRight';
 
 type BookInfoProps = {
   getBook: () => Promise<{
@@ -11,7 +11,7 @@ type BookInfoProps = {
   }>;
 };
 
-const BookInfo = async ({ getBook }: BookInfoProps) => {
+const BooksInfo = async ({ getBook }: BookInfoProps) => {
   const { book, isPurchased } = await getBook();
 
   return (
@@ -22,9 +22,9 @@ const BookInfo = async ({ getBook }: BookInfoProps) => {
         title={book.title}
       />
 
-      <BookInfoRight book={book} isPurchased={isPurchased} />
+      <BooksInfoRight book={book} isPurchased={isPurchased} />
     </div>
   );
 };
 
-export default BookInfo;
+export default BooksInfo;

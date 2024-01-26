@@ -7,6 +7,9 @@ import ForumPostWrapper from '@/components/forum/ForumPostWrapper';
 import PostListSkeleton from '@/components/loadings/PostListSkeleton';
 import Heading from '@/components/Heading';
 
+export const runtime = 'edge';
+export const preferredRegion = ['sin1', 'cle1', 'fra1'];
+
 const ForumPage = () => {
   return (
     <div className='mt-4'>

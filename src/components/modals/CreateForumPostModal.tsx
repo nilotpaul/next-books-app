@@ -110,9 +110,7 @@ const CreateForumPostModal = ({ isAuthor, requestSubmit }: CreateForumPostModalP
                 }}
               />
               <Select label='Post Tags' placeholder='Enter tags'>
-                <SelectItem key='' textValue=''>
-                  ''
-                </SelectItem>
+                <SelectItem key='' textValue=''></SelectItem>
               </Select>
             </ModalBody>
 

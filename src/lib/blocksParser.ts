@@ -1,7 +1,7 @@
 export function getcontentByChapter(blocks?: any) {
   const chapterList = blocks?.[0];
 
-  let chapters = [];
+  const chapters = [];
   let currentChapter: any = null;
 
   if (chapterList?.type !== 'list') {

@@ -1,10 +1,10 @@
 import { getBookInfoById } from '@/services/books.services';
 import { notFound } from 'next/navigation';
+import { purchaseStatus } from '@/utils/purchaseStatus';
 import { Suspense } from 'react';
 
-import BookInfo from '@/components/books/main/BookInfo';
 import BookInfoSkeleton from '@/components/loadings/BookInfoSkeleton';
-import { purchaseStatus } from '@/utils/purchaseStatus';
+import BooksInfo from '@/components/books/main/BookInfo';
 
 type BookInfoPageProps = {
   params: { bookId: string };
@@ -19,7 +19,7 @@ const BookInfoPage = ({ params }: BookInfoPageProps) => {
 
   return (
     <Suspense fallback={<BookInfoSkeleton />}>
-      <BookInfo
+      <BooksInfo
         getBook={async () => {
           const [book, { isPurchased, userId }] = await Promise.all([
             getBookInfoById(bookId),
