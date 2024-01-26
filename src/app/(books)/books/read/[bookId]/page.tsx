@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 
 import ReaderWrapper from '@/components/books/read/ReaderWrapper';
 import { purchaseStatus } from '@/utils/purchaseStatus';
+import ReaderSkeleton from '@/components/loadings/ReaderSkeleton';
 
 type pageProps = {
   params: {

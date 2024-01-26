@@ -42,12 +42,12 @@ const dashboard = () => {
         <SidebarWrapper
           getAuthor={async () => {
             const user = (await userSession()) as User;
-            return (await getUserById(user.id))?.isAuthor!;
+            return (await getUserById(user.id))?.isAuthor || false;
           }}
         />
       </Suspense>
 
-      <div className='relative h-[calc(100vh-9.5rem)] w-full overflow-y-auto rounded-lg scrollbar-hide scrollbar-track-default scrollbar-thumb-foreground-400 scrollbar-track-rounded-full scrollbar-thumb-rounded scrollbar-w-1.5 sm:h-[calc(100vh-5.5rem)] sm:pr-4 sm:scrollbar'>
+      <div className='relative h-[calc(100vh-9.5rem)] w-full overflow-y-auto rounded-lg scrollbar-hide scrollbar-thumb-foreground-400 scrollbar-track-rounded-full scrollbar-thumb-rounded scrollbar-w-1.5 sm:h-[calc(100vh-5.5rem)] sm:pr-4 sm:scrollbar'>
         <Suspense fallback={<WriteBooksTabSkeleton />}>
           <TabsWrapper
             getData={async () => {

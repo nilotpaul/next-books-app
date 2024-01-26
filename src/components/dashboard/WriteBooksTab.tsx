@@ -17,6 +17,7 @@ import AlertDialog from '../ui/AlertDialog';
 const WriteBooksTab = () => {
   const [isDeleting, setIsDeleting] = useState('');
   const router = useRouter();
+  const utils = trpc.useUtils();
 
   const initialBooks = useContext(MyDashboardContext)?.authorBooks || [];
 
@@ -27,6 +28,7 @@ const WriteBooksTab = () => {
       },
       {
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        keepPreviousData: true,
         suspense: true,
         initialData: {
           pageParams: [undefined],
@@ -41,7 +43,6 @@ const WriteBooksTab = () => {
             },
           ],
         },
-        enabled: false,
       }
     );
 
@@ -49,6 +50,7 @@ const WriteBooksTab = () => {
     onMutate: ({ bookId }) => setIsDeleting(bookId),
     onSuccess: () => {
       router.refresh();
+      utils.authorRouter.getAuthorBooks.refetch();
       toast.success('Book Deleted');
       setIsDeleting('');
     },
@@ -66,8 +68,6 @@ const WriteBooksTab = () => {
     }
   });
 
-  console.log({ hasNextPage, books });
-
   return (
     <div className='relative'>
       <ReusableTable
@@ -78,7 +78,7 @@ const WriteBooksTab = () => {
         )}
         map={(book) => (
           <TableRow key={book.id}>
-            <TableCell className='text-base'>{book.bookTitle}</TableCell>
+            <TableCell className='font-medium sm:text-base'>{book.bookTitle}</TableCell>
             <TableCell>{format(book.updatedAt, 'dd / MM / yy')}</TableCell>
             <TableCell>
               {book.status === 'draft' ? (
@@ -111,7 +111,11 @@ const WriteBooksTab = () => {
                     headerContent='Are you are?'
                     bodyContent='This action cannot be undone. This will delete the book permanently.'
                     footerContent={
-                      <Button onClick={() => deleteBook({ bookId: book.id })} color='danger'>
+                      <Button
+                        onClick={() => deleteBook({ bookId: book.id })}
+                        color='danger'
+                        className='font-medium'
+                      >
                         Delete
                       </Button>
                     }

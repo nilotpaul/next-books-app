@@ -3,12 +3,13 @@
 import { useRouter } from 'next/navigation';
 import TRPCProvider from './trpc/TRPCProvider';
 import { NextUIProvider } from '@nextui-org/react';
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider, useTheme } from 'next-themes';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from 'sonner';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const theme = useTheme().theme;
 
   return (
     <>
@@ -16,7 +17,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <NextUIProvider navigate={router.push}>
           <ThemeProvider attribute='class' defaultTheme='dark' storageKey='theme' enableColorScheme>
             <TRPCProvider>
-              <Toaster richColors closeButton duration={2500} theme='system' />
+              <Toaster
+                richColors
+                closeButton
+                duration={2500}
+                theme={theme === 'dark' ? 'dark' : 'light'}
+              />
               {children}
             </TRPCProvider>
           </ThemeProvider>

@@ -1,7 +1,7 @@
 'use client';
 
 import { format } from 'date-fns';
-import { calculateAverageRating, convertPrice } from '@/utils/utils';
+import { calculateAverageRating, convertPrice, renderArrayItemsByComma } from '@/utils/utils';
 
 import Divider from '@/components/ui/Divider';
 import { BookInfo } from '@/types/book.types';
@@ -10,6 +10,7 @@ import { Accordion, AccordionItem } from '@nextui-org/accordion';
 import Link from '@/components/ui/Link';
 import Stars from './Stars';
 import PurchaseBook from '../PurchaseBook';
+import { Chip } from '@nextui-org/react';
 
 type BookInfoRight = {
   book: NonNullable<BookInfo>;
@@ -27,7 +28,11 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
 
       <div className='flex flex-col gap-4'>
         <span className='font-medium text-danger'>
-          Price: {convertPrice(book.pricing || '00.00')}
+          {book.availability === 'Paid' ? (
+            <>Price: {convertPrice(book.pricing || '00.00')}</>
+          ) : (
+            <Chip color='danger'>Free</Chip>
+          )}
         </span>
         <div className='mb-2 flex items-center gap-1.5'>
           <Stars
@@ -42,15 +47,10 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
           <span className='ml-4 text-xs text-foreground-600'>Rated By: {book.ratedBy}</span>
         </div>
         <div className='space-y-2 text-sm'>
-          <div className='flex items-center gap-1'>
+          <div className='flex gap-1.5'>
             <span className='font-semibold text-primary'>Genres:</span>
-            <p className='text-foreground-700'>
-              {book.genres!.map((genre, index) => {
-                if (index === book.genres!.length - 1) {
-                  return genre;
-                }
-                return genre + ',' + ' ';
-              })}
+            <p className='line-clamp-2 text-foreground-700'>
+              {renderArrayItemsByComma(book.genres || [])}
             </p>
           </div>
 
@@ -59,28 +59,18 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
           </p>
           <p className='text-foreground-700'>
             <span className='font-semibold text-primary'>Published:</span>{' '}
-            {format(book?.publicationDate!, 'do, MMM, yyyy')}{' '}
+            {format(book?.publicationDate!, 'do MMM, yyyy')}
           </p>
           {book.collaborations?.length !== 0 && (
             <p className='text-foreground-700'>
               <span className='font-semibold text-primary'>Collaborations: </span>
-              {book.collaborations?.map((item, index) => {
-                if (index === book.collaborations!.length - 1) {
-                  return item;
-                }
-                return item + ',' + ' ';
-              })}
+              {renderArrayItemsByComma(book.collaborations!)}
             </p>
           )}
           {book.series?.length !== 0 && (
             <p className='text-foreground-700'>
               <span className='font-semibold text-primary'>Related:</span>{' '}
-              {book.series?.map((item, index) => {
-                if (index === book.series.length - 1) {
-                  return item;
-                }
-                return item + ',' + ' ';
-              })}
+              {renderArrayItemsByComma(book.series)}
             </p>
           )}
         </div>
@@ -89,14 +79,14 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
       <div className='flex items-center gap-4 pt-4'>
         <Button
           as={Link}
-          href={`/books/read/${book?.id}`}
-          className='bg-foreground-800 font-medium text-black'
+          href={`/books/read/${book.id}`}
+          className='font-medium text-black dark:bg-foreground-800'
           variant='solid'
         >
           Read Now
         </Button>
-        {!isPurchased && (
-          <PurchaseBook bookId={book?.id!} variant='bordered' className='font-medium text-danger'>
+        {!isPurchased && book.availability === 'Paid' && (
+          <PurchaseBook bookId={book.id} variant='bordered' className='font-medium text-danger'>
             Buy Now
           </PurchaseBook>
         )}
@@ -114,7 +104,7 @@ const BookInfoRight = ({ book, isPurchased }: BookInfoRight) => {
           aria-label='Book Description'
           title='Book Description'
         >
-          {book?.synopsis}
+          {book.synopsis}
         </AccordionItem>
       </Accordion>
     </div>

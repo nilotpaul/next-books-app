@@ -21,10 +21,12 @@ export function capitalizeString(string: string) {
 export function convertPrice(price: string | number) {
   const priceToConvert = Number(price);
 
-  return priceToConvert.toLocaleString('en-US', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-  });
+    notation: 'compact',
+    maximumFractionDigits: 2,
+  }).format(priceToConvert);
 }
 
 export function calculateAverageRating({
@@ -39,4 +41,13 @@ export function calculateAverageRating({
   const averageRating = ratingCount > 0 ? rating / ratingCount : 0;
 
   return (averageRating / scale) * scale;
+}
+
+export function renderArrayItemsByComma(array: string[]) {
+  return array.map((item, index) => {
+    if (index === array.length - 1) {
+      return item;
+    }
+    return item + ',' + ' ';
+  });
 }

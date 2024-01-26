@@ -44,7 +44,6 @@ const ForumPostsClientWrapper = ({ posts: initialPosts, userId }: ForumPostsClie
           ],
         },
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
-        enabled: false,
       }
     );
 

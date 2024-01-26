@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from '../ui/Link';
-import NextLink from 'next/link';
+import { Suspense, useState } from 'react';
 
 import {
   Navbar,
@@ -15,31 +15,34 @@ import {
 } from '@nextui-org/navbar';
 import { navItems } from '@/config/constants/navMenu';
 import Container from '../ui/Container';
+import NavbarProfileSkeleton from '../loadings/NavbarProfileSkeleton';
+import { Button } from '@nextui-org/button';
+import BrandLogo from '../BrandLogo';
 
 type HeaderProps = {
   children: React.ReactNode;
 };
 
 const Header = ({ children }: HeaderProps) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
   return (
     <Navbar
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
       maxWidth='full'
       isBlurred
       isBordered
       position='sticky'
-      className='h-14 sm:h-16'
+      className='h-16'
       classNames={{
         wrapper: 'px-0',
       }}
     >
       <Container className='flex w-full items-center'>
         <NavbarBrand>
-          <NextLink href='/' className='font-bold text-gray-100'>
-            <span className='text-danger'>BOOKS</span>
-            <span className='text-foreground-700'>God</span>
-          </NextLink>
+          <BrandLogo />
         </NavbarBrand>
 
         <NavbarContent className='hidden gap-4 font-medium sm:flex' justify='center'>
@@ -57,23 +60,25 @@ const Header = ({ children }: HeaderProps) => {
         </NavbarContent>
 
         <NavbarContent className='hidden sm:flex' justify='end'>
-          {children}
+          <Suspense fallback={<NavbarProfileSkeleton />}>{children}</Suspense>
         </NavbarContent>
 
-        <NavbarMenuToggle className='sm:hidden' />
+        <Button
+          as={NavbarMenuToggle}
+          isIconOnly
+          size='sm'
+          className='w-fit bg-transparent sm:hidden'
+        />
 
-        <NavbarMenu>
+        <NavbarMenu className='flex w-full flex-col items-start gap-4 xs:gap-6'>
           {navItems.map((item) => {
             const isActive = pathname === item.path;
 
             return (
-              <NavbarMenuItem
-                key={item.path}
-                isActive={isActive}
-                className='mt-1 flex w-full items-center justify-center'
-              >
+              <NavbarMenuItem key={item.path} isActive={isActive}>
                 <Link
-                  className='font-medium'
+                  onClick={() => setIsMenuOpen(false)}
+                  className='font-medium xs:text-xl'
                   underline={isActive ? 'always' : 'none'}
                   href={item.path}
                 >
@@ -83,7 +88,9 @@ const Header = ({ children }: HeaderProps) => {
             );
           })}
 
-          <NavbarMenuItem>{children}</NavbarMenuItem>
+          <NavbarMenuItem className='w-full'>
+            <Suspense fallback={<NavbarProfileSkeleton />}>{children}</Suspense>
+          </NavbarMenuItem>
         </NavbarMenu>
       </Container>
     </Navbar>

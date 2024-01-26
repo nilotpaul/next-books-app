@@ -10,9 +10,9 @@ import { Alert, AlertDescription } from '../ui/Alert';
 import { AlertCircle } from 'lucide-react';
 import Link from '../ui/Link';
 import Image from '../ui/Image';
-import Divider from '../ui/Divider';
 import { colors, fontSizes } from '@/config/constants/preferences';
 import ThemeSwitcher from '../ThemeSwitcher';
+import Heading from '../Heading';
 
 type ReaderTabProps = {
   firstName: string;
@@ -29,13 +29,20 @@ const ReaderTab = ({ firstName, lastName, username, email, image }: ReaderTabPro
     <div className='space-y-2'>
       <Card
         fullWidth
-        className='space-y-2'
+        className='space-y-2 border-1 border-stone-200 shadow-sm dark:border-0'
         classNames={{
-          base: 'bg-stone-800/50',
+          base: 'dark:bg-stone-800/50',
         }}
       >
-        <CardHeader className='flex w-[150px] flex-col items-start pb-1 text-lg font-semibold text-foreground-600'>
-          Reader Profile <Divider className='w-[150px]' />
+        <CardHeader className='pb-1'>
+          <Heading
+            classNames={{
+              heading: 'font-semibold md:text-lg xs:text-lg underline dark:no-underline',
+              divider: 'hidden dark:block',
+            }}
+          >
+            Author Profile
+          </Heading>
         </CardHeader>
 
         <CardBody className='py-2 pl-0 sm:pl-3'>
@@ -108,13 +115,20 @@ const ReaderTab = ({ firstName, lastName, username, email, image }: ReaderTabPro
 
       <Card
         fullWidth
-        className='space-y-2'
+        className='space-y-2 border-1 border-stone-200 shadow-sm dark:border-0'
         classNames={{
-          base: 'bg-stone-800/50',
+          base: 'dark:bg-stone-800/50',
         }}
       >
-        <CardHeader className='flex flex-col items-start pb-1 text-lg font-semibold text-foreground-600'>
-          Reading Preferences <Divider className='w-[210px]' />
+        <CardHeader className='pb-1'>
+          <Heading
+            classNames={{
+              heading: 'font-semibold md:text-lg xs:text-lg underline dark:no-underline',
+              divider: 'hidden dark:block',
+            }}
+          >
+            Reading Preferences
+          </Heading>
         </CardHeader>
 
         <CardBody className='space-y-2'>
@@ -146,13 +160,20 @@ const ReaderTab = ({ firstName, lastName, username, email, image }: ReaderTabPro
 
       <Card
         fullWidth
-        className='space-y-2'
+        className='space-y-2 border-1 border-stone-200 shadow-sm dark:border-0'
         classNames={{
-          base: 'bg-stone-800/50',
+          base: 'dark:bg-stone-800/50',
         }}
       >
-        <CardHeader className='flex flex-col items-start pb-1 text-lg font-semibold text-foreground-600'>
-          More Preferences <Divider className='w-[85px]' />
+        <CardHeader className='pb-1'>
+          <Heading
+            classNames={{
+              heading: 'font-semibold md:text-lg xs:text-lg underline dark:no-underline',
+              divider: 'hidden dark:block',
+            }}
+          >
+            More Preferences
+          </Heading>
         </CardHeader>
 
         <CardBody className='flex flex-col gap-2'>

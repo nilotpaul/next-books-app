@@ -1,7 +1,7 @@
 import Blocks from 'editorjs-blocks-react-renderer';
 import { format } from 'date-fns';
 
-import { HeaderRenderer, ImageRenderer, ListRenderer } from './CustomRenderers';
+import { HeaderRenderer, ImageRenderer, LinkRenderer, ListRenderer } from './CustomRenderers';
 import { Card, CardBody, CardHeader } from '@nextui-org/card';
 import { ScrollShadow } from '@nextui-org/scroll-shadow';
 import { Dot } from 'lucide-react';
@@ -30,7 +30,10 @@ const ResuablePostList = ({ data, content, topRightElement, lastItem }: ForumPos
           key={id}
           radius='sm'
           isBlurred
-          className='max-h-[30rem] min-h-[12rem] w-full border-0 text-foreground-600 outline-none dark:bg-foreground-50/60 dark:transition-all dark:duration-1000 dark:hover:opacity-90 md:w-3/4'
+          classNames={{
+            base: 'shadow-xl',
+          }}
+          className='max-h-[30rem] min-h-[12rem] w-full border-1 text-foreground-600 outline-none dark:border-0 dark:bg-foreground-50/60 dark:transition-all dark:duration-1000 dark:hover:opacity-90 md:w-3/4'
         >
           <CardHeader className='flex h-full w-full items-start justify-between gap-4 text-foreground-800 md:items-center'>
             <div className='line-clamp-2 flex flex-col gap-1.5 md:flex-row md:items-center md:gap-0'>
@@ -86,6 +89,7 @@ const ResuablePostList = ({ data, content, topRightElement, lastItem }: ForumPos
                 image: ImageRenderer,
                 list: ListRenderer,
                 header: HeaderRenderer,
+                linkTool: LinkRenderer,
               }}
             />
           </CardBody>

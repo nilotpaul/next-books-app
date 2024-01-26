@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { privateProcedure, router } from '../trpc';
+import { privateProcedure, publicProcedure, router } from '../trpc';
 import { getBookById, getBookInfoById, getRatedBookById } from '@/services/books.services';
 import getUrl from '@/utils/getUrl';
 import { TRPCError } from '@trpc/server';

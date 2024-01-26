@@ -11,9 +11,14 @@ type ReusableTableProps<T> = {
   map?: (item: T, index: number) => JSX.Element;
 };
 
-const ReusableTable = <T, _>({ type, columns, rows, classNames, map }: ReusableTableProps<T>) => {
+const ReusableTable = <T,>({ type, columns, rows, classNames, map }: ReusableTableProps<T>) => {
   return (
-    <Table aria-label={type}>
+    <Table
+      aria-label={type}
+      classNames={{
+        wrapper: 'shadow-md border-1 dark:border-0',
+      }}
+    >
       <TableHeader>
         {columns.map((item) => (
           <TableColumn key={item} className='capitalize'>
@@ -22,19 +27,21 @@ const ReusableTable = <T, _>({ type, columns, rows, classNames, map }: ReusableT
         ))}
       </TableHeader>
       <TableBody emptyContent={`${type} is empty!`}>
-        {!map
-          ? rows.map((item, index) => {
-              const [[key]] = Object.entries(item as Record<string, any>);
+        {!map ? (
+          <TableRow>
+            {columns.map((_, index) => {
+              const key = Object.keys(rows[0]!)[index];
 
               return (
-                <TableRow key={index}>
-                  <TableCell className={cn('text-base', classNames?.cell)}>
-                    {(item as Record<string, any>)[key]}
-                  </TableCell>
-                </TableRow>
+                <TableCell key={index} className={cn('text-base', classNames?.cell)}>
+                  {(rows[index] as Record<string, any>)[key]}
+                </TableCell>
               );
-            })
-          : rows.map((item, index) => map(item, index))}
+            })}
+          </TableRow>
+        ) : (
+          rows.map((item, index) => map(item, index))
+        )}
       </TableBody>
     </Table>
   );

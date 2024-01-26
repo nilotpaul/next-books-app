@@ -13,7 +13,7 @@ const AuthorCardSkeleton = () => {
             shadow='sm'
             radius='sm'
             isPressable
-            className='relative h-[220px] w-[160px] sm:h-[250px] sm:w-[180px]'
+            className='relative h-[200px] md:h-[250px]'
           >
             <CardBody className='w-full overflow-visible p-0'>
               <Image

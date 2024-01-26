@@ -15,9 +15,9 @@ type TopbarProps = {
 
 const Topbar = ({ ...props }: TopbarProps) => {
   return (
-    <Container className='flex w-full items-center justify-between'>
+    <Container className='flex w-full max-w-full items-center justify-between px-0 md:max-w-5xl'>
       <div className='flex items-center gap-12'>
-        <Button as={Link} href='/dashboard' variant='bordered'>
+        <Button as={Link} href='/dashboard' variant='bordered' className='hidden md:flex'>
           <ArrowLeft className='h-4 w-4' />
           Back
         </Button>

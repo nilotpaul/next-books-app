@@ -11,8 +11,9 @@ import CreateBookModal from '../modals/CreateBookModal';
 import Image from '../ui/Image';
 import WriteBooksTabSkeleton from '../loadings/WriteBooksTabSkeleton';
 import PurchaseTab from './PurchaseTab';
-import ReviewTab from './ReviewTab';
 import ForumPostsTab from './ForumPostsTab';
+import EmptyArrayFallback from '../EmptyArrayFallback';
+import BooksSoldTab from './BooksSoldTab';
 
 const ManageDashTabs = () => {
   const {
@@ -41,27 +42,41 @@ const ManageDashTabs = () => {
                     src={books[0].authorImage}
                     alt={books[0].authorName}
                     fill
-                    isBlurred
                     radius='full'
-                    classNames={{ wrapper: 'min-h-[30px] min-w-[30px]' }}
+                    classNames={{
+                      wrapper:
+                        'min-h-[30px] xs:min-w-[40px] xs:min-h-[40px] sm:min-w-[30px] sm:min-h-[30px] min-w-[30px]',
+                    }}
                     className='object-cover'
                   />
                 )}
-                <p className='text-sm'>{books[0].authorName}</p>
+                <p className='truncate text-sm font-medium xs:text-base sm:text-sm'>
+                  {books[0].authorName}
+                </p>
               </div>
+
               <CreateBookModal userId={userId} />
             </div>
 
             <Divider className='h-[1px] rounded-md bg-default' />
           </header>
 
-          {books.length > 0 && <WriteBooksTab />}
+          {books.length !== 0 ? (
+            <WriteBooksTab />
+          ) : (
+            <div className='flex w-full items-center justify-center'>
+              <EmptyArrayFallback
+                message='No written books yet!'
+                className='static mx-auto mt-2 -translate-x-0'
+              />
+            </div>
+          )}
         </>
       )}
 
+      {tab === 'Books Sold' && isAuthor && <BooksSoldTab />}
       {tab === 'Purchases' && <PurchaseTab />}
       {tab === 'Forum Posts' && <ForumPostsTab />}
-      {tab === 'Review' && <ReviewTab />}
     </>
   );
 };

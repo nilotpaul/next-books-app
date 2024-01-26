@@ -4,17 +4,21 @@ import BookInfoRight from './BookInfoRight';
 import BookInfoLeft from './BookInfoLeft';
 
 type BookInfoProps = {
-  getBook: () => Promise<{ book: NonNullable<BookInfo>; isPurchased: boolean }>;
+  getBook: () => Promise<{
+    book: NonNullable<BookInfo>;
+    isPurchased: boolean;
+    userId: string | null;
+  }>;
 };
 
 const BookInfo = async ({ getBook }: BookInfoProps) => {
   const { book, isPurchased } = await getBook();
 
   return (
-    <div className='grid h-full w-full place-content-between place-items-start gap-12 md:grid-cols-2'>
+    <div className='grid h-full w-full grid-cols-1 place-content-between place-items-start gap-12 md:grid-cols-2'>
       <BookInfoLeft
-        frontArtwork={book?.frontArtwork!}
-        backArtwork={book?.backArtwork!}
+        frontArtwork={book?.frontArtwork || ''}
+        backArtwork={book?.backArtwork || ''}
         title={book.title}
       />
 

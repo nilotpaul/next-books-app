@@ -19,7 +19,7 @@ const CreatePostWrapper = ({ userId, isAuthor }: CreatePostWrapperProps) => {
 
   return (
     <>
-      <Container className='flex w-full items-center justify-between'>
+      <Container className='flex w-full items-center justify-between px-0'>
         <div className='flex items-center gap-12'>
           <Button as={Link} href='/dashboard' variant='bordered'>
             <ArrowLeft className='h-4 w-4' />

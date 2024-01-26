@@ -20,11 +20,27 @@ const Reader = ({ content }: ReaderProps) => {
             className:
               'first-of-type:first-letter:text-3xl mt-3 first-of-type:first-letter:font-bold text-base leading-8',
           },
+          header: {
+            classNames: {
+              h2: 'line-clamp-3',
+            },
+          },
         }}
         renderers={{
           image: ImageRenderer,
           list: ListRenderer,
-          header: HeaderRenderer,
+          header: ({
+            ...props
+          }: {
+            data: any;
+            className?: string;
+            classNames?: {
+              h1?: string;
+              h2?: string;
+              h3?: string;
+              h4?: string;
+            };
+          }) => HeaderRenderer(props),
         }}
       />
     </div>

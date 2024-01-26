@@ -9,6 +9,7 @@ import { PublishedBook } from '@/types/book.types';
 import BookCardSkeleton from '../loadings/BookCardSkeleton';
 import ReusableCard, { GridContainer } from '../ReusableCard';
 import { Button } from '@nextui-org/button';
+import EmptyArrayFallback from '../EmptyArrayFallback';
 
 type ResultWrapperProps = {
   books: PublishedBook[];
@@ -68,8 +69,8 @@ const ResultWrapper = ({ books: initialBooks, filters }: ResultWrapperProps) => 
   }
 
   return (
-    <div className='relative'>
-      <GridContainer notFound={!books || books.length === 0}>
+    <div className='relative pt-2'>
+      <GridContainer>
         {[...books]
           .filter((book, idx, self) => idx === self.findIndex((b) => b.id === book.id))
           .map((book) => (
@@ -84,6 +85,7 @@ const ResultWrapper = ({ books: initialBooks, filters }: ResultWrapperProps) => 
               }}
             />
           ))}
+        {(!books || books.length === 0) && <EmptyArrayFallback message='No Books Found' />}
       </GridContainer>
 
       {hasNextPage && !isEmpty && (

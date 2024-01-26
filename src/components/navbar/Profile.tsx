@@ -1,11 +1,12 @@
+import { userSession } from '@/services/auth.services';
 import { getUserName } from '@/utils/getUserFullName';
-import { currentUser } from '@clerk/nextjs';
+
 import { Avatar } from '@nextui-org/avatar';
 import ProfileMenu from './ProfileMenu';
 
 const Profile = async () => {
-  const user = await currentUser();
-  const { fullName, fallback } = getUserName(user?.firstName!, user?.lastName!);
+  const user = await userSession();
+  const { fullName, fallback } = getUserName(user?.firstName || '', user?.lastName || '');
 
   return (
     <>
@@ -13,7 +14,7 @@ const Profile = async () => {
         <ProfileMenu>
           <Avatar
             size='sm'
-            className='hidden cursor-pointer sm:block'
+            className='cursor-pointer xs:h-10 xs:w-10 sm:h-8 sm:w-fit'
             src={user?.imageUrl}
             name={fullName}
             fallback={fallback}

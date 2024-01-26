@@ -177,7 +177,7 @@ const Editor = ({ defaultValues, placeholder, label, titleRef, editorRef, data }
           </div>
         )}
 
-        <div className='text-sm text-foreground-500'>
+        <div className='hidden text-sm text-foreground-500 md:inline'>
           Use <Kbd keys={['tab']}>Tab</Kbd> to open editor tools
         </div>
       </div>

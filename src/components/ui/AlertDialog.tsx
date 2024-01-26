@@ -34,7 +34,7 @@ const AlertDialog = ({
       </div>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} {...props}>
-        <ModalContent className='min-w-[500px]'>
+        <ModalContent className='w-full px-1.5 sm:min-w-[500px] sm:px-0'>
           <ModalHeader className='pb-0 text-lg'>{headerContent}</ModalHeader>
 
           <ModalBody>{bodyContent}</ModalBody>

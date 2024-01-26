@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { GridContainer } from '@/components/ReusableCard';
 import AuthorCardWrapper from '@/components/authors/AuthorCardWrapper';
 import AuthorCardSkeleton from '@/components/loadings/AuthorCardSkeleton';
-import Divider from '@/components/ui/Divider';
+import Heading from '@/components/Heading';
 
 const AuthorsPage = ({
   searchParams,
@@ -14,14 +14,12 @@ const AuthorsPage = ({
   return (
     <>
       <div className='flex items-center justify-between'>
-        <h2 className='w-[230px] text-xl font-semibold md:text-2xl'>
-          Popular Authors <Divider className='mt-1' />
-        </h2>
+        <Heading>Popular Authors</Heading>
 
         {/* <AuthorPageFilters /> will do the filters later */}
       </div>
 
-      <div className='mt-4'>
+      <div className='mt-6'>
         <Suspense
           fallback={
             <GridContainer>

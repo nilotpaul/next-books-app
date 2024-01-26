@@ -1,5 +1,5 @@
 import { db } from '@/lib/db/conn';
-import { users } from '@/lib/db/schema';
+import { books, users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { cache } from 'react';
 
@@ -71,19 +71,44 @@ export async function updateUser(
   return updatedUser;
 }
 
-export const purchaseBook = async (
-  bookId: string,
-  userId: string,
-  prevPurchasedBooks: string[]
-) => {
-  const purchasedBook = await db
-    .update(users)
-    .set({
-      purchasedBooks: [...prevPurchasedBooks, bookId],
-    })
-    .where(eq(users.clerkId, userId));
+export const purchaseBook = async ({
+  bookId,
+  userId,
+  prevPurchasedBooks,
+  prevPurchaseCount,
+}: {
+  bookId: string;
+  userId: string;
+  prevPurchasedBooks: string[];
+  prevPurchaseCount: number;
+}) => {
+  const { success } = await db.transaction(async (tx) => {
+    const purchasedBook = await db
+      .update(users)
+      .set({
+        purchasedBooks: [...prevPurchasedBooks, bookId],
+      })
+      .where(eq(users.clerkId, userId));
 
-  if (purchasedBook.rowsAffected === 0) {
+    if (purchasedBook.rowsAffected === 0) {
+      tx.rollback();
+      return { success: false };
+    }
+
+    const updateBookPurchaseCount = await db
+      .update(books)
+      .set({ purchaseCount: prevPurchaseCount + 1 })
+      .where(eq(books.id, bookId));
+
+    if (updateBookPurchaseCount.rowsAffected === 0) {
+      tx.rollback();
+      return { success: false };
+    }
+
+    return { success: true };
+  });
+
+  if (!success) {
     return { success: false };
   }
 

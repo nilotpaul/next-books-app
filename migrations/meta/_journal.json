@@ -15,6 +15,13 @@
       "when": 1705415141066,
       "tag": "0001_yummy_ink",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1706203513800,
+      "tag": "0002_tough_captain_britain",
+      "breakpoints": true
     }
   ]
 }

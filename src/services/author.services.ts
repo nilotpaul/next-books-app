@@ -2,19 +2,12 @@ import { db } from '@/lib/db/conn';
 import { authors, books, socialLinks, users } from '@/lib/db/schema';
 import { UpdateAuthorProfile } from '@/validations/authorValidations';
 import { env } from '@/validations/env';
-import { and, asc, desc, eq, gt, like, lt, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, like, lt } from 'drizzle-orm';
 import { cache } from 'react';
 
 import 'server-only';
 
 export const getAuthorsByStars = cache(async (limit?: number, cursor?: string) => {
-  // const filterBy =
-  //   opts?.order && opts?.sort
-  //     ? opts?.sort === 'stars'
-  //       ? sql`stars`
-  //       : sql`author_name`.append(sql` `).append(opts?.order === 'asc' ? sql`asc` : sql`desc`)
-  //     : undefined;
-
   const row = await db
     .select({
       id: authors.clerkId,

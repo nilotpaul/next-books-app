@@ -9,24 +9,32 @@ import {
   json,
   decimal,
   text,
+  index,
 } from 'drizzle-orm/mysql-core';
 import { BookGenres } from '@/types/author.types';
 import { BOOK_AVAILABALITY, BOOK_LANGUAGES, BOOK_STATUS } from '../../config/constants/books';
 
-export const users = mysqlTable('users', {
-  clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
-  email: varchar('email', { length: 255 }).notNull(),
-  firstName: varchar('first_name', { length: 50 }).notNull(),
-  lastName: varchar('last_name', { length: 70 }).notNull(),
-  username: varchar('user_name', { length: 50 }),
-  imageUrl: varchar('image_url', { length: 255 }),
-  strategy: varchar('strategy', { length: 50 }).notNull(),
-  isAuthor: boolean('is_author').default(false),
-  purchasedBooks: json('purchased_books').$type<string[]>().default([]),
-  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
-});
+export const users = mysqlTable(
+  'users',
+  {
+    clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
+    email: varchar('email', { length: 255 }).notNull(),
+    firstName: varchar('first_name', { length: 50 }).notNull(),
+    lastName: varchar('last_name', { length: 70 }).notNull(),
+    username: varchar('user_name', { length: 50 }),
+    imageUrl: varchar('image_url', { length: 255 }),
+    strategy: varchar('strategy', { length: 50 }).notNull(),
+    isAuthor: boolean('is_author').default(false),
+    purchasedBooks: json('purchased_books').$type<string[]>().default([]),
+    stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
+  },
+  (table) => ({
+    clerkIdx: index('clerk_idx').on(table.clerkId),
+    emailIdx: index('email_idx').on(table.email),
+  })
+);
 
 export const authors = mysqlTable('authors', {
   clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
@@ -41,28 +49,37 @@ export const authors = mysqlTable('authors', {
   joinedOn: timestamp('joined_on').defaultNow().notNull(),
 });
 
-export const books = mysqlTable('books', {
-  id: varchar('id', { length: 255 }).primaryKey().notNull(),
-  clerkId: varchar('clerk_id', { length: 255 }).notNull(),
-  bookTitle: varchar('book_name', { length: 70 }).unique().notNull(),
-  content: json('content').$type<any>(),
-  synopsis: text('synopsis'),
-  normalised_title: varchar('normalised_title', { length: 100 }).unique().notNull(),
-  frontArtwork: varchar('front_artwork', { length: 255 }),
-  backArtwork: varchar('back_artwork', { length: 255 }),
-  status: mysqlEnum('status', BOOK_STATUS).notNull(),
-  genres: json('genres').$type<BookGenres>(),
-  language: mysqlEnum('language', BOOK_LANGUAGES).notNull(),
-  availability: mysqlEnum('availabality', BOOK_AVAILABALITY),
-  pricing: decimal('pricing', { precision: 10, scale: 2 }),
-  series: json('series').$type<string[]>().default([]).notNull(),
-  collaborations: json('collaborations').$type<string[]>(),
-  stars: int('stars').default(0),
-  ratedBy: int('rated_by').default(0),
-  publicationDate: timestamp('publication_date'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
-});
+export const books = mysqlTable(
+  'books',
+  {
+    id: varchar('id', { length: 255 }).primaryKey().notNull(),
+    clerkId: varchar('clerk_id', { length: 255 }).notNull(),
+    bookTitle: varchar('book_name', { length: 70 }).unique().notNull(),
+    content: json('content').$type<any>(),
+    synopsis: text('synopsis'),
+    normalised_title: varchar('normalised_title', { length: 100 }).unique().notNull(),
+    frontArtwork: varchar('front_artwork', { length: 255 }),
+    backArtwork: varchar('back_artwork', { length: 255 }),
+    status: mysqlEnum('status', BOOK_STATUS).notNull(),
+    genres: json('genres').$type<BookGenres>(),
+    language: mysqlEnum('language', BOOK_LANGUAGES).notNull(),
+    availability: mysqlEnum('availabality', BOOK_AVAILABALITY),
+    pricing: decimal('pricing', { precision: 10, scale: 2 }),
+    series: json('series').$type<string[]>().default([]).notNull(),
+    collaborations: json('collaborations').$type<string[]>(),
+    stars: int('stars').default(0),
+    ratedBy: int('rated_by').default(0),
+    purchaseCount: int('purchase_count').default(0),
+    publicationDate: timestamp('publication_date'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').onUpdateNow().notNull(),
+  },
+  (table) => ({
+    bookIdx: index('book_idx').on(table.id),
+    clerkIdx: index('clerk_idx').on(table.clerkId),
+    titleIdx: index('book_idx').on(table.bookTitle),
+  })
+);
 
 export const ratedBooks = mysqlTable('rated_books', {
   id: varchar('id', { length: 255 }).notNull().unique().primaryKey(),

@@ -99,18 +99,21 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
 
   return (
     <>
-      <Button variant='bordered' className='font-semibold'>
-        Save Progress
-      </Button>
       <Button onClick={onOpen} color='success' className='font-semibold'>
         Review
       </Button>
       <>
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} size='5xl' className='overflow-y-auto'>
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          size='5xl'
+          scrollBehavior='inside'
+          className='overflow-y-auto'
+        >
           <ModalContent>
             <ModalHeader>Book Settings</ModalHeader>
             <ModalBody>
-              <div className='grid grid-cols-2 gap-4'>
+              <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                 <div className='relative'>
                   <RectangeImageDropzone
                     initialImage={book.frontArtwork || ''}
@@ -141,7 +144,7 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                 label='Synopsis'
                 placeholder='Enter a brief description about the book'
               />
-              <div className='grid grid-cols-3 gap-3'>
+              <div className='grid grid-cols-1 gap-3 xs:grid-cols-2 md:grid-cols-3'>
                 <Autocomplete
                   defaultInputValue={book.language}
                   {...register('language')}
@@ -219,7 +222,7 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                   </SelectItem>
                 </Select>
               </div>
-              <div className='flex items-center justify-between'>
+              <div className='flex flex-wrap items-center justify-between gap-5'>
                 <Switch
                   {...register('status')}
                   isSelected={isSelected}
@@ -261,7 +264,7 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                   onClick={handleSubmit(onSubmit)}
                   isLoading={isLoading}
                   color={!isSelected ? 'secondary' : 'warning'}
-                  className='font-medium'
+                  className='w-full font-medium'
                 >
                   {!isSelected ? 'Save as Draft' : 'Publish'}
                 </Button>

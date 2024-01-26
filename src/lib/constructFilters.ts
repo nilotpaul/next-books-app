@@ -33,7 +33,7 @@ export function onSearchParamsChange({
 }: {
   name: string;
   value: string;
-  action: (value: string) => void;
+  action: (value?: string) => void;
   deleteQueryParams: (name: string) => string | undefined;
   pathname: string;
   router: AppRouterInstance;
@@ -41,6 +41,7 @@ export function onSearchParamsChange({
   if (!value || value.length === 0) {
     const params = deleteQueryParams(name);
     params !== undefined && router.replace(pathname + '?' + params);
+    action(undefined);
     return;
   }
 

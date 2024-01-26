@@ -4,16 +4,15 @@ import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 
 import BookCardWrapper from '@/components/books/main/BookCardWrapper';
 import BookCardSkeleton from '@/components/loadings/BookCardSkeleton';
-import Divider from '@/components/ui/Divider';
 import { GridContainer } from '@/components/ReusableCard';
+import Heading from '@/components/Heading';
 
 const BooksPage = () => {
   return (
     <div className='mt-4'>
-      <h2 className='w-[200px] text-xl font-semibold md:text-2xl'>
-        Popular Books <Divider className='mt-1 h-[1px] w-full' />
-      </h2>
-      <div className='mt-4'>
+      <Heading classNames={{ divider: 'h-px' }}>Popular Books</Heading>
+
+      <div className='mt-6'>
         <Suspense
           fallback={
             <GridContainer>

@@ -6,11 +6,7 @@ import SearchModal from '../modals/SearchModal';
 const Search = async () => {
   const user = (await userSession()) as User;
 
-  return (
-    <>
-      <SearchModal userId={user?.id} />
-    </>
-  );
+  return <SearchModal userId={user?.id} />;
 };
 
 export default Search;

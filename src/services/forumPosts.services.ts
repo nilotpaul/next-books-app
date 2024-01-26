@@ -41,6 +41,8 @@ export const getUserForumPosts = cache(async (userId: string, limit?: number, cu
       postId: forumPosts.id,
       postTitle: forumPosts.postTitle,
       postImage: forumPosts.image,
+      postLikes: forumPosts.likes,
+      postTags: forumPosts.tags,
       createdAt: forumPosts.createdAt,
     })
     .from(forumPosts)

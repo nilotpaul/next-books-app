@@ -22,18 +22,18 @@ const Stars = ({
   displayOnly = false,
   size = 'md',
 }: StarsProps) => {
-  const [totalStars, setTotalStars] = useState(initialStars);
+  const [totalStars, setTotalStars] = useState(initialStars || 0);
   const utils = trpc.useUtils();
 
-  const { mutate: rateBook } = trpc.bookRouter.rateBook.useMutation({
+  const { mutate: rateBook, isLoading } = trpc.bookRouter.rateBook.useMutation({
     onMutate: async ({ stars }) => {
       const prevStars = initialStars;
 
       if (stars === totalStars) {
         setTotalStars(0);
-        return;
+      } else {
+        setTotalStars(stars);
       }
-      setTotalStars(stars);
 
       return { prevStars };
     },
@@ -49,6 +49,7 @@ const Stars = ({
       if (prevData?.prevStars) {
         setTotalStars(prevData.prevStars);
       }
+      utils.userRouter.purchases.invalidate();
     },
   });
 
@@ -57,16 +58,20 @@ const Stars = ({
       {Array(length)
         .fill(0)
         .map((_, index) => (
-          <Star
+          <button
             key={index}
+            disabled={isLoading}
             onClick={() => !displayOnly && bookId && rateBook({ bookId, stars: index + 1 })}
-            className={cn('h-4 w-4 text-warning', {
-              'fill-warning': totalStars > index,
-              'cursor-pointer': !displayOnly,
-              'h-3.5 w-3.5': size === 'sm',
-              'h-6 w-6': size === 'lg',
-            })}
-          />
+          >
+            <Star
+              className={cn('h-4 w-4 cursor-pointer text-warning', {
+                'fill-warning': totalStars > index,
+                'cursor-default': displayOnly,
+                'h-3.5 w-3.5': size === 'sm',
+                'h-6 w-6': size === 'lg',
+              })}
+            />
+          </button>
         ))}
     </>
   );

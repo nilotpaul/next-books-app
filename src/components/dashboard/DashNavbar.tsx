@@ -1,8 +1,9 @@
 'use client';
 
+import { useState } from 'react';
+
 import { usePathname } from 'next/navigation';
 import Link from '../ui/Link';
-import NextLink from 'next/link';
 
 import {
   Navbar,
@@ -15,30 +16,32 @@ import {
 } from '@nextui-org/navbar';
 import Container from '../ui/Container';
 import { dashNavItems } from '@/config/constants/navMenu';
+import BrandLogo from '../BrandLogo';
 
 type DashNavbarProps = {
   children: React.ReactNode;
 };
 
 const DashNavbar = ({ children }: DashNavbarProps) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+
   return (
     <Navbar
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
       maxWidth='full'
       isBlurred
       isBordered
       position='sticky'
-      className='h-14 sm:h-16'
+      className='h-16'
       classNames={{
         wrapper: 'px-0',
       }}
     >
       <Container className='flex w-full items-center gap-12'>
         <NavbarBrand className='sm:min-w-fit sm:max-w-fit'>
-          <NextLink href='/' className='font-bold text-gray-100'>
-            <span className='text-danger'>BOOKS</span>
-            <span className='text-foreground-700'>God</span>
-          </NextLink>
+          <BrandLogo />
         </NavbarBrand>
 
         <NavbarContent className='hidden gap-4 font-medium sm:flex'>
@@ -68,21 +71,18 @@ const DashNavbar = ({ children }: DashNavbarProps) => {
 
         <NavbarMenuToggle className='sm:hidden' />
 
-        <NavbarMenu className='font-medium'>
+        <NavbarMenu className='gap-3 font-medium'>
           {dashNavItems.map((item) => {
             const isActive = pathname === item.path;
 
             return (
-              <NavbarMenuItem
-                key={item.path}
-                isActive={isActive}
-                className='mt-1 flex w-full items-center justify-center'
-              >
+              <NavbarMenuItem key={item.path} isActive={isActive}>
                 <Link
+                  onClick={() => setIsMenuOpen(false)}
                   color='foreground'
                   underline={isActive ? 'always' : 'none'}
                   href={item.path}
-                  className='text-foreground-600'
+                  className='text-base text-foreground-600 xs:text-lg sm:text-base'
                 >
                   {item.name}
                 </Link>

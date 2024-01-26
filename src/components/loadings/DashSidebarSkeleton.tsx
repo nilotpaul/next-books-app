@@ -2,8 +2,8 @@ import { Skeleton } from '@nextui-org/skeleton';
 
 const DashSidebarSkeleton = () => {
   return (
-    <div className='relative w-[264px] rounded-lg sm:h-[calc(100vh-5.5rem)]'>
-      <div className='h-full w-full space-y-3 rounded-lg bg-stone-900/50 px-3 py-2'>
+    <div className='relative rounded-lg sm:h-[calc(100vh-5.5rem)] sm:w-[264px]'>
+      <div className='flex h-full w-2/3 gap-3 rounded-lg px-3 pl-0 sm:w-full sm:flex-col sm:bg-stone-900/50 sm:py-2 sm:pl-3'>
         {Array(3)
           .fill(0)
           .map((_, index) => (

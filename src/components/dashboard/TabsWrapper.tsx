@@ -44,7 +44,6 @@ const TabsWrapper = async ({ getData }: TabsWrapperProps) => {
           authorBooks: newbooks,
           forumPosts,
           purchases: purchasedBooks,
-          reviews: [],
         }}
       >
         <ManageDashTabs />
@@ -59,7 +58,6 @@ const TabsWrapper = async ({ getData }: TabsWrapperProps) => {
         isAuthor,
         forumPosts,
         purchases: purchasedBooks,
-        reviews: [],
       }}
     >
       <ManageDashTabs />

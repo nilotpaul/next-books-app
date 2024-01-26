@@ -6,18 +6,30 @@ import Container from '@/components/ui/Container';
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
+    <>
       <Header>
-        <Search />
+        <div className='flex w-full items-center gap-3 sm:justify-end'>
+          <Search />
+          <Profile />
+        </div>
         <Auth
           width='full'
           color='warning'
-          className='flex w-full flex-col items-center md:hidden'
+          variants={{ signup: 'flat', login: 'light' }}
+          classNames={{
+            main: 'flex w-min gap-2 items-center md:hidden',
+            button: 'xs:text-lg xs:h-10 xs:w-24',
+          }}
         />
-        <Auth width='default' className='hidden md:block' />
-        <Profile />
+        <Auth
+          width='default'
+          classNames={{
+            main: 'hidden md:flex gap-1',
+          }}
+        />
       </Header>
+
       <Container className='mt-3'>{children}</Container>
-    </div>
+    </>
   );
 }

@@ -7,10 +7,12 @@ export default authMiddleware({
   publicRoutes: [
     '/',
     '/api/webhooks(.*)',
+    '/api/trpc/:path*',
     '/books',
+    '/books/:path',
     '/authors',
     '/discover',
-    '/forum/:path*',
+    '/forum/posts',
     '/docs',
   ],
   afterAuth: async (auth, req) => {

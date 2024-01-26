@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { trpc } from '@/lib/trpc/TRPCProvider';
+import { useRouter } from 'next/navigation';
 
 import { ThumbsUp } from 'lucide-react';
 import { cn } from '@/utils/utils';
 import { toast } from 'sonner';
-import { TRPCError } from '@trpc/server';
 
 type PostLikeButtonProps = {
   postId: string;
@@ -23,11 +23,16 @@ const PostLikeButton = ({
 }: PostLikeButtonProps) => {
   const [likes, setLikes] = useState<typeof initialLikes>(initialLikes);
   const utils = trpc.useUtils();
+  const router = useRouter();
 
-  const { mutate: likePost } = trpc.forumPostRouter.like.useMutation({
+  const { mutate: likePost, isLoading } = trpc.forumPostRouter.like.useMutation({
     onMutate: async () => {
       const prevLikes = [...initialLikes];
       await utils.forumPostRouter.getPosts.cancel();
+
+      if (!userId) {
+        throw new Error('Not logged in', { cause: 401 });
+      }
 
       if (!likes.includes(userId)) {
         setLikes((prev) => [...prev, userId]);
@@ -49,8 +54,8 @@ const PostLikeButton = ({
 
       utils.forumPostRouter.getPosts.invalidate();
 
-      if (err instanceof TRPCError) {
-        toast(err.message);
+      if (err.data?.code === 'UNAUTHORIZED' || (err instanceof Error && err.cause === 401)) {
+        router.push('/login');
         return;
       }
 
@@ -60,16 +65,17 @@ const PostLikeButton = ({
 
   return (
     <div className='flex items-center gap-3'>
-      <ThumbsUp
-        onClick={() => likePost({ postId })}
-        className={cn(
-          'h-4 w-4 cursor-pointer text-danger',
-          {
-            'fill-danger': likes.includes(userId),
-          },
-          className
-        )}
-      />
+      <button disabled={isLoading} onClick={() => likePost({ postId })}>
+        <ThumbsUp
+          className={cn(
+            'h-4 w-4 cursor-pointer text-danger',
+            {
+              'fill-danger': likes.includes(userId),
+            },
+            className
+          )}
+        />
+      </button>
       <span className='text-xs text-danger'>{likes.length}</span>
     </div>
   );

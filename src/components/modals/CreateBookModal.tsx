@@ -26,6 +26,7 @@ type CreateBookModalProps = {
 const CreateBookModal = ({ userId }: CreateBookModalProps) => {
   const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
   const router = useRouter();
+  const utils = trpc.useUtils();
 
   const {
     register,
@@ -43,6 +44,7 @@ const CreateBookModal = ({ userId }: CreateBookModalProps) => {
   const { mutate: createBook, isLoading } = trpc.bookRouter.create.useMutation({
     onSuccess: ({ bookId }) => {
       router.refresh();
+      utils.authorRouter.getAuthorBooks.refetch();
       onClose();
       router.push(`/books/write/${userId}/${bookId}`);
     },
@@ -60,10 +62,11 @@ const CreateBookModal = ({ userId }: CreateBookModalProps) => {
         color='success'
         size='sm'
         startContent={<Plus className='h-4 w-4 font-extrabold' />}
-        className='gap-1.5 text-small font-semibold text-black'
+        className='gap-1.5 px-2 text-xs font-semibold text-black xs:px-3 xs:text-sm'
       >
         Write Book
       </Button>
+
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           <form onSubmit={handleSubmit((values) => createBook(values))}>

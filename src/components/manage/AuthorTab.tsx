@@ -10,6 +10,7 @@ import { Chip } from '@nextui-org/chip';
 import { Button } from '@nextui-org/button';
 import { cn } from '@/utils/utils';
 import AuthorProfileUpdateModal from '../modals/AuthorProfileUpdateModal';
+import Heading from '../Heading';
 
 type AuthorTabtProps = {
   isAuthor: boolean;
@@ -38,13 +39,20 @@ const AuthorTab = ({ isAuthor, author, links }: AuthorTabtProps) => {
       >
         <Card
           fullWidth
-          className='space-y-2'
+          className='space-y-2 border-1 border-stone-200 shadow-sm dark:border-0'
           classNames={{
-            base: 'bg-stone-800/50',
+            base: 'dark:bg-stone-800/50',
           }}
         >
-          <CardHeader className='flex w-[150px] flex-col items-start pb-1 text-lg font-semibold text-foreground-600'>
-            Author Profile <Divider className='w-[150px]' />
+          <CardHeader className='pb-1'>
+            <Heading
+              classNames={{
+                heading: 'font-semibold md:text-lg xs:text-lg underline dark:no-underline',
+                divider: 'hidden dark:block',
+              }}
+            >
+              Author Profile
+            </Heading>
           </CardHeader>
 
           <CardBody className='py-2 pl-0 sm:pl-3'>
@@ -126,17 +134,23 @@ const AuthorTab = ({ isAuthor, author, links }: AuthorTabtProps) => {
 
         <Card
           fullWidth
-          className='space-y-2'
+          className='space-y-2 border-1 border-stone-200 shadow-sm dark:border-0'
           classNames={{
-            base: 'bg-stone-800/50',
+            base: 'dark:bg-stone-800/50',
           }}
         >
-          <CardHeader className='flex w-[150px] flex-col items-start pb-1 text-lg font-semibold text-foreground-600'>
-            Social Links
-            <Divider className='w-[150px]' />
+          <CardHeader className='pb-1'>
+            <Heading
+              classNames={{
+                heading: 'font-semibold md:text-lg xs:text-lg underline dark:no-underline',
+                divider: 'hidden dark:block',
+              }}
+            >
+              Social Links
+            </Heading>
           </CardHeader>
 
-          <CardBody className='py-2 pl-0 sm:pl-3'>
+          <CardBody className='py-2 sm:pl-3'>
             <div className='flex w-full flex-col items-center justify-center gap-2'>
               <Textarea readOnly label='Author Bio' placeholder='Enter your bio' value={bio} />
 

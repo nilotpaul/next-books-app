@@ -1,12 +1,9 @@
 import { Skeleton } from '@nextui-org/skeleton';
-import BookInfoLeft from '../books/main/BookInfoLeft';
 
 const BookInfoSkeleton = () => {
   return (
-    <div className='grid h-full w-full place-content-between place-items-start gap-12 md:grid-cols-2'>
-      <div className='relative w-[530px]'>
-        <BookInfoLeft isLoading backArtwork='' frontArtwork='' title='' />
-      </div>
+    <div className='grid h-full w-full grid-cols-1 place-content-between place-items-start gap-12 md:grid-cols-2'>
+      <Skeleton className='h-[400px] w-full rounded-md xs:h-[450px] md:min-h-[650px]' />
 
       <div className='w-full space-y-6'>
         <Skeleton className='h-8 w-[80%] rounded-lg' />

@@ -4,7 +4,10 @@ import Link from '../ui/Link';
 import { userSession } from '@/services/auth.services';
 
 type AuthProps = {
-  className?: string;
+  classNames?: {
+    main?: string;
+    button?: string;
+  };
   variants?: {
     signup?: ButtonProps['variant'];
     login?: ButtonProps['variant'];
@@ -14,13 +17,7 @@ type AuthProps = {
   width: 'full' | 'default';
 };
 
-const Auth = async ({
-  className,
-  size = 'sm',
-  variants = { login: 'flat', signup: 'light' },
-  color = 'default',
-  width,
-}: AuthProps) => {
+const Auth = async ({ classNames, size = 'sm', variants, color = 'default', width }: AuthProps) => {
   const user = await userSession();
 
   const isWidthFull = width === 'full';
@@ -28,16 +25,20 @@ const Auth = async ({
   return (
     <>
       {!user?.id && (
-        <div className={cn(className)}>
+        <div className={cn(classNames?.main)}>
           <Button
             as={Link}
             href='/sign-up'
             size={size}
             color={color}
-            variant={variants.signup}
-            className={cn('text-sm font-medium', {
-              'w-full': isWidthFull,
-            })}
+            variant={variants?.signup || 'light'}
+            className={cn(
+              'text-sm font-medium',
+              {
+                'w-full': isWidthFull,
+              },
+              classNames?.button
+            )}
           >
             Sign Up
           </Button>
@@ -46,10 +47,14 @@ const Auth = async ({
             href='/sign-in'
             size={size}
             color={color}
-            variant={variants.login}
-            className={cn('text-sm font-medium', {
-              'w-full': isWidthFull,
-            })}
+            variant={variants?.login || 'flat'}
+            className={cn(
+              'text-sm font-medium',
+              {
+                'w-full': isWidthFull,
+              },
+              classNames?.button
+            )}
           >
             Log in
           </Button>

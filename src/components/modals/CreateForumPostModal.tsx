@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { EditorOutput } from '@/types/editor.types';
 import { useForm } from 'react-hook-form';
 import { ForumPost, forumPostValidation } from '@/validations/forumPostValidations';
@@ -28,8 +29,9 @@ type CreateForumPostModalProps = {
   requestSubmit: () => Promise<EditorOutput>;
 };
 
-const CreateForumPostModal = ({ userId, isAuthor, requestSubmit }: CreateForumPostModalProps) => {
+const CreateForumPostModal = ({ isAuthor, requestSubmit }: CreateForumPostModalProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const utils = trpc.useUtils();
   const router = useRouter();
 
   const {
@@ -54,8 +56,10 @@ const CreateForumPostModal = ({ userId, isAuthor, requestSubmit }: CreateForumPo
       if (success) {
         toast.success('Post Created');
       }
+
       router.push('/dashboard');
       router.refresh();
+      utils.forumPostRouter.getPosts.refetch();
       onClose();
     },
     onError: (err) => {
@@ -63,6 +67,14 @@ const CreateForumPostModal = ({ userId, isAuthor, requestSubmit }: CreateForumPo
       toast.error(err.message);
     },
   });
+
+  useEffect(() => {
+    if (Object.entries(errors).length) {
+      Object.entries(errors).forEach(([_, value]) => {
+        toast.error(value.message?.toString());
+      });
+    }
+  }, [errors]);
 
   return (
     <>

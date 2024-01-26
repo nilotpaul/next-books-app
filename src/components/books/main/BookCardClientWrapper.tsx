@@ -8,6 +8,7 @@ import { useEffect, useRef } from 'react';
 
 import ReusableCard, { GridContainer } from '@/components/ReusableCard';
 import BookCardSkeleton from '@/components/loadings/BookCardSkeleton';
+import EmptyArrayFallback from '@/components/EmptyArrayFallback';
 
 type BookCardClientWrapperProps = {
   books: PublishedBook[];
@@ -60,31 +61,25 @@ const BookCardClientWrapper = ({ books: initialBooks }: BookCardClientWrapperPro
   });
 
   return (
-    <>
-      <GridContainer
-        classNames={{
-          notFound: 'left-0 -translate-x-0',
-        }}
-        notFound={!books || books.length === 0}
-      >
-        {[...books]
-          .filter((book, idx, self) => idx === self.findIndex((b) => b.id === book.id))
-          .map((book) => (
-            <div ref={books.slice(-1)[0].id === book.id ? ref : undefined} key={book.id}>
-              <ReusableCard
-                data={{
-                  id: book.id,
-                  title: book.title,
-                  href: `/books/${book.id}`,
-                  thumbnail: book.artwork || '',
-                  chip: book.availability || 'Free',
-                }}
-              />
-            </div>
-          ))}
-        {isFetchingNextPage && <BookCardSkeleton cards={MAX_SEARCH_RESULTS_LIMIT} />}
-      </GridContainer>
-    </>
+    <GridContainer className='relative'>
+      {[...books]
+        .filter((book, idx, self) => idx === self.findIndex((b) => b.id === book.id))
+        .map((book) => (
+          <div ref={books.slice(-1)[0].id === book.id ? ref : undefined} key={book.id}>
+            <ReusableCard
+              data={{
+                id: book.id,
+                title: book.title,
+                href: `/books/${book.id}`,
+                thumbnail: book.artwork || '',
+                chip: book.availability || 'Free',
+              }}
+            />
+          </div>
+        ))}
+      {isFetchingNextPage && <BookCardSkeleton cards={MAX_SEARCH_RESULTS_LIMIT} />}
+      {!books || (books.length === 0 && <EmptyArrayFallback className='left-0 translate-x-0' />)}
+    </GridContainer>
   );
 };
 

@@ -21,6 +21,7 @@ const PurchaseTab = () => {
       },
       {
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        keepPreviousData: true,
         suspense: true,
         initialData: {
           pageParams: [undefined],
@@ -35,7 +36,6 @@ const PurchaseTab = () => {
             },
           ],
         },
-        enabled: false,
       }
     );
 
@@ -69,8 +69,8 @@ const PurchaseTab = () => {
                 className='rounded-md object-cover'
               />
             </TableCell>
-            <TableCell className='text-base'>{book?.title}</TableCell>
-            <TableCell className='text-base'>
+            <TableCell className='text-sm font-medium sm:text-base'>{book?.title}</TableCell>
+            <TableCell className='whitespace-nowrap text-base'>
               {book?.publishedDate && format(book?.publishedDate!, 'dd / mm / yy')}
             </TableCell>
             <TableCell>

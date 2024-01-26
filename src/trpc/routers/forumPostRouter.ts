@@ -24,7 +24,6 @@ export const forumPostRouter = router({
         getUserForumPostByTitle(input.postTitle, user.id),
         getForumPostById(input.id),
       ]);
-      console.log({ postTitleId: postByTitle?.id, postByIdId: postById?.id });
 
       if (postByTitle?.id || postById?.id) {
         throw new TRPCError({

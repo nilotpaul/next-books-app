@@ -1,6 +1,6 @@
 'use client';
 
-import { BooksWithoutNT } from '@/types/book.types';
+import { BooksWithoutNT, PurchasedBook } from '@/types/book.types';
 import { ForumPost } from '@/types/forumPost.types';
 import { createContext } from 'react';
 
@@ -20,9 +20,8 @@ type DashboadContext = {
     authorImage: string | null;
     authorName: string;
   })[];
-  purchases: any[];
+  purchases: PurchasedBook[];
   forumPosts: ForumPost[];
-  reviews: any[];
 };
 
 export const MyDashboardContext = createContext<DashboadContext>({
@@ -35,7 +34,6 @@ export const MyDashboardContext = createContext<DashboadContext>({
   authorBooks: undefined,
   purchases: [],
   forumPosts: [],
-  reviews: [],
 });
 
 export function DashboardContext({ children, values }: DashboardContextProps) {

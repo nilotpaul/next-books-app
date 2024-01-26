@@ -7,6 +7,7 @@ import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { trpc } from '@/lib/trpc/TRPCProvider';
 import { usePathname, useRouter } from 'next/navigation';
 import { bookGenres } from '@/config/constants/author';
+import { useNavbarContext } from '@nextui-org/navbar';
 
 import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@nextui-org/modal';
 import { Button } from '@nextui-org/button';
@@ -20,6 +21,7 @@ type SearchModalProps = {
 };
 
 const SearchModal = ({ userId }: SearchModalProps) => {
+  const { setIsMenuOpen } = useNavbarContext();
   const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
   const { getQueryParams, deleteQueryParams } = useSearchParams();
   const pathname = usePathname();
@@ -61,8 +63,14 @@ const SearchModal = ({ userId }: SearchModalProps) => {
   return (
     <>
       {userId && (
-        <Button onClick={onOpen} size='sm' isIconOnly radius='md'>
-          <SearchIcon className='h-5 w-5' />
+        <Button
+          onClick={onOpen}
+          className='xs:h-10 xs:w-10 sm:h-8 sm:w-fit'
+          size='sm'
+          isIconOnly
+          radius='md'
+        >
+          <SearchIcon className='h-5 w-5 xs:h-6 xs:w-6 sm:h-5 sm:w-5' />
         </Button>
       )}
       <Modal
@@ -98,6 +106,7 @@ const SearchModal = ({ userId }: SearchModalProps) => {
                     onClick={() => {
                       onClose();
                       router.push(`/discover?genres=${genre.toLowerCase().replace(' ', '+')}`);
+                      setIsMenuOpen(false);
                     }}
                     size='lg'
                     radius='sm'
@@ -118,11 +127,12 @@ const SearchModal = ({ userId }: SearchModalProps) => {
                     onClick={() => {
                       router.push(`/books/${book.id}`);
                       onClose();
+                      setIsMenuOpen(false);
                     }}
                   />
                 ))
             )}
-            {(isFetching || isFetchingNextPage) && <SearchResultSkeleton />}
+            {isFetching && <SearchResultSkeleton />}
             {!(debouncedValue.length >= 0 && debouncedValue.length < 2) &&
               !isFetching &&
               !isFetchingNextPage &&

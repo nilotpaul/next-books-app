@@ -8,6 +8,7 @@ import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 
 import ReusableCard, { GridContainer } from '../ReusableCard';
 import BookCardSkeleton from '../loadings/BookCardSkeleton';
+import EmptyArrayFallback from '../EmptyArrayFallback';
 
 type AuthorCardClientWrapperProps = {
   authors: AuthorByStars[];
@@ -60,12 +61,7 @@ const AuthorCardClientWrapper = ({ authors: initialAuthors }: AuthorCardClientWr
   });
 
   return (
-    <GridContainer
-      classNames={{
-        notFound: 'left-0 -translate-x-0',
-      }}
-      notFound={!authors || authors.length === 0}
-    >
+    <GridContainer className='relative'>
       {[...authors]
         .filter((author, idx, self) => idx === self.findIndex((b) => b.id === author.id))
         .map((author) => (
@@ -82,6 +78,8 @@ const AuthorCardClientWrapper = ({ authors: initialAuthors }: AuthorCardClientWr
           </div>
         ))}
       {isFetchingNextPage && <BookCardSkeleton cards={MAX_SEARCH_RESULTS_LIMIT} />}
+      {!authors ||
+        (authors.length === 0 && <EmptyArrayFallback className='left-0 -translate-x-0' />)}
     </GridContainer>
   );
 };

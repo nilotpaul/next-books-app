@@ -12,9 +12,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { Select, SelectItem } from '@nextui-org/select';
-import { Button, Input } from '@nextui-org/react';
+import { Accordion, AccordionItem, Button, Input, Skeleton } from '@nextui-org/react';
 import { FilterX, Search } from 'lucide-react';
 import AuthorFilter from './AuthorFilter';
+import { useMediaQuery } from '@mantine/hooks';
+import { useMounted } from '@/hooks/useMounted';
 
 const Filters = () => {
   const { deleteQueryParams } = useSearchParams();
@@ -39,6 +41,9 @@ const Filters = () => {
       series: undefined,
     },
   });
+
+  const isMobile = useMediaQuery('(min-width: 380px)');
+  const [isMounted] = useMounted();
 
   useEffect(() => {
     if (Object.keys(errors).length) {
@@ -67,162 +72,191 @@ const Filters = () => {
     })(e);
   };
 
+  if (!isMounted) {
+    return <Skeleton className='h-12 w-full rounded-lg xs:h-[15rem]' />;
+  }
+
   return (
-    <div className='relative grid grid-cols-4 gap-4 rounded-lg border border-danger/70 bg-foreground-50/70 p-4 py-5'>
-      <Select
-        multiple
-        selectionMode='multiple'
-        radius='sm'
-        labelPlacement='outside'
-        label='Select Genre(s)'
-        placeholder='Enter genres'
-        onChange={(e) =>
-          onSearchParamsChange({
-            name: 'genres',
-            value: e.target.value,
-            deleteQueryParams,
-            pathname,
-            router,
-            action: (value) => setValue('genres', value.split(',')),
-          })
+    <Accordion
+      defaultExpandedKeys={isMobile ? ['1'] : []}
+      className='rounded-lg border border-default-200 bg-foreground-50/70 px-0'
+    >
+      <AccordionItem
+        indicator={
+          <div className='space-x-2 text-sm'>
+            <Button onClick={() => router.replace(pathname)} size='sm' variant='light' isIconOnly>
+              <FilterX className='h-4 w-4 text-danger xs:h-5 xs:w-5 sm:h-4 sm:w-4' />
+            </Button>
+            <Button onClick={handleFilterSubmit} size='sm' variant='flat' isIconOnly>
+              <Search className='h-4 w-4 xs:h-5 xs:w-5 sm:h-4 sm:w-4' />
+            </Button>
+          </div>
         }
+        key='1'
+        aria-label='Filter Books'
+        title='Filter Books'
+        classNames={{
+          base: 'px-0',
+          heading: 'px-4 font-semibold',
+          title: 'text-primary text-base xs:text-lg',
+          indicator: 'data-[open]:rotate-0',
+        }}
       >
-        {bookGenres.map((genre) => (
-          <SelectItem key={genre} textValue={genre}>
-            {genre}
-          </SelectItem>
-        ))}
-      </Select>
+        <div className='grid grid-cols-1 place-content-start gap-4 px-4 pb-2 xs:grid-cols-2 sm:max-h-full sm:grid-cols-3 md:grid-cols-4'>
+          <Select
+            multiple
+            selectionMode='multiple'
+            radius='sm'
+            labelPlacement='outside'
+            label='Select Genre(s)'
+            placeholder='Enter genres'
+            className='font-semibold'
+            onChange={(e) =>
+              onSearchParamsChange({
+                name: 'genres',
+                value: e.target.value,
+                deleteQueryParams,
+                pathname,
+                router,
+                action: (value) => setValue('genres', value?.split(',')),
+              })
+            }
+          >
+            {bookGenres.map((genre) => (
+              <SelectItem key={genre} textValue={genre}>
+                {genre}
+              </SelectItem>
+            ))}
+          </Select>
 
-      <AuthorFilter setValue={setValue} />
-      <Input
-        onChange={(e) =>
-          onSearchParamsChange({
-            name: 'publication',
-            value: e.target.value,
-            deleteQueryParams,
-            pathname,
-            router,
-            action: (value) => setValue('publication', Number(value)),
-          })
-        }
-        label='Publication Year'
-        placeholder='Enter publication year'
-        labelPlacement='outside'
-        radius='sm'
-      />
+          <AuthorFilter setValue={setValue} />
+          <Input
+            onChange={(e) =>
+              onSearchParamsChange({
+                name: 'publication',
+                value: e.target.value,
+                deleteQueryParams,
+                pathname,
+                router,
+                action: (value) => setValue('publication', Number(value) || undefined),
+              })
+            }
+            label='Publication Year'
+            placeholder='Enter publication year'
+            labelPlacement='outside'
+            radius='sm'
+            className='font-semibold'
+          />
 
-      <Select
-        onChange={(e) =>
-          onSearchParamsChange({
-            name: 'rating',
-            value: e.target.value,
-            deleteQueryParams,
-            pathname,
-            router,
-            action: (value) => setValue('rating', Number(value)),
-          })
-        }
-        label='Rating'
-        placeholder='Select a rating'
-        labelPlacement='outside'
-        radius='sm'
-      >
-        {Array(5)
-          .fill(0)
-          .map((_, index) => (
-            <SelectItem key={index + 1} textValue={(index + 1).toString()}>
-              {(index + 1).toString()}
-            </SelectItem>
-          ))}
-      </Select>
-      <Input
-        onChange={(e) =>
-          onSearchParamsChange({
-            name: 'price',
-            value: e.target.value,
-            deleteQueryParams,
-            pathname,
-            router,
-            action: (value) => setValue('price', value),
-          })
-        }
-        label='Price'
-        placeholder='Enter a price'
-        labelPlacement='outside'
-        radius='sm'
-      />
+          <Select
+            onChange={(e) =>
+              onSearchParamsChange({
+                name: 'rating',
+                value: e.target.value,
+                deleteQueryParams,
+                pathname,
+                router,
+                action: (value) => setValue('rating', Number(value) || undefined),
+              })
+            }
+            label='Rating'
+            placeholder='Select a rating'
+            labelPlacement='outside'
+            radius='sm'
+            className='font-semibold'
+          >
+            {Array(5)
+              .fill(0)
+              .map((_, index) => (
+                <SelectItem key={index + 1} textValue={(index + 1).toString()}>
+                  {(index + 1).toString()}
+                </SelectItem>
+              ))}
+          </Select>
+          <Input
+            onChange={(e) =>
+              onSearchParamsChange({
+                name: 'price',
+                value: e.target.value,
+                deleteQueryParams,
+                pathname,
+                router,
+                action: (value) => setValue('price', value),
+              })
+            }
+            label='Price'
+            placeholder='Enter a price'
+            labelPlacement='outside'
+            radius='sm'
+            className='font-semibold'
+          />
 
-      <Select
-        onChange={(e) =>
-          onSearchParamsChange({
-            name: 'language',
-            value: e.target.value,
-            deleteQueryParams,
-            pathname,
-            router,
-            action: (value) => setValue('language', value),
-          })
-        }
-        label='Language'
-        placeholder='Select a language'
-        labelPlacement='outside'
-        radius='sm'
-      >
-        {BOOK_LANGUAGES.slice().map((item) => (
-          <SelectItem key={item} textValue={item}>
-            {item}
-          </SelectItem>
-        ))}
-      </Select>
-      <Input
-        onChange={(e) =>
-          onSearchParamsChange({
-            name: 'series',
-            value: e.target.value,
-            deleteQueryParams,
-            pathname,
-            router,
-            action: (value) => setValue('series', value),
-          })
-        }
-        label='Series'
-        placeholder='Enter a series'
-        labelPlacement='outside'
-        radius='sm'
-      />
-      <Select
-        onChange={(e) =>
-          onSearchParamsChange({
-            name: 'availability',
-            value: e.target.value,
-            deleteQueryParams,
-            pathname,
-            router,
-            action: (value) => setValue('availability', value),
-          })
-        }
-        label='Availability'
-        placeholder='Enter a availability'
-        labelPlacement='outside'
-        radius='sm'
-      >
-        {BOOK_AVAILABALITY.map((item) => (
-          <SelectItem key={item} textValue={item}>
-            {item}
-          </SelectItem>
-        ))}
-      </Select>
-
-      <div className='absolute right-4 top-1 space-x-2 text-sm'>
-        <Button onClick={() => router.replace(pathname)} size='sm' variant='light' isIconOnly>
-          <FilterX className='h-4 w-4 text-danger' />
-        </Button>
-        <Button onClick={handleFilterSubmit} size='sm' variant='flat' isIconOnly>
-          <Search className='h-4 w-4' />
-        </Button>
-      </div>
-    </div>
+          <Select
+            onChange={(e) =>
+              onSearchParamsChange({
+                name: 'language',
+                value: e.target.value,
+                deleteQueryParams,
+                pathname,
+                router,
+                action: (value) => setValue('language', value),
+              })
+            }
+            label='Language'
+            placeholder='Select a language'
+            labelPlacement='outside'
+            radius='sm'
+            className='font-semibold'
+          >
+            {BOOK_LANGUAGES.slice().map((item) => (
+              <SelectItem key={item} textValue={item}>
+                {item}
+              </SelectItem>
+            ))}
+          </Select>
+          <Input
+            onChange={(e) =>
+              onSearchParamsChange({
+                name: 'series',
+                value: e.target.value,
+                deleteQueryParams,
+                pathname,
+                router,
+                action: (value) => setValue('series', value),
+              })
+            }
+            label='Series'
+            placeholder='Enter a series'
+            labelPlacement='outside'
+            radius='sm'
+            className='font-semibold'
+          />
+          <Select
+            onChange={(e) =>
+              onSearchParamsChange({
+                name: 'availability',
+                value: e.target.value,
+                deleteQueryParams,
+                pathname,
+                router,
+                action: (value) => setValue('availability', value),
+              })
+            }
+            label='Availability'
+            placeholder='Enter a availability'
+            labelPlacement='outside'
+            radius='sm'
+            className='font-semibold'
+          >
+            {BOOK_AVAILABALITY.map((item) => (
+              <SelectItem key={item} textValue={item}>
+                {item}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+      </AccordionItem>
+    </Accordion>
   );
 };
 

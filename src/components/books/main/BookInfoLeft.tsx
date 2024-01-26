@@ -48,7 +48,10 @@ const BookInfoLeft = ({ backArtwork, frontArtwork, title, isLoading }: BookInfoL
     <Carousel setApi={setApi} className='w-full'>
       <CarouselContent className='rounded-md pl-4'>
         {carouselItems.map((item, index) => (
-          <CarouselItem key={item.image} className='relative mx-auto min-h-[650px] w-full'>
+          <CarouselItem
+            key={item.image}
+            className='relative mx-auto h-[400px] w-full xs:h-[450px] md:min-h-[650px]'
+          >
             <Image
               src={item.image}
               alt={`${item.title} image ${index + 1}`}

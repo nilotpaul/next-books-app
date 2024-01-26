@@ -1,10 +1,16 @@
 import { userSession } from '@/services/auth.services';
 import { getUserPurchases } from '@/services/user.services';
-import { User } from '@clerk/nextjs/server';
 import { cache } from 'react';
 
 export const purchaseStatus = cache(async (bookId: string) => {
-  const user = (await userSession()) as User;
+  const user = await userSession();
+
+  if (!user || !user?.id)
+    return {
+      isPurchased: false,
+      userId: null,
+    };
+
   const purchasedBooks = await getUserPurchases(user.id);
 
   if (!purchasedBooks?.purchasedBooks?.includes(bookId)) {

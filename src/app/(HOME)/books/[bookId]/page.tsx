@@ -22,7 +22,7 @@ const BookInfoPage = ({ params }: BookInfoPageProps) => {
       <BookInfo
         getBook={async () => {
           const [book, { isPurchased, userId }] = await Promise.all([
-            await getBookInfoById(bookId),
+            getBookInfoById(bookId),
             purchaseStatus(bookId),
           ]);
           if (!book || !book?.id) {
@@ -31,6 +31,7 @@ const BookInfoPage = ({ params }: BookInfoPageProps) => {
           return {
             book,
             isPurchased: isPurchased || book.clerkId === userId,
+            userId,
           };
         }}
       />

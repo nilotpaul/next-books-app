@@ -21,6 +21,7 @@ const ForumPostsTab = () => {
     forumPosts: posts,
     user: { name: username, userImage, userId },
   } = useContext(MyDashboardContext);
+  const utils = trpc.useUtils();
   const router = useRouter();
 
   const initialPosts = posts.map((post) => ({
@@ -32,8 +33,8 @@ const ForumPostsTab = () => {
     content: '',
     firstName: '',
     lastName: '',
-    likes: [],
-    tags: [],
+    likes: post.postLikes || [],
+    tags: post.postTags || [],
   }));
 
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
@@ -43,6 +44,7 @@ const ForumPostsTab = () => {
       },
       {
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        keepPreviousData: true,
         suspense: true,
         initialData: {
           pageParams: [undefined],
@@ -57,7 +59,6 @@ const ForumPostsTab = () => {
             },
           ],
         },
-        enabled: false,
       }
     );
 
@@ -68,6 +69,7 @@ const ForumPostsTab = () => {
         toast.success('Post deleted');
       }
       router.refresh();
+      utils.forumPostRouter.getPosts.refetch();
     },
     onError: (err) => {
       console.error(err);
@@ -83,8 +85,6 @@ const ForumPostsTab = () => {
     }
   });
 
-  console.log({ hasNextPage, data });
-
   return (
     <div className='relative'>
       <header className='flex flex-col items-end justify-center space-y-1.5 pb-3'>
@@ -94,12 +94,11 @@ const ForumPostsTab = () => {
               src={userImage}
               alt={username}
               fill
-              isBlurred
               radius='full'
               classNames={{ wrapper: 'min-h-[30px] min-w-[30px]' }}
               className='object-cover'
             />
-            <p className='text-sm'>{username}</p>
+            <p className='truncate text-sm font-medium xs:text-base sm:text-sm'>{username}</p>
           </div>
           <Button
             onClick={() => {
@@ -126,8 +125,9 @@ const ForumPostsTab = () => {
             id: post.id,
             thumbnail: post.image,
             title: post.postTitle,
-            likes: 0,
+            likes: post.likes?.length || 0,
             createdOn: post.createdAt,
+            tags: post.tags || [],
           }))}
         map={(item) => (
           <TableRow key={item.id}>
@@ -149,9 +149,11 @@ const ForumPostsTab = () => {
                 </span>
               )}
             </TableCell>
-            <TableCell className='text-base'>{item.title}</TableCell>
-            <TableCell className='text-base'>{format(item.createdOn, 'dd / MM / yy')}</TableCell>
-            <TableCell className='text-base text-danger'>{item.likes || 0}</TableCell>
+            <TableCell className='text-sm font-medium sm:text-base'>{item.title}</TableCell>
+            <TableCell className='whitespace-nowrap text-base'>
+              {format(item.createdOn, 'dd / MM / yy')}
+            </TableCell>
+            <TableCell className='text-base text-danger'>{item.likes}</TableCell>
             <TableCell className='text-base'>
               <div className='flex w-full items-center gap-3'>
                 <Link
@@ -173,6 +175,7 @@ const ForumPostsTab = () => {
                     bodyContent='This action cannot be undone. This will delete the post permanently.'
                     footerContent={
                       <Button
+                        isDisabled={isLoading}
                         onClick={() => deletePost({ postId: item.id })}
                         className='font-medium'
                         color='danger'

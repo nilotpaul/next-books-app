@@ -27,7 +27,7 @@ const ReusableCard = ({ data }: ReusableCardProps) => {
       shadow='sm'
       radius='sm'
       isPressable
-      className='relative h-[200px]  md:h-[250px]'
+      className='relative h-[200px] md:h-[250px]'
     >
       <CardBody className='overflow-visible p-0'>
         <Image
@@ -48,7 +48,7 @@ const ReusableCard = ({ data }: ReusableCardProps) => {
         <Chip
           color='danger'
           variant='flat'
-          className='absolute right-2 top-2 min-w-[40px] truncate p-0 text-xs font-medium xs:static'
+          className='absolute right-2 top-2 hidden min-w-[40px] truncate p-0 text-xs font-medium xs:static sm:flex'
         >
           {chip}
         </Chip>
@@ -59,35 +59,19 @@ const ReusableCard = ({ data }: ReusableCardProps) => {
 
 export function GridContainer({
   children,
-  notFound,
-  classNames,
+  className,
 }: {
   children: React.ReactNode;
-  notFound?: boolean;
-  classNames?: {
-    main?: string;
-    notFound?: string;
-  };
+  className?: string;
 }) {
   return (
     <div
       className={cn(
-        'relative grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-3 md:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] md:gap-5',
-        classNames?.main
+        'grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3 md:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] md:gap-5',
+        className
       )}
     >
-      {!notFound ? (
-        children
-      ) : (
-        <p
-          className={cn(
-            'absolute left-1/2 -translate-x-1/2 text-foreground-600',
-            classNames?.notFound
-          )}
-        >
-          No books found.
-        </p>
-      )}
+      {children}
     </div>
   );
 }

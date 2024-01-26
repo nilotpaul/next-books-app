@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   const session = event.data.object as Stripe.Checkout.Session;
 
   if (!session?.metadata?.userId) {
-    return new Response(null, { status: 200 });
+    return new Response('No user id found', { status: 200 });
   }
 
   const amt_paid = session.amount_total;
@@ -34,20 +34,23 @@ export async function POST(req: Request) {
 
   if (!amt_paid || !bookId || !userId) {
     console.error('Invalid details');
-    return new Response(null, { status: 200 });
+    return new Response('Invalid Payload', { status: 200 });
   }
 
   const [book, user] = await Promise.all([getBookById(bookId), getUserById(userId)]);
 
   if (!user?.clerkId || !book?.id) {
     console.error('Book / user not found');
-    return new Response(null, { status: 200 });
+    return new Response('Bad Request', { status: 200 });
   }
 
-  console.log({ event: event.type });
-
   if (event.type === 'checkout.session.completed') {
-    const { success } = await purchaseBook(book.id, userId, user.purchasedBooks || []);
+    const { success } = await purchaseBook({
+      bookId: book.id,
+      userId: user.clerkId,
+      prevPurchasedBooks: user.purchasedBooks || [],
+      prevPurchaseCount: book.purchaseCount || 0,
+    });
 
     if (!success) {
       console.error('Db error');
