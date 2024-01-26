@@ -378,4 +378,70 @@ export const authorRouter = router({
         });
       }
     }),
+
+  getSoldBooks: publicProcedure
+    .use(isAuthor)
+    .input(infiniteSearchValidaion)
+    .query(async ({ input, ctx }) => {
+      const { author } = ctx;
+      const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
+      const cursor = input.cursor;
+
+      try {
+        const { books } = await getAuthorWithBooksById(author.clerkId, limit + 1, cursor);
+
+        if (!books)
+          return {
+            nextCursor: undefined,
+            booksWithPurchaseCount: [],
+            lastItem: null,
+          };
+
+        const authorBooks = books.map((book) => {
+          return {
+            authorImage: author.author_image,
+            authorName: author.authorName,
+            ...omit(book, ['normalised_title']),
+          };
+        });
+
+        const booksWithPurchaseCount = authorBooks.map((book) => ({
+          bookId: book.id,
+          title: book.bookTitle,
+          image: book.frontArtwork,
+          purchaseCount: book.purchaseCount || 0,
+          price: Number(book.pricing) || 0,
+          status: book.status,
+        }));
+
+        let nextCursor: typeof cursor | undefined = undefined;
+        let lastItem: (typeof booksWithPurchaseCount)[number] | null = null;
+
+        if (booksWithPurchaseCount.length > limit) {
+          lastItem = booksWithPurchaseCount.slice(-1)[0];
+          const nextItem = booksWithPurchaseCount.pop();
+          nextCursor = nextItem?.bookId;
+        }
+
+        return {
+          nextCursor,
+          booksWithPurchaseCount,
+          lastItem,
+        };
+      } catch (err) {
+        console.error('[AUTHOR_ROUTER_GET_SOLD_BOOKS_ERROR]:', err);
+
+        if (err instanceof z.ZodError) {
+          throw new TRPCError({
+            code: 'PARSE_ERROR',
+            message: 'data not passed in correct order',
+          });
+        }
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to get the books',
+        });
+      }
+    }),
 });
