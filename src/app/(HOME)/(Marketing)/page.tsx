@@ -18,7 +18,7 @@ const Home = () => {
   return (
     <Container className='px-0'>
       <div className='text-center tracking-tight'>
-        <h1 className='mt-24 text-4xl font-extrabold leading-tight sm:mt-28 sm:text-5xl lg:text-6xl'>
+        <h1 className='mt-24 text-4xl font-extrabold leading-tight xs:mt-24 sm:mt-28 sm:text-5xl lg:text-6xl'>
           Welcome to{' '}
           <BrandLogo
             classNames={{
@@ -30,10 +30,9 @@ const Home = () => {
           , Discover a World of Stories
         </h1>
 
-        <p className='prose prose-base mx-auto mt-6 w-full font-medium sm:prose-xl dark:text-foreground-700 xs:mt-8'>
-          Immerse yourself in a diverse collection of captivating books that cater to every taste.
-          From thrilling adventures to heartwarming tales, our library has something for everyone.
-          Explore the boundless realms of imagination crafted by talented authors.
+        <p className='prose prose-base mx-auto mt-6 w-full font-medium sm:prose-xl md:prose-lg dark:text-foreground-700 xs:mt-8'>
+          Explore captivating books, from thrilling adventures to heartwarming tales, in our diverse
+          library of boundless imagination crafted by talented authors.
         </p>
       </div>
 
