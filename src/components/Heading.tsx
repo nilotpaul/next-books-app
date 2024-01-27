@@ -1,3 +1,5 @@
+import { openSans } from '@/config/fonts';
+
 import { cn } from '@/utils/utils';
 import Divider from './ui/Divider';
 
@@ -11,7 +13,13 @@ type HeadingProps = {
 
 const Heading = ({ children, classNames }: HeadingProps) => {
   return (
-    <h2 className={cn('w-fit text-base font-semibold xs:text-xl md:text-2xl', classNames?.heading)}>
+    <h2
+      className={cn(
+        'w-fit text-base font-semibold xs:text-xl md:text-2xl',
+        classNames?.heading,
+        openSans.className
+      )}
+    >
       {children}
 
       <Divider className={cn('mt-1 h-[1.5px] w-[calc(100%+1.75rem)]', classNames?.divider)} />

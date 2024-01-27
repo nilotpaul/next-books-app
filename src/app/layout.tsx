@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { inter } from '@/config/fonts';
 
 import Providers from '@/lib/Providers';
 import GradiantBlob from '@/components/ui/GradiantBlob';
 import { cn } from '@/utils/utils';
-import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -20,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <GradiantBlob />
 
-          <main>{children}</main>
+          {children}
         </Providers>
       </body>
     </html>

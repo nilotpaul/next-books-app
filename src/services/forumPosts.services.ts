@@ -47,6 +47,7 @@ export const getUserForumPosts = cache(async (userId: string, limit?: number, cu
     })
     .from(forumPosts)
     .where(and(eq(forumPosts.clerkId, userId), cursor ? lt(forumPosts.id, cursor) : undefined))
+    .orderBy(desc(forumPosts.id))
     .limit(limit ?? 10);
 
   if (row.length === 0 || !row[0]?.postId) {

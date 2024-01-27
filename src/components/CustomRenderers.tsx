@@ -19,7 +19,7 @@ export const HeaderRenderer = ({
     return (
       <h1
         id={data.text.toLowerCase().trim()}
-        className={cn('text-xl font-bold xs:text-2xl sm:text-xl md:text-2xl', classNames?.h1)}
+        className={cn('text-2xl font-bold sm:text-xl md:text-2xl', classNames?.h1)}
       >
         {data.text.replace(/&nbsp;/g, ' ')}
       </h1>
@@ -28,7 +28,7 @@ export const HeaderRenderer = ({
     return (
       <h2
         id={data.text.trim().toLowerCase()}
-        className={cn('text-xl font-bold xs:text-2xl sm:text-xl md:text-2xl', classNames?.h2)}
+        className={cn('text-2xl font-bold sm:text-xl md:text-2xl', classNames?.h2)}
       >
         {data.text.replace(/&nbsp;/g, ' ')}
       </h2>
@@ -77,7 +77,9 @@ export const ImageRenderer = ({
         height={data.file.height}
         width={data.file.width}
         quality={100}
-        isBlurred
+        isBlurred={!isCover}
+        priority
+        loading='eager'
       />
       {data?.caption && (
         <span className='truncate text-sm font-medium italic text-foreground-700'>
@@ -149,11 +151,14 @@ export const LinkRenderer = ({
     >
       <div className='space-y-2'>
         <Heading
-          classNames={{ divider: 'hidden', heading: 'font-semibold text-lg text-foreground-700' }}
+          classNames={{
+            divider: 'hidden',
+            heading: 'font-semibold w-full text-lg text-foreground-700',
+          }}
         >
           {data.meta.title}
         </Heading>
-        <p className='text-sm xs:text-base'>{data.meta.description}</p>
+        <p className='text-sm xs:text-sm sm:text-base'>{data.meta.description}</p>
       </div>
 
       {data.meta.image?.url && (

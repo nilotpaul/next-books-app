@@ -38,7 +38,7 @@ const ForumPostsTab = () => {
   }));
 
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    trpc.forumPostRouter.getPosts.useInfiniteQuery(
+    trpc.userRouter.getUserPosts.useInfiniteQuery(
       {
         limit: MAX_SEARCH_RESULTS_LIMIT,
       },

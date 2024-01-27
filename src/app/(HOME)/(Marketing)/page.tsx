@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { lato, openSans, roboto } from '@/config/fonts';
 
 import BrandLogo from '@/components/BrandLogo';
 import Heading from '@/components/Heading';
@@ -8,7 +9,8 @@ import BookCardShowcase from '@/components/marketing/BookCardShowcase';
 import Container from '@/components/ui/Container';
 import Link from '@/components/ui/Link';
 import { Button } from '@nextui-org/button';
-import { Search } from 'lucide-react';
+import { MoveRight, Search } from 'lucide-react';
+import { cn } from '@/utils/utils';
 
 export const revalidate = false;
 export const runtime = 'edge';
@@ -18,7 +20,12 @@ const Home = () => {
   return (
     <Container className='px-0'>
       <div className='text-center tracking-tight'>
-        <h1 className='mt-24 text-4xl font-extrabold leading-tight xs:mt-24 sm:mt-28 sm:text-5xl lg:text-6xl'>
+        <h1
+          className={cn(
+            'mt-24 text-4xl font-extrabold leading-tight xs:mt-24 sm:mt-28 sm:text-5xl lg:text-6xl',
+            lato.className
+          )}
+        >
           Welcome to{' '}
           <BrandLogo
             classNames={{
@@ -30,13 +37,23 @@ const Home = () => {
           , Discover a World of Stories
         </h1>
 
-        <p className='prose prose-base mx-auto mt-6 w-full font-medium sm:prose-xl md:prose-lg dark:text-foreground-700 xs:mt-8'>
+        <p
+          className={cn(
+            'prose prose-base mx-auto mt-6 w-full font-medium sm:prose-xl md:prose-lg dark:text-foreground-700 xs:mt-8',
+            openSans.className
+          )}
+        >
           Explore captivating books, from thrilling adventures to heartwarming tales, in our diverse
           library of boundless imagination crafted by talented authors.
         </p>
       </div>
 
-      <div className='mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row'>
+      <div
+        className={cn(
+          'mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row',
+          openSans.className
+        )}
+      >
         <Button
           as={Link}
           href='/books'
@@ -44,9 +61,9 @@ const Home = () => {
           radius='md'
           variant='shadow'
           size='lg'
-          className='gap-2 font-semibold'
+          className='items-center justify-center gap-2 font-semibold'
         >
-          Start Reading <span>&rarr;</span>
+          Start Reading <MoveRight className='h-5 w-5' />
         </Button>
         <Button
           as={Link}

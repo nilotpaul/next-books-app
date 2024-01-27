@@ -8,6 +8,7 @@ import { DrizzleError } from 'drizzle-orm';
 import { stripe } from '@/lib/payments/stripeServer';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { infiniteSearchValidaion } from '@/validations';
+import { getUserForumPosts } from '@/services/forumPosts.services';
 
 export const userRouter = router({
   purchaseBook: privateProcedure
@@ -190,6 +191,65 @@ export const userRouter = router({
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to get the purchases',
+      });
+    }
+  }),
+
+  getUserPosts: privateProcedure.input(infiniteSearchValidaion).query(async ({ ctx, input }) => {
+    const { user } = ctx;
+    const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
+    const cursor = input.cursor;
+
+    try {
+      const posts = await getUserForumPosts(user.id, limit + 1, cursor);
+
+      if (!posts)
+        return {
+          nextCursor: undefined,
+          posts: [],
+          lastItem: null,
+        };
+
+      const newPosts = posts.map((post) => ({
+        clerkId: post.userId,
+        id: post.postId,
+        createdAt: post.createdAt,
+        image: post.postImage,
+        postTitle: post.postTitle,
+        content: '',
+        firstName: '',
+        lastName: '',
+        likes: post.postLikes || [],
+        tags: post.postTags || [],
+      }));
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      let lastItem: (typeof newPosts)[number] | null = null;
+
+      if (newPosts.length > limit) {
+        lastItem = newPosts.slice(-1)[0];
+        const nextItem = newPosts.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        posts: newPosts,
+        nextCursor,
+        lastItem,
+      };
+    } catch (err) {
+      console.error('[FORUM_POST_GET_POSTS_ERROR]:', err);
+
+      if (err instanceof z.ZodError) {
+        throw new TRPCError({
+          code: 'PARSE_ERROR',
+          message: 'data not passed in correct format',
+        });
+      }
+
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get the posts',
       });
     }
   }),

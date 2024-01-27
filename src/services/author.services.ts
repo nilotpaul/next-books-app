@@ -52,7 +52,7 @@ export const getAuthorWithBooksById = cache(
 
     const allBooks = row.map((book) => book.books);
 
-    if (row.length === 0 || !row[0].authors.isConfirmed || !row[0].books?.id) {
+    if (row.length === 0 || !row[0]?.authors?.isConfirmed || !row[0].books?.id) {
       return {
         isAuthor: false,
         author: row[0].authors,
@@ -93,7 +93,7 @@ export const getAuthorByIdWithLinks = cache(async (userId: string) => {
     .where(eq(authors.clerkId, userId))
     .leftJoin(socialLinks, eq(socialLinks.clerkId, userId));
 
-  if (!row[0].authors || !row[0].authors.isConfirmed) {
+  if (!row[0]?.authors || !row[0]?.authors?.isConfirmed) {
     return {
       isAuthor: false,
       author: null,
@@ -104,7 +104,7 @@ export const getAuthorByIdWithLinks = cache(async (userId: string) => {
   return {
     isAuthor: row[0].authors.isConfirmed,
     author: row[0].authors,
-    links: row[0].social_links,
+    links: row[0]?.social_links,
   };
 });
 

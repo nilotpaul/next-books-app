@@ -22,7 +22,7 @@ const page = async ({ params }: pageProps) => {
     return notFound();
   }
 
-  if (!isPurchased && dbBook.book.clerkId !== userId) {
+  if (dbBook.book.availability !== 'Free' && !isPurchased && dbBook.book.clerkId !== userId) {
     redirect(`/books/${bookId}`);
   }
 

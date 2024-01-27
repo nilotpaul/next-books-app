@@ -31,7 +31,7 @@ const ReaderWrapper = ({ chapters: initialChapters, metadata, toc }: ReaderWrapp
   ]);
 
   return (
-    <div className='relative flex h-full items-center justify-center md:h-[calc(100vh-1.5rem)]'>
+    <div className='relative flex h-full items-center justify-center'>
       <Container className='mx-auto h-full w-full overflow-y-auto rounded-xl px-0 scrollbar-hide sm:max-w-3xl'>
         <Carousel>
           <CarouselContent>

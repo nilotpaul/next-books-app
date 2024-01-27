@@ -1,6 +1,8 @@
 import Blocks from 'editorjs-blocks-react-renderer';
+import { inter, roboto } from '@/config/fonts';
 
 import { HeaderRenderer, ImageRenderer, ListRenderer } from '@/components/CustomRenderers';
+import { cn } from '@/utils/utils';
 
 type ReaderProps = {
   content: any;
@@ -17,12 +19,15 @@ const Reader = ({ content }: ReaderProps) => {
         }}
         config={{
           paragraph: {
-            className:
-              'first-of-type:first-letter:text-3xl mt-3 first-of-type:first-letter:font-bold text-base leading-8',
+            className: cn(
+              'first-of-type:first-letter:text-3xl tracking-normal mt-3 first-of-type:first-letter:font-bold text-base leading-8',
+              inter.className
+            ),
           },
           header: {
             classNames: {
-              h2: 'line-clamp-3',
+              h1: cn('line-clamp-3', roboto.className),
+              h2: cn('line-clamp-3', roboto.className),
             },
           },
         }}

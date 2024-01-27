@@ -1,7 +1,7 @@
 const GradiantBlob = () => {
   return (
     <section
-      aria-disabled
+      aria-hidden
       className='absolute left-1/2 top-44 -z-20 flex w-auto -translate-x-1/2 rotate-90 items-center justify-center gap-20 overflow-hidden opacity-30 blur-2xl dark:blur-3xl xs:opacity-40 sm:top-32 sm:rotate-0 sm:gap-0 sm:opacity-20 dark:md:opacity-20'
     >
       <div className='flex flex-col gap-4 sm:gap-8'>

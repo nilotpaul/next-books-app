@@ -41,7 +41,7 @@ const ReaderTab = ({ firstName, lastName, username, email, image }: ReaderTabPro
               divider: 'hidden dark:block',
             }}
           >
-            Author Profile
+            Reader Profile
           </Heading>
         </CardHeader>
 
@@ -64,14 +64,16 @@ const ReaderTab = ({ firstName, lastName, username, email, image }: ReaderTabPro
             />
 
             <div className='flex w-full flex-col items-center gap-y-1 space-y-2 sm:block'>
-              <Chip
-                size='sm'
-                className='mt-3 text-sm font-bold sm:mt-0'
-                color='primary'
-                variant='flat'
-              >
-                @{username}
-              </Chip>
+              {username && (
+                <Chip
+                  size='sm'
+                  className='mt-3 text-sm font-bold sm:mt-0'
+                  color='primary'
+                  variant='flat'
+                >
+                  @{username}
+                </Chip>
+              )}
 
               <Input
                 type='text'

@@ -1,8 +1,5 @@
 import axios from 'axios';
 
-export const runtime = 'edge';
-export const preferredRegion = ['sin1', 'cle1', 'fra1'];
-
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const link = searchParams.get('url');

@@ -1,12 +1,15 @@
+import { openSans } from '@/config/fonts';
+
 import Auth from '@/components/navbar/Auth';
 import Header from '@/components/navbar/Header';
 import Profile from '@/components/navbar/Profile';
 import Search from '@/components/search/Search';
 import Container from '@/components/ui/Container';
+import Footer from '@/components/Footer';
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <main className={openSans.className}>
       <Header>
         <div className='flex w-full items-center gap-3 sm:justify-end'>
           <Search />
@@ -30,6 +33,8 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
       </Header>
 
       <Container className='relative z-10 mt-3'>{children}</Container>
-    </>
+
+      <Footer />
+    </main>
   );
 }

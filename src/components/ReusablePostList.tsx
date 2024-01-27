@@ -1,5 +1,6 @@
 import Blocks from 'editorjs-blocks-react-renderer';
 import { format } from 'date-fns';
+import { inter, roboto } from '@/config/fonts';
 
 import { HeaderRenderer, ImageRenderer, LinkRenderer, ListRenderer } from './CustomRenderers';
 import { Card, CardBody, CardHeader } from '@nextui-org/card';
@@ -7,6 +8,7 @@ import { ScrollShadow } from '@nextui-org/scroll-shadow';
 import { Dot } from 'lucide-react';
 import Divider from './ui/Divider';
 import Image from '@/components/ui/Image';
+import { cn } from '@/utils/utils';
 
 type ForumPostWrapperProps = {
   data: {
@@ -79,10 +81,16 @@ const ResuablePostList = ({ data, content, topRightElement, lastItem }: ForumPos
               }}
               config={{
                 paragraph: {
-                  className: 'mt-3 text-base leading-6',
+                  className: cn('mt-3 text-base leading-6', inter.className),
                 },
                 image: {
                   className: 'mt-0',
+                },
+                header: {
+                  classNames: {
+                    h1: cn('line-clamp-3', roboto.className),
+                    h2: cn('line-clamp-3', roboto.className),
+                  },
                 },
               }}
               renderers={{

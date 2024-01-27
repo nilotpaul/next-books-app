@@ -13,7 +13,7 @@ const ManagePage = async () => {
     username,
     imageUrl,
   } = (await userSession()) as User;
-  const { isAuthor, author, links } = await getAuthorByIdWithLinks(userId);
+  const authorDetails = await getAuthorByIdWithLinks(userId);
 
   return (
     <TabContent
@@ -22,9 +22,7 @@ const ManagePage = async () => {
       username={username!}
       email={emailAddresses[0].emailAddress}
       image={imageUrl}
-      isAuthor={isAuthor}
-      author={author}
-      links={links}
+      {...authorDetails}
     />
   );
 };
