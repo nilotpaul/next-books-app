@@ -4,6 +4,7 @@ import { UpdateAuthorProfile } from '@/validations/authorValidations';
 import { env } from '@/validations/env';
 import { and, asc, desc, eq, gt, like, lt } from 'drizzle-orm';
 import { cache } from 'react';
+import { omit } from 'lodash';
 
 import 'server-only';
 
@@ -93,7 +94,7 @@ export const getAuthorByIdWithLinks = cache(async (userId: string) => {
     .where(eq(authors.clerkId, userId))
     .leftJoin(socialLinks, eq(socialLinks.clerkId, userId));
 
-  if (!row[0]?.authors || !row[0]?.authors?.isConfirmed) {
+  if (row.length === 0) {
     return {
       isAuthor: false,
       author: null,
@@ -101,10 +102,15 @@ export const getAuthorByIdWithLinks = cache(async (userId: string) => {
     };
   }
 
+  const newAuthor = row.map(({ authors }) => ({
+    ...omit(authors, ['secretKey', 'isConfirmed']),
+  }));
+
   return {
-    isAuthor: row[0].authors.isConfirmed,
-    author: row[0].authors,
+    isAuthor: row[0]?.authors?.isConfirmed || false,
+    author: newAuthor[0],
     links: row[0]?.social_links,
+    verificationStatus: row[0].authors.secretKey.length !== 0,
   };
 });
 

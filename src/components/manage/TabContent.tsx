@@ -15,11 +15,12 @@ type TabContentProps = {
   email: string;
   image: string;
   isAuthor: boolean;
-  author: Author | null;
+  author: Omit<Author, 'isConfirmed' | 'secretKey'> | null;
   links: SocialLinks | null;
+  verificationStatus: boolean;
 };
 
-const TabContent = ({ isAuthor, author, links, ...props }: TabContentProps) => {
+const TabContent = ({ ...props }: TabContentProps) => {
   const tab = useToggleTabStore((state) => state.tab);
 
   const [isMounted] = useMounted();
@@ -28,15 +29,7 @@ const TabContent = ({ isAuthor, author, links, ...props }: TabContentProps) => {
     return <ManageSkeleton />;
   }
 
-  return (
-    <>
-      {tab === 'Reader' ? (
-        <ReaderTab {...props} />
-      ) : (
-        <AuthorTab isAuthor={isAuthor} author={author} links={links} />
-      )}
-    </>
-  );
+  return <>{tab === 'Reader' ? <ReaderTab {...props} /> : <AuthorTab {...props} />}</>;
 };
 
 export default TabContent;

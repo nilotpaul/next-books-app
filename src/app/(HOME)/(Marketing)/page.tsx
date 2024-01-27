@@ -90,7 +90,7 @@ const Home = () => {
 
         <Suspense
           fallback={
-            <GridContainer position='center'>
+            <GridContainer position='center' className='mt-8'>
               <BookCardSkeleton cards={6} />
             </GridContainer>
           }
