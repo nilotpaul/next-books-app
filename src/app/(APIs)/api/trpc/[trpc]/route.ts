@@ -4,7 +4,7 @@ import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
-export const preferredRegion = ['sin1', 'cle1'];
+export const preferredRegion = ['sin1', 'cle1', 'fra1'];
 
 const handler = (req: NextRequest) =>
   fetchRequestHandler({
