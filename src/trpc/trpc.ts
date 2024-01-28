@@ -1,40 +1,10 @@
 import { TRPCError, initTRPC } from '@trpc/server';
-import { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
-import type { inferAsyncReturnType } from '@trpc/server';
 import { ZodError } from 'zod';
 import superjson from 'superjson';
 import { userSession } from '@/services/auth.services';
 import { getAuthorById } from '@/services/author.services';
-import { NextRequest } from 'next/server';
-import { Redis } from '@upstash/redis';
-import { Ratelimit } from '@upstash/ratelimit';
 
-type Duration = Parameters<typeof Ratelimit.slidingWindow>['1'];
-
-export const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
-
-export function rateLimit(tokens: number, duration: Duration) {
-  return new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(tokens, duration),
-  });
-}
-
-export const createTRPCContext = async (
-  opts?: Omit<FetchCreateContextFnOptions, 'req'> & { req: NextRequest }
-) => {
-  const user = await userSession();
-
-  return {
-    user,
-    ...opts,
-  };
-};
-
-export const t = initTRPC.context<TRPCContext>().create({
+export const t = initTRPC.create({
   errorFormatter: ({ shape, error }) => {
     return {
       ...shape,
@@ -64,39 +34,7 @@ const isAuthed = t.middleware(async ({ next }) => {
   });
 });
 
-const withRateLimit = t.middleware(async ({ ctx, next, type }) => {
-  const { req } = ctx;
-  const ip = req?.ip ?? '127.0.0.1';
-
-  try {
-    const tokens = type === 'query' ? 50 : 10;
-    const { success } = await rateLimit(tokens, '1 m').limit(ip);
-
-    if (!success) {
-      throw new TRPCError({
-        code: 'TOO_MANY_REQUESTS',
-        message: 'Too many requests. Please try again later',
-      });
-    }
-
-    return next({
-      ctx,
-    });
-  } catch (err) {
-    if (err instanceof TRPCError) {
-      throw new TRPCError({
-        ...err,
-      });
-    }
-
-    throw new TRPCError({
-      code: 'INTERNAL_SERVER_ERROR',
-      message: 'Something went wrong',
-    });
-  }
-});
-
-const isAuthor = t.middleware(async ({ next }) => {
+export const isAuthor = t.middleware(async ({ next }) => {
   const user = await userSession();
   const { isAuthor, author, user: dbUser } = await getAuthorById(user?.id || '');
 
@@ -118,6 +56,5 @@ const isAuthor = t.middleware(async ({ next }) => {
 
 export const router = t.router;
 export const publicProcedure = t.procedure;
-export const privateProcedure = t.procedure.use(withRateLimit).use(isAuthed);
-export const authorProcedure = t.procedure.use(withRateLimit).use(isAuthor);
-export type TRPCContext = inferAsyncReturnType<typeof createTRPCContext>;
+export const authorRouter = t.procedure.use(isAuthor);
+export const privateProcedure = t.procedure.use(isAuthed);
