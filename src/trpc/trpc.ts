@@ -69,7 +69,7 @@ const withRateLimit = t.middleware(async ({ ctx, next, type }) => {
   const ip = req?.ip ?? '127.0.0.1';
 
   try {
-    const tokens = type === 'query' ? 5 : 10;
+    const tokens = type === 'query' ? 50 : 10;
     const { success } = await rateLimit(tokens, '1 m').limit(ip);
 
     if (!success) {

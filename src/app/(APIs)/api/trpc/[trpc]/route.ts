@@ -1,10 +1,10 @@
-import { appRouter } from '../../../../../trpc/root';
-import { createTRPCContext } from '../../../../../trpc/trpc';
+import { appRouter } from '@/trpc/root';
+import { createTRPCContext } from '@/trpc/trpc';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
-export const preferredRegion = ['sin1', 'cle1', 'fra1'];
+export const preferredRegion = ['sin1', 'cle1'];
 
 const handler = (req: NextRequest) =>
   fetchRequestHandler({
