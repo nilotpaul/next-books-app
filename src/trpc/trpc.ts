@@ -56,5 +56,5 @@ export const isAuthor = t.middleware(async ({ next }) => {
 
 export const router = t.router;
 export const publicProcedure = t.procedure;
-export const authorRouter = t.procedure.use(isAuthor);
+export const authorProcedure = t.procedure.use(isAuthor);
 export const privateProcedure = t.procedure.use(isAuthed);
