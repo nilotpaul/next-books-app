@@ -6,9 +6,6 @@ import ForumPostWrapper from '@/components/forum/ForumPostWrapper';
 import PostListSkeleton from '@/components/loadings/PostListSkeleton';
 import Heading from '@/components/Heading';
 
-export const revalidate = 0;
-export const dynamic = 'force-dynamic';
-
 const ForumPage = () => {
   return (
     <div className='mt-4'>
