@@ -6,7 +6,22 @@ import superjson from 'superjson';
 import { userSession } from '@/services/auth.services';
 import { getAuthorById } from '@/services/author.services';
 import { NextRequest } from 'next/server';
-import { rateLimit } from '@/lib/redis';
+import { Redis } from '@upstash/redis';
+import { Ratelimit } from '@upstash/ratelimit';
+
+type Duration = Parameters<typeof Ratelimit.slidingWindow>['1'];
+
+export const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+
+export function rateLimit(tokens: number, duration: Duration) {
+  return new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(tokens, duration),
+  });
+}
 
 export const createTRPCContext = async (
   opts?: Omit<FetchCreateContextFnOptions, 'req'> & { req: NextRequest }
