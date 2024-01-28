@@ -46,8 +46,7 @@ const Footer = () => {
           <p className='text-base text-black dark:text-inherit'>
             Next.js side project developed by{' '}
             <Link
-              className='text-base text-black hover:underline dark:text-foreground-600'
-              target='_blank'
+              className='text-base text-foreground-600 hover:underline'
               href='https://github.com/nilotpaul'
             >
               Nilotpaul Nandi

@@ -13,16 +13,15 @@ import Heading from '../Heading';
 
 type AuthorTabtProps = {
   isAuthor: boolean;
-  author: Omit<Author, 'isConfirmed' | 'secretKey'> | null;
-  verificationStatus: boolean;
+  author: Author | null;
   links: SocialLinks | null;
 };
 
-const AuthorTab = ({ isAuthor, author, links, verificationStatus }: AuthorTabtProps) => {
+const AuthorTab = ({ isAuthor, author, links }: AuthorTabtProps) => {
   return (
     <>
-      {!isAuthor && !verificationStatus && <AuthorRegisterModal />}
-      {!isAuthor && verificationStatus && <PendingAuthorRegisterModal />}
+      {!isAuthor && !author?.secretKey && <AuthorRegisterModal />}
+      {!isAuthor && author?.secretKey && <PendingAuthorRegisterModal />}
       <div
         className={cn('h-full w-full space-y-2', {
           'bg-foreground-50 opacity-40 blur-md filter': !isAuthor,

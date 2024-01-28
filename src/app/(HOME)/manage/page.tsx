@@ -22,7 +22,6 @@ const ManagePage = async () => {
       username={username!}
       email={emailAddresses[0].emailAddress}
       image={imageUrl}
-      verificationStatus={authorDetails.verificationStatus || false}
       {...authorDetails}
     />
   );

@@ -147,12 +147,7 @@ export const LinkRenderer = ({
     <Link
       href={data.link}
       target='_blank'
-      className={cn(
-        'mt-4 grid grid-cols-2 items-start gap-4 rounded-lg bg-primary-50 p-3 dark:bg-slate-900/80',
-        {
-          'grid-cols-1': !data.meta.image?.url,
-        }
-      )}
+      className='mt-4 grid grid-cols-2 items-start gap-4 rounded-lg bg-primary-50 p-3 dark:bg-slate-900/80'
     >
       <div className='space-y-2'>
         <Heading
