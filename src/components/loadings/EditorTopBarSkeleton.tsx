@@ -10,7 +10,7 @@ const EditorTopBarSkeleton = () => {
   return (
     <Container className='flex w-full items-center justify-between'>
       <div className='flex items-center gap-12'>
-        <Button as={Link} href='/dashboard' variant='bordered'>
+        <Button as={Link} href='/dashboard' variant='bordered' className='hidden md:flex'>
           <ArrowLeft className='h-4 w-4' />
           Back
         </Button>
@@ -20,9 +20,6 @@ const EditorTopBarSkeleton = () => {
       </div>
 
       <div className='space-x-4'>
-        <Button variant='bordered' className='font-semibold'>
-          Save Progress
-        </Button>
         <Button color='success' className='font-semibold'>
           Review
         </Button>

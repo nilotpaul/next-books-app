@@ -1,4 +1,4 @@
-import { Roboto, Open_Sans, Lato, Palanquin_Dark, Inter, Montserrat } from 'next/font/google';
+import { Roboto, Open_Sans, Lato, Poppins, Inter, Montserrat } from 'next/font/google';
 
 export const roboto = Roboto({
   subsets: ['latin'],
@@ -18,6 +18,11 @@ export const lato = Lato({
 export const inter = Inter({ subsets: ['latin'] });
 
 export const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+});
+
+export const poppins = Poppins({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700', '800', '900'],
 });

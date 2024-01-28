@@ -73,7 +73,7 @@ export const ImageRenderer = ({
         }}
         className={cn('z-10', { 'mx-auto max-h-[700px] md:w-[630px]': isCover })}
         src={data.file.url}
-        alt={data.caption}
+        alt={!isCover ? data.caption : data.file.title || 'Cover Image'}
         height={data.file.height}
         width={data.file.width}
         quality={100}

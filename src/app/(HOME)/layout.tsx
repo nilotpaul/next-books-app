@@ -6,10 +6,11 @@ import Profile from '@/components/navbar/Profile';
 import Search from '@/components/search/Search';
 import Container from '@/components/ui/Container';
 import Footer from '@/components/Footer';
+import { cn } from '@/utils/utils';
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className={openSans.className}>
+    <main className={cn('h-screen', openSans.className)}>
       <Header>
         <div className='flex w-full items-center gap-3 sm:justify-end'>
           <Search />
@@ -32,7 +33,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
         />
       </Header>
 
-      <Container className='relative z-10 mt-3'>{children}</Container>
+      <Container className='relative z-10 mt-3 min-h-screen'>{children}</Container>
 
       <Footer />
     </main>

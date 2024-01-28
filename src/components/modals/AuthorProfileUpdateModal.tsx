@@ -124,14 +124,22 @@ const AuthorProfileUpdateModal = ({
                     errorMessage={errors.bio?.message}
                   />
                   <Input
-                    {...register('links.Twitter')}
+                    onChange={(e) => {
+                      if (e.target.value.length) {
+                        setValue('links.Twitter', e.target.value);
+                      }
+                    }}
                     defaultValue={links?.twitter}
                     label='Enter Twitter Profile'
                     placeholder='Enter twitter profile link'
                     errorMessage={errors.links?.Twitter?.message}
                   />
                   <Input
-                    {...register('links.instagram')}
+                    onChange={(e) => {
+                      if (e.target.value.length) {
+                        setValue('links.instagram', e.target.value);
+                      }
+                    }}
                     defaultValue={links?.instagram}
                     label='Enter Instagram Profile'
                     placeholder='Enter Instagram profile link'

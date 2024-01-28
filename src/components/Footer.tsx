@@ -33,7 +33,7 @@ const Footer = () => {
 
           <Link target='_blank' href='https://github.com/nilotpaul/next-books-app'>
             <Image
-              className='rounded-full bg-foreground'
+              className='rounded-full dark:bg-foreground'
               src={githubLogo}
               height={30}
               width={30}
@@ -43,16 +43,17 @@ const Footer = () => {
         </div>
 
         <div className='prose prose-sm mt-12 text-center font-medium leading-none text-foreground-600 sm:text-start'>
-          <p className='text-base'>
+          <p className='text-base text-black dark:text-inherit'>
             Next.js side project developed by{' '}
             <Link
-              className='text-base text-foreground-600 hover:underline'
+              className='text-base text-black hover:underline dark:text-foreground-600'
+              target='_blank'
               href='https://github.com/nilotpaul'
             >
               Nilotpaul Nandi
             </Link>
           </p>
-          <p className='text-foreground-500 sm:-mt-2'>
+          <p className='dark:text-foreground-500 sm:-mt-2'>
             Copyright &copy; {new Date().getFullYear()} BooksGod
           </p>
         </div>

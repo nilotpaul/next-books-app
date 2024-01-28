@@ -1,4 +1,4 @@
-import { isAuthor, privateProcedure, publicProcedure, router } from '../trpc';
+import { authorProcedure, privateProcedure, publicProcedure, router } from '../trpc';
 import {
   registerAuthorValidation,
   updateAuthorProfileValidation,
@@ -35,6 +35,13 @@ export const authorRouter = router({
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'You are already an author',
+        });
+      }
+
+      if (author.author?.confirm_email !== confirm_email) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Invalid email',
         });
       }
 
@@ -213,8 +220,7 @@ export const authorRouter = router({
       }
     }),
 
-  updateProfile: publicProcedure
-    .use(isAuthor)
+  updateProfile: authorProcedure
     .input(updateAuthorProfileValidation)
     .mutation(async ({ ctx, input }) => {
       const { author, user } = ctx;
@@ -321,127 +327,117 @@ export const authorRouter = router({
     }
   }),
 
-  getAuthorBooks: publicProcedure
-    .use(isAuthor)
-    .input(infiniteSearchValidaion)
-    .query(async ({ input, ctx }) => {
-      const { user } = ctx;
+  getAuthorBooks: authorProcedure.input(infiniteSearchValidaion).query(async ({ input, ctx }) => {
+    const { user } = ctx;
 
-      const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
-      const cursor = input.cursor;
+    const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
+    const cursor = input.cursor;
 
-      try {
-        const { books, author } = await getAuthorWithBooksById(user.clerkId, limit + 1, cursor);
-        const newbooks = books.map((book) => {
-          return {
-            authorImage: author.author_image,
-            authorName: author.authorName,
-            ...omit(book, ['normalised_title']),
-          };
-        });
+    try {
+      const { books } = await getAuthorWithBooksById(user.clerkId, limit + 1, cursor);
+      const newbooks = books
+        .map((book) => omit(book, ['normalised_title']))
+        .filter((book) => Object.values(book).length > 0);
 
-        if (!newbooks || newbooks.length === 0) {
-          return {
-            nextCursor: undefined,
-            newbooks: [],
-            lastItem: null,
-          };
-        }
-
-        let nextCursor: typeof cursor | undefined = undefined;
-        let lastItem: (typeof newbooks)[number] | null = null;
-
-        if (newbooks.length > limit) {
-          lastItem = newbooks.slice(-1)[0];
-          const nextItem = newbooks.pop();
-          nextCursor = nextItem?.id;
-        }
-
+      if (!newbooks || newbooks.length === 0) {
         return {
-          nextCursor,
-          newbooks,
-          lastItem,
+          nextCursor: undefined,
+          newbooks: [],
+          lastItem: null,
         };
-      } catch (err) {
-        console.error('[AUTHOR_ROUTER_GET_AUTHOR_BOOKS_ERROR]:', err);
+      }
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'data not passed in correct order',
-          });
-        }
+      let nextCursor: typeof cursor | undefined = undefined;
+      let lastItem: (typeof newbooks)[number] | null = null;
 
+      if (newbooks.length > limit) {
+        lastItem = newbooks.slice(-1)[0];
+        const nextItem = newbooks.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        nextCursor,
+        newbooks,
+        lastItem,
+      };
+    } catch (err) {
+      console.error('[AUTHOR_ROUTER_GET_AUTHOR_BOOKS_ERROR]:', err);
+
+      if (err instanceof z.ZodError) {
         throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to get the books',
+          code: 'PARSE_ERROR',
+          message: 'data not passed in correct order',
         });
       }
-    }),
 
-  getSoldBooks: publicProcedure
-    .use(isAuthor)
-    .input(infiniteSearchValidaion)
-    .query(async ({ input, ctx }) => {
-      const { author } = ctx;
-      const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
-      const cursor = input.cursor;
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get the books',
+      });
+    }
+  }),
 
-      try {
-        const { books } = await getAuthorWithBooksById(author.clerkId, limit + 1, cursor);
+  getSoldBooks: authorProcedure.input(infiniteSearchValidaion).query(async ({ input, ctx }) => {
+    const { author } = ctx;
+    const limit = input.limit ?? MAX_SEARCH_RESULTS_LIMIT;
+    const cursor = input.cursor;
 
-        if (!books)
-          return {
-            nextCursor: undefined,
-            booksWithPurchaseCount: [],
-            lastItem: null,
-          };
+    try {
+      const { books } = await getAuthorWithBooksById(author.clerkId, limit + 1, cursor);
 
-        const authorBooks = books.map((book) => {
-          return {
-            authorImage: author.author_image,
-            authorName: author.authorName,
-            ...omit(book, ['normalised_title']),
-          };
-        });
-
-        const booksWithPurchaseCount = authorBooks.map((book) => ({
-          bookId: book.id,
-          title: book.bookTitle,
-          image: book.frontArtwork,
-          purchaseCount: book.purchaseCount || 0,
-          price: Number(book.pricing) || 0,
-          status: book.status,
-        }));
-
-        let nextCursor: typeof cursor | undefined = undefined;
-        let lastItem: (typeof booksWithPurchaseCount)[number] | null = null;
-
-        if (booksWithPurchaseCount.length > limit) {
-          lastItem = booksWithPurchaseCount.slice(-1)[0];
-          const nextItem = booksWithPurchaseCount.pop();
-          nextCursor = nextItem?.bookId;
-        }
-
+      if (!books)
         return {
-          nextCursor,
-          booksWithPurchaseCount,
-          lastItem,
+          nextCursor: undefined,
+          booksWithPurchaseCount: [],
+          lastItem: null,
         };
-      } catch (err) {
-        console.error('[AUTHOR_ROUTER_GET_SOLD_BOOKS_ERROR]:', err);
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'data not passed in correct order',
-          });
-        }
+      const authorBooks = books.map((book) => {
+        return {
+          authorImage: author.author_image,
+          authorName: author.authorName,
+          ...omit(book, ['normalised_title']),
+        };
+      });
 
+      const booksWithPurchaseCount = authorBooks.map((book) => ({
+        bookId: book.id,
+        title: book.bookTitle,
+        image: book.frontArtwork,
+        purchaseCount: book.purchaseCount || 0,
+        price: Number(book.pricing) || 0,
+        status: book.status,
+      }));
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      let lastItem: (typeof booksWithPurchaseCount)[number] | null = null;
+
+      if (booksWithPurchaseCount.length > limit) {
+        lastItem = booksWithPurchaseCount.slice(-1)[0];
+        const nextItem = booksWithPurchaseCount.pop();
+        nextCursor = nextItem?.bookId;
+      }
+
+      return {
+        nextCursor,
+        booksWithPurchaseCount,
+        lastItem,
+      };
+    } catch (err) {
+      console.error('[AUTHOR_ROUTER_GET_SOLD_BOOKS_ERROR]:', err);
+
+      if (err instanceof z.ZodError) {
         throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to get the books',
+          code: 'PARSE_ERROR',
+          message: 'data not passed in correct order',
         });
       }
-    }),
+
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get the books',
+      });
+    }
+  }),
 });

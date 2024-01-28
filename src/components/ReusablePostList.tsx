@@ -1,6 +1,6 @@
 import Blocks from 'editorjs-blocks-react-renderer';
 import { format } from 'date-fns';
-import { inter, roboto } from '@/config/fonts';
+import { montserrat, roboto } from '@/config/fonts';
 
 import { HeaderRenderer, ImageRenderer, LinkRenderer, ListRenderer } from './CustomRenderers';
 import { Card, CardBody, CardHeader } from '@nextui-org/card';
@@ -81,7 +81,7 @@ const ResuablePostList = ({ data, content, topRightElement, lastItem }: ForumPos
               }}
               config={{
                 paragraph: {
-                  className: cn('mt-3 text-base leading-6', inter.className),
+                  className: cn('mt-3 text-base leading-6', montserrat.className),
                 },
                 image: {
                   className: 'mt-0',

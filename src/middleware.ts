@@ -2,7 +2,7 @@ import { authMiddleware, redirectToSignIn } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'experimental-edge';
-export const preferredRegion = ['sin1', 'cle1', 'fra1'];
+export const preferredRegion = ['sin1', 'cle1'];
 
 export default authMiddleware({
   publicRoutes: [

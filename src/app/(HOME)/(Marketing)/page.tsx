@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { lato, openSans, roboto } from '@/config/fonts';
+import { poppins, openSans, montserrat } from '@/config/fonts';
 
 import BrandLogo from '@/components/BrandLogo';
 import Heading from '@/components/Heading';
@@ -12,9 +12,8 @@ import { Button } from '@nextui-org/button';
 import { MoveRight, Search } from 'lucide-react';
 import { cn } from '@/utils/utils';
 
-export const revalidate = false;
 export const runtime = 'edge';
-export const preferredRegion = ['sin1', 'cle1', 'fra1'];
+export const preferredRegion = ['sin1', 'cle1'];
 
 const Home = () => {
   return (
@@ -23,15 +22,15 @@ const Home = () => {
         <h1
           className={cn(
             'mt-24 text-4xl font-extrabold leading-tight xs:mt-24 sm:mt-28 sm:text-5xl lg:text-6xl',
-            lato.className
+            openSans.className
           )}
         >
           Welcome to{' '}
           <BrandLogo
             classNames={{
               main: 'cursor-default',
-              logo1: 'lg:text-6xl sm:text-5xl text-3xl font-bold',
-              logo2: 'lg:text-6xl sm:text-5xl text-3xl font-bold',
+              logo1: 'lg:text-6xl sm:text-5xl text-3xl font-extrabold',
+              logo2: 'lg:text-6xl sm:text-5xl text-3xl font-extrabold',
             }}
           />
           , Discover a World of Stories
@@ -39,8 +38,8 @@ const Home = () => {
 
         <p
           className={cn(
-            'prose prose-base mx-auto mt-6 w-full font-medium sm:prose-xl md:prose-lg dark:text-foreground-700 xs:mt-8',
-            openSans.className
+            'prose prose-base mx-auto mt-6 w-full font-medium md:prose-xl dark:text-foreground-700 xs:mt-8',
+            montserrat.className
           )}
         >
           Explore captivating books, from thrilling adventures to heartwarming tales, in our diverse
@@ -51,7 +50,7 @@ const Home = () => {
       <div
         className={cn(
           'mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row',
-          openSans.className
+          poppins.className
         )}
       >
         <Button

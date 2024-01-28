@@ -20,6 +20,7 @@ const ManageDashTabs = () => {
     isAuthor,
     authorBooks,
     user: { userId },
+    author,
   } = useContext(MyDashboardContext);
   const books = authorBooks || [];
   const tab = useToggleTabStore((state) => state.tab);
@@ -32,15 +33,15 @@ const ManageDashTabs = () => {
 
   return (
     <>
-      {tab === 'My Books' && isAuthor && (
+      {tab === 'My Books' && isAuthor && author && (
         <>
           <header className='flex flex-col items-end justify-center space-y-1.5 pb-3'>
             <div className='flex w-full items-center justify-between'>
               <div className='flex items-center gap-3'>
-                {books[0].authorImage && (
+                {author?.image && (
                   <Image
-                    src={books[0].authorImage}
-                    alt={books[0].authorName}
+                    src={author.image}
+                    alt={author.name || 'Author Avatar'}
                     fill
                     radius='full'
                     classNames={{
@@ -51,7 +52,7 @@ const ManageDashTabs = () => {
                   />
                 )}
                 <p className='truncate text-sm font-medium xs:text-base sm:text-sm'>
-                  {books[0].authorName}
+                  {author.name}
                 </p>
               </div>
 

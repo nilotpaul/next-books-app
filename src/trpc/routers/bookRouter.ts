@@ -10,7 +10,7 @@ import {
   publishBook,
   rateBook,
 } from '@/services/books.services';
-import { isAuthor, privateProcedure, publicProcedure, router } from '../trpc';
+import { authorProcedure, privateProcedure, publicProcedure, router } from '../trpc';
 
 import {
   bookFilterValidation,
@@ -27,158 +27,151 @@ import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { infiniteSearchValidaion } from '@/validations';
 
 export const bookRouter = router({
-  create: publicProcedure
-    .use(isAuthor)
-    .input(createBookValidation)
-    .mutation(async ({ input, ctx }) => {
-      const { author } = ctx;
+  create: authorProcedure.input(createBookValidation).mutation(async ({ input, ctx }) => {
+    const { author } = ctx;
 
-      const { bookTitle, language } = input;
+    const { bookTitle, language } = input;
 
-      try {
-        const newTitle = normaliseTitle(bookTitle);
-        const book = await getBookByTitle(newTitle);
+    try {
+      const newTitle = normaliseTitle(bookTitle);
+      const book = await getBookByTitle(newTitle);
 
-        if (book?.id) {
-          throw new TRPCError({
-            code: 'CONFLICT',
-            message: 'Book with the same title already exists',
-          });
-        }
-
-        const bookId = nanoid();
-
-        const { success } = await createBook({
-          bookId,
-          authorId: author.clerkId,
-          bookTitle,
-          normalised_title: newTitle,
-          language,
+      if (book?.id) {
+        throw new TRPCError({
+          code: 'CONFLICT',
+          message: 'Book with the same title already exists',
         });
+      }
 
-        if (!success) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Something went wrong while creating the book',
-          });
-        }
+      const bookId = nanoid();
 
-        return { success: true, bookId };
-      } catch (err) {
-        console.error('[CREATE_BOOK_ERROR]:', err);
+      const { success } = await createBook({
+        bookId,
+        authorId: author.clerkId,
+        bookTitle,
+        normalised_title: newTitle,
+        language,
+      });
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'Data not passed in correct format',
-          });
-        }
-        if (err instanceof DrizzleError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to make changes to the db',
-          });
-        }
-        if (err instanceof TRPCError) {
-          throw new TRPCError({
-            code: err.code,
-            message: err.message,
-          });
-        }
-
+      if (!success) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Something went wrong while creating the book',
         });
       }
-    }),
 
-  publish: publicProcedure
-    .use(isAuthor)
-    .input(z.any())
-    .mutation(async ({ input, ctx }) => {
-      const { author } = ctx;
+      return { success: true, bookId };
+    } catch (err) {
+      console.error('[CREATE_BOOK_ERROR]:', err);
 
-      const body = input;
-
-      try {
-        const { bookId, ...rest } = (
-          body?.status === 'draft' ? draftBookValidation : publishBookValidation
-        ).parse(body);
-
-        const book = await getBookById(bookId);
-
-        if (!book || !book?.id) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'This book does not exist',
-          });
-        }
-
-        if (!(book.id === bookId && book.clerkId === author.clerkId)) {
-          return new TRPCError({
-            code: 'UNAUTHORIZED',
-            message: 'You are not the author of this book',
-          });
-        }
-
-        const { success } = await publishBook({
-          id: bookId,
-          clerkId: author.clerkId,
-          bookTitle: rest.bookTitle,
-          language: rest.language,
-          status: rest.status,
-          availability: rest.availability,
-          backArtwork: rest.backArtwork,
-          frontArtwork: rest.frontArtwork,
-          collaborations: rest.collaborations,
-          content: rest.content,
-          synopsis: rest.synopsis,
-          genres: rest.genres,
-          pricing: rest.pricing,
-          normalised_title: book.normalised_title,
-          series: rest.series,
-          publicationDate: rest.status === 'published' ? new Date() : null,
-          updatedAt: new Date(),
+      if (err instanceof z.ZodError) {
+        throw new TRPCError({
+          code: 'PARSE_ERROR',
+          message: 'Data not passed in correct format',
         });
+      }
+      if (err instanceof DrizzleError) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to make changes to the db',
+        });
+      }
+      if (err instanceof TRPCError) {
+        throw new TRPCError({
+          code: err.code,
+          message: err.message,
+        });
+      }
 
-        if (!success) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to publish the book',
-          });
-        }
-      } catch (err) {
-        console.error('[PUBLISH_BOOK_ERROR]:', err);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Something went wrong while creating the book',
+      });
+    }
+  }),
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'Data not passed in correct format',
-          });
-        }
-        if (err instanceof DrizzleError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to make changes to the db',
-          });
-        }
-        if (err instanceof TRPCError) {
-          throw new TRPCError({
-            code: err.code,
-            message: err.message,
-          });
-        }
+  publish: authorProcedure.input(z.any()).mutation(async ({ input, ctx }) => {
+    const { author } = ctx;
 
+    const body = input;
+
+    try {
+      const { bookId, ...rest } = (
+        body?.status === 'draft' ? draftBookValidation : publishBookValidation
+      ).parse(body);
+
+      const book = await getBookById(bookId);
+
+      if (!book || !book?.id) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'This book does not exist',
+        });
+      }
+
+      if (!(book.id === bookId && book.clerkId === author.clerkId)) {
+        return new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You are not the author of this book',
+        });
+      }
+
+      const { success } = await publishBook({
+        id: bookId,
+        clerkId: author.clerkId,
+        bookTitle: rest.bookTitle,
+        language: rest.language,
+        status: rest.status,
+        availability: rest.availability,
+        backArtwork: rest.backArtwork,
+        frontArtwork: rest.frontArtwork,
+        collaborations: rest.collaborations,
+        content: rest.content,
+        synopsis: rest.synopsis,
+        genres: rest.genres,
+        pricing: rest.pricing,
+        normalised_title: book.normalised_title,
+        series: rest.series,
+        publicationDate: rest.status === 'published' ? new Date() : null,
+        updatedAt: new Date(),
+      });
+
+      if (!success) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to publish the book',
         });
       }
-    }),
+    } catch (err) {
+      console.error('[PUBLISH_BOOK_ERROR]:', err);
 
-  delete: publicProcedure
-    .use(isAuthor)
+      if (err instanceof z.ZodError) {
+        throw new TRPCError({
+          code: 'PARSE_ERROR',
+          message: 'Data not passed in correct format',
+        });
+      }
+      if (err instanceof DrizzleError) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to make changes to the db',
+        });
+      }
+      if (err instanceof TRPCError) {
+        throw new TRPCError({
+          code: err.code,
+          message: err.message,
+        });
+      }
+
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to publish the book',
+      });
+    }
+  }),
+
+  delete: authorProcedure
     .input(z.object({ bookId: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
       const { author } = ctx;

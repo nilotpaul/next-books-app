@@ -13,7 +13,7 @@ import PostListSkeleton from '../loadings/PostListSkeleton';
 
 type ForumPostsClientWrapperProps = {
   posts: FullForumPost[];
-  userId: string;
+  userId?: string | null;
 };
 
 const ForumPostsClientWrapper = ({ posts: initialPosts, userId }: ForumPostsClientWrapperProps) => {
@@ -44,6 +44,7 @@ const ForumPostsClientWrapper = ({ posts: initialPosts, userId }: ForumPostsClie
           ],
         },
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        enabled: initialPosts.length === 0,
       }
     );
 

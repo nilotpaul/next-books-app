@@ -1,5 +1,4 @@
 import { getForumPosts } from '@/services/forumPosts.services';
-import { userSession } from '@/services/auth.services';
 import { Suspense } from 'react';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 
@@ -16,14 +15,9 @@ const ForumPage = () => {
         <Suspense fallback={<PostListSkeleton />}>
           <ForumPostWrapper
             getPosts={async () => {
-              const [posts, user] = await Promise.all([
-                getForumPosts(MAX_SEARCH_RESULTS_LIMIT + 1),
-                userSession(),
-              ]);
-              return {
-                posts: posts || [],
-                userId: user?.id!,
-              };
+              const posts = await getForumPosts(MAX_SEARCH_RESULTS_LIMIT + 1);
+
+              return posts || [];
             }}
           />
         </Suspense>

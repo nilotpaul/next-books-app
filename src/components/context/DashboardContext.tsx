@@ -16,10 +16,11 @@ type DashboadContext = {
     userImage: string;
   };
   isAuthor: boolean;
-  authorBooks?: (BooksWithoutNT[number] & {
-    authorImage: string | null;
-    authorName: string;
-  })[];
+  author?: {
+    name?: string;
+    image?: string | null;
+  };
+  authorBooks?: BooksWithoutNT;
   purchases: PurchasedBook[];
   forumPosts: ForumPost[];
 };
@@ -31,6 +32,7 @@ export const MyDashboardContext = createContext<DashboadContext>({
     userImage: '',
   },
   isAuthor: false,
+  author: undefined,
   authorBooks: undefined,
   purchases: [],
   forumPosts: [],

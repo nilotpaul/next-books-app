@@ -7,7 +7,7 @@ import { GridContainer } from '@/components/ReusableCard';
 import Heading from '@/components/Heading';
 
 export const runtime = 'edge';
-export const preferredRegion = ['sin1', 'cle1', 'fra1'];
+export const preferredRegion = ['sin1', 'cle1'];
 
 type DiscoverPageProps = {
   searchParams: { [key: string]: string | string[] | undefined };

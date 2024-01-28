@@ -13,7 +13,7 @@ type TopbarProps = {
   requestSubmit: () => Promise<EditorOutput>;
 };
 
-const Topbar = ({ ...props }: TopbarProps) => {
+const Topbar = ({ book, ...props }: TopbarProps) => {
   return (
     <Container className='flex w-full max-w-full items-center justify-between px-0 md:max-w-5xl'>
       <div className='flex items-center gap-12'>
@@ -21,12 +21,19 @@ const Topbar = ({ ...props }: TopbarProps) => {
           <ArrowLeft className='h-4 w-4' />
           Back
         </Button>
-        <Chip color='warning' variant='dot'>
-          Draft
-        </Chip>
+
+        {book.status === 'draft' ? (
+          <Chip color='warning' variant='dot'>
+            Draft
+          </Chip>
+        ) : (
+          <Chip color='success' variant='dot'>
+            Published
+          </Chip>
+        )}
       </div>
       <div className='space-x-3'>
-        <BookPublishModal {...props} />
+        <BookPublishModal book={book} {...props} />
       </div>
     </Container>
   );

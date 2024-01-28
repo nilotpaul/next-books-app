@@ -30,8 +30,6 @@ const TabsWrapper = async ({ getData }: TabsWrapperProps) => {
     );
     const newbooks = books.map((book) => {
       return {
-        authorImage: author.author_image,
-        authorName: author.authorName,
         ...omit(book, ['normalised_title']),
       };
     });
@@ -41,6 +39,10 @@ const TabsWrapper = async ({ getData }: TabsWrapperProps) => {
         values={{
           user,
           isAuthor,
+          author: {
+            name: author.authorName,
+            image: author.author_image,
+          },
           authorBooks: newbooks,
           forumPosts,
           purchases: purchasedBooks,

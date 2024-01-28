@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 
 type PostLikeButtonProps = {
   postId: string;
-  userId: string;
+  userId?: string | null;
   likes: string[];
   className?: string;
 };
@@ -70,7 +70,7 @@ const PostLikeButton = ({
           className={cn(
             'h-4 w-4 cursor-pointer text-danger',
             {
-              'fill-danger': likes.includes(userId),
+              'fill-danger': likes.includes(userId || ''),
             },
             className
           )}

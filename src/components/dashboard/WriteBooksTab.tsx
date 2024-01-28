@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { trpc } from '@/lib/trpc/TRPCProvider';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { toast } from 'sonner';
+import { omit } from 'lodash';
 
 import ReusableTable from '../ReusableTable';
 import { TableRow, TableCell } from '@nextui-org/table';
@@ -79,7 +80,7 @@ const WriteBooksTab = () => {
         map={(book) => (
           <TableRow key={book.id}>
             <TableCell className='font-medium sm:text-base'>{book.bookTitle}</TableCell>
-            <TableCell>{format(book.updatedAt, 'dd / MM / yy')}</TableCell>
+            <TableCell>{book.updatedAt && format(book.updatedAt, 'dd / MM / yy')}</TableCell>
             <TableCell>
               {book.status === 'draft' ? (
                 <Chip variant='flat' color='warning'>

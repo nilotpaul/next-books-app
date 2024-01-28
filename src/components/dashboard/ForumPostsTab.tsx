@@ -69,7 +69,7 @@ const ForumPostsTab = () => {
         toast.success('Post deleted');
       }
       router.refresh();
-      utils.forumPostRouter.getPosts.refetch();
+      utils.userRouter.getUserPosts.refetch();
     },
     onError: (err) => {
       console.error(err);
