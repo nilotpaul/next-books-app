@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# BooksGod
 
-## Getting Started
+**BooksGod** is a Next.js application designed for managing and exploring books. It incorporates the latest features and best practices of Next.js 14, providing a comprehensive platform for both readers and authors. Below is an overview of its features and technologies.
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**About:**
+This is a side project of mine aimed at implementing and understanding the latest Next.js features and best practices. Users can log in, search for books, read, and register as authors to write their own books. Authors can utilize the provided editor to write, save drafts, and publish. It supports book cover uploads, details, and allows paid book purchases for users.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Reader and Editor:**
+  - Users can read books, and authors can write and edit books using the provided editor.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **User-friendly Dashboard:**
+  - Both users and authors have a dashboard for managing their activities.
 
-## Learn More
+- **Image Upload with AWS S3:**
+  - Authors can upload book cover images seamlessly.
 
-To learn more about Next.js, take a look at the following resources:
+- **Filter Options and Search:**
+  - Users can filter and search for books with infinite pagination.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Community Features:**
+  - Users and authors can engage in a community.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- **Optimistic Updates:**
+  - Optimistic updates for a smoother user experience.
 
-## Deploy on Vercel
+- **Redis Caching:**
+  - Efficient caching using Redis.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Authentication with Clerk:**
+  - Secure authentication using Clerk.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **Validations with Zod:**
+  - Robust validations implemented with Zod.
+
+- **Drizzle ORM and Database - PlanetScale:**
+  - Database management with Drizzle ORM and PlanetScale.
+
+- **Rate Limiting:**
+  - Implemented to prevent abuse and ensure fair usage.
+
+- **Book Purchasing with Stripe:**
+  - Secure transactions for purchasing books.
+
+- **Loading States with Suspense:**
+  - Enhanced user experience with Suspense for loading states.
+
+- **UI Component Library - NextUi:**
+  - Utilizes the NextUi component library for a consistent UI.
+
+- **Styled with Tailwind CSS:**
+  - Responsive and visually appealing design with Tailwind CSS.
+
+- **Deployed on Vercel Edge:**
+  - Deployed on Vercel Edge for efficient performance.
+
+- **TRPC and React Server Components:**
+  - Utilizes TRPC and React Server Components for efficient server-client interaction.
+
+## To-Do List:
+
+- Documentation for Authors
+- More Author Features
+- Auto-Save Editor Functionality
+- Reading Preferences
+
+## Installation
+
+1. Install dependencies:
+
+   ```sh
+   pnpm install
+   ```
+
+2. Copy `.env.example` to `.env.local` and update the variables:
+
+   ```sh
+   cp .env.example .env.local
+   ```
+
+3. Start the development server:
+
+   ```sh
+   pnpm dev
+   ```
