@@ -1,17 +1,38 @@
 import { getPublishedBookWithAuthorById } from '@/services/books.services';
 import { getcontentByChapter } from '@/lib/blocksParser';
+import { Metadata } from 'next';
+import { constructMetadata } from '@/lib/constructMetadata';
 import { notFound, redirect } from 'next/navigation';
 
 import ReaderWrapper from '@/components/books/read/ReaderWrapper';
 import { purchaseStatus } from '@/utils/purchaseStatus';
 
-type pageProps = {
+export async function generateMetadata({ params: { bookId } }: BookPageProps): Promise<Metadata> {
+  const bookDetails = await getPublishedBookWithAuthorById(bookId);
+
+  if (!bookDetails) {
+    return constructMetadata({
+      title: 'Not Found',
+      description: 'This page does not exist.',
+    });
+  }
+
+  const { book, authorName } = bookDetails;
+
+  return constructMetadata({
+    title: `Read - ${book.bookTitle}`,
+    description: `${book.bookTitle} written by ${authorName ?? 'booksgod author'}`,
+    image: book.frontArtwork ?? undefined,
+  });
+}
+
+type BookPageProps = {
   params: {
     bookId: string;
   };
 };
 
-const page = async ({ params }: pageProps) => {
+const BookPage = async ({ params }: BookPageProps) => {
   const { bookId } = params;
   const [{ isPurchased, userId }, dbBook] = await Promise.all([
     purchaseStatus(bookId),
@@ -47,4 +68,4 @@ const page = async ({ params }: pageProps) => {
   );
 };
 
-export default page;
+export default BookPage;

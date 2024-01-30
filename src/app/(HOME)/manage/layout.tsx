@@ -1,3 +1,4 @@
+import { constructMetadata } from '@/lib/constructMetadata';
 import { Suspense } from 'react';
 
 import ManageSkeleton from '@/components/loadings/ManageSkeleton';
@@ -5,6 +6,11 @@ import ManageTabs from '@/components/manage/ManageTabs';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
+export const metadata = constructMetadata({
+  title: 'Manage',
+  description: 'Manage your profile section.',
+});
 
 export default function ManageLayout({ children }: { children: React.ReactNode }) {
   return (

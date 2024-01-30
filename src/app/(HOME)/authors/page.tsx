@@ -1,4 +1,5 @@
 import { getAuthorsByStars } from '@/services/author.services';
+import { constructMetadata } from '@/lib/constructMetadata';
 import { Suspense } from 'react';
 
 import { GridContainer } from '@/components/ReusableCard';
@@ -8,6 +9,11 @@ import Heading from '@/components/Heading';
 
 export const runtime = 'edge';
 export const preferredRegion = ['sin1', 'cle1'];
+
+export const metadata = constructMetadata({
+  title: 'Popular Authors',
+  description: 'A list of most popular authors in booksgod',
+});
 
 const AuthorsPage = () => {
   return (

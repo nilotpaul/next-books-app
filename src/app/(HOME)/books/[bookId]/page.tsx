@@ -1,10 +1,31 @@
 import { getBookInfoById } from '@/services/books.services';
 import { notFound } from 'next/navigation';
 import { purchaseStatus } from '@/utils/purchaseStatus';
+import { constructMetadata } from '@/lib/constructMetadata';
 import { Suspense } from 'react';
 
 import BookInfoSkeleton from '@/components/loadings/BookInfoSkeleton';
 import BooksInfo from '@/components/books/main/BookInfo';
+import { Metadata } from 'next';
+
+export async function generateMetadata({
+  params: { bookId },
+}: BookInfoPageProps): Promise<Metadata> {
+  const book = await getBookInfoById(bookId);
+
+  if (!book || !bookId) {
+    return constructMetadata({
+      title: 'Not Found',
+      description: 'This page does not exist',
+    });
+  }
+
+  return constructMetadata({
+    title: book.title,
+    description: book.synopsis ?? '',
+    image: book.frontArtwork ?? undefined,
+  });
+}
 
 type BookInfoPageProps = {
   params: { bookId: string };

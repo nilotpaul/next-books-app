@@ -1,3 +1,4 @@
+import { constructMetadata } from '@/lib/constructMetadata';
 import { Suspense } from 'react';
 
 import FilterResults from '@/components/discover/FilterResults';
@@ -8,6 +9,11 @@ import Heading from '@/components/Heading';
 
 export const runtime = 'edge';
 export const preferredRegion = ['sin1', 'cle1'];
+
+export const metadata = constructMetadata({
+  title: 'Discover',
+  description: 'Search and filter books by authors, price, genre, etc.',
+});
 
 type DiscoverPageProps = {
   searchParams: { [key: string]: string | string[] | undefined };

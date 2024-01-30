@@ -1,6 +1,13 @@
+import { constructMetadata } from '@/lib/constructMetadata';
+
 import DashNavbar from '@/components/dashboard/DashNavbar';
 import Profile from '@/components/navbar/Profile';
 import Container from '@/components/ui/Container';
+
+export const metadata = constructMetadata({
+  title: 'Dashboard',
+  description: 'Dashboard for managing books, purchases, etc.',
+});
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
