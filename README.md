@@ -1,5 +1,6 @@
 # BooksGod
 
+![](./public/booksgod.png)
 **BooksGod** is a Next.js application designed for managing and exploring books. It incorporates the latest features and best practices of Next.js 14, providing a comprehensive platform for both readers and authors. Below is an overview of its features and technologies.
 
 ## Overview
@@ -9,56 +10,27 @@ This is a side project of mine aimed at implementing and understanding the lates
 
 ## Features
 
-- **Reader and Editor:**
-  - Users can read books, and authors can write and edit books using the provided editor.
-
-- **User-friendly Dashboard:**
-  - Both users and authors have a dashboard for managing their activities.
-
-- **Image Upload with AWS S3:**
-  - Authors can upload book cover images seamlessly.
-
-- **Filter Options and Search:**
-  - Users can filter and search for books with infinite pagination.
-
-- **Community Features:**
-  - Users and authors can engage in a community.
-
-- **Optimistic Updates:**
-  - Optimistic updates for a smoother user experience.
-
-- **Redis Caching:**
-  - Efficient caching using Redis.
-
-- **Authentication with Clerk:**
-  - Secure authentication using Clerk.
-
-- **Validations with Zod:**
-  - Robust validations implemented with Zod.
-
-- **Drizzle ORM and Database - PlanetScale:**
-  - Database management with Drizzle ORM and PlanetScale.
-
-- **Rate Limiting:**
-  - Implemented to prevent abuse and ensure fair usage.
-
-- **Book Purchasing with Stripe:**
-  - Secure transactions for purchasing books.
-
-- **Loading States with Suspense:**
-  - Enhanced user experience with Suspense for loading states.
-
-- **UI Component Library - NextUi:**
-  - Utilizes the NextUi component library for a consistent UI.
-
-- **Styled with Tailwind CSS:**
-  - Responsive and visually appealing design with Tailwind CSS.
-
-- **Deployed on Vercel Edge:**
-  - Deployed on Vercel Edge for efficient performance.
-
-- **TRPC and React Server Components:**
-  - Utilizes TRPC and React Server Components for efficient server-client interaction.
+- React server components
+- TRPC
+- Reader for reading books
+- Editor for writing books
+- User friendly dashboard
+- Image upload with AWS S3
+- Filter options for books
+- Search with infinite pagination
+- Community for users and authors
+- Optimistic updates
+- Redis caching
+- Authentication using Clerk
+- Validations using zod
+- Drizzle ORM
+- Database - PlanetScale
+- Rate Limiting
+- Book Purchasing with Stripe
+- Loading States using Suspense
+- UI component library - NextUi
+- Styled using Tailwind CSS
+- Deployed on Vercel Edge
 
 ## To-Do List:
 
