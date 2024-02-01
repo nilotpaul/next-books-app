@@ -44,8 +44,8 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
     mode: 'onChange',
     defaultValues: {
       bookId: book.id,
-      bookTitle: '',
-      content: undefined,
+      bookTitle: book.bookTitle || '',
+      content: book.content || undefined,
       synopsis: book.synopsis || undefined,
       language: book.language || undefined,
       status: book.status || (isSelected ? 'published' : 'draft'),
@@ -84,17 +84,19 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
     }
   }, [errors]);
 
-  const onSubmit = async (values: PublishBook | DraftBook) => {
+  const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const { title, data } = await requestSubmit();
     setValue('bookTitle', title);
     setValue('content', data?.blocks);
 
-    if (values.pricing === '0.00' && values.availability === 'Paid') {
-      toast.error('For a paid book, price cannot be zero');
-      return;
-    }
+    handleSubmit((values) => {
+      if (values.pricing === '0.00' && values.availability === 'Paid') {
+        toast.error('For a paid book, price cannot be zero');
+        return;
+      }
 
-    publishBook(values);
+      publishBook(values);
+    })(e);
   };
 
   return (
@@ -209,7 +211,9 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                   label='Series'
                   placeholder='Select if this book is a part of a series'
                 >
-                  <SelectItem key={''}></SelectItem>
+                  <SelectItem key={''} textValue='empty'>
+                    empty
+                  </SelectItem>
                 </Select>
                 <Select
                   defaultSelectedKeys={book.collaborations || []}
@@ -219,7 +223,9 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                   label='Collaborations'
                   placeholder='Give credit to other author(s)'
                 >
-                  <SelectItem key={''} textValue={''}></SelectItem>
+                  <SelectItem key={''} textValue='empty'>
+                    empty
+                  </SelectItem>
                 </Select>
               </div>
               <div className='flex flex-wrap items-center justify-between gap-5'>
@@ -261,7 +267,7 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
                 </Switch>
 
                 <Button
-                  onClick={handleSubmit(onSubmit)}
+                  onClick={onSubmit}
                   isLoading={isLoading}
                   color={!isSelected ? 'secondary' : 'warning'}
                   className='w-full font-medium'

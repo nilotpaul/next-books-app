@@ -293,8 +293,6 @@ export const createBook = async ({
     updatedAt: new Date(),
   });
 
-  console.log('create book', { create });
-
   if (create.rowsAffected === 0) {
     return { success: false };
   }

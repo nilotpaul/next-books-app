@@ -63,8 +63,8 @@ const withRateLimit = t.middleware(async ({ ctx, next, type, path }) => {
 
       if (redisUserCount === null) {
         const p = redis.pipeline();
-        p.expire(redisKey, 60 * 60 * 24);
         p.set(redisKey, tokens * 60 * 24);
+        p.expire(redisKey, 60 * 60 * 24);
         p.decr(redisKey);
 
         await p.exec();
