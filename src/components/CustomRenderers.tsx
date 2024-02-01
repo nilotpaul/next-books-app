@@ -49,25 +49,28 @@ export const ImageRenderer = ({
   data: {
     file: { url: string; height: number; width: number; title?: string; author?: string };
     caption: string;
+    illustration: boolean;
   };
   className?: string;
 }) => {
   const isCover =
     data.file.width === 1600 && data.file.height === 2400 && data.file.title?.length !== 0;
 
+  const isIllustration = data.illustration && !isCover;
+
   return (
     <div
       className={cn(
         'relative my-4 flex max-h-[700px] flex-col justify-center gap-2 rounded-lg bg-default/30 p-1.5 md:min-w-[350px]',
         {
-          'mx-auto mt-3 p-0 md:w-[600px]': isCover,
+          'mx-auto mt-3 p-0 md:w-[600px]': isCover || isIllustration,
         },
         className
       )}
     >
       <Image
         classNames={{
-          blurredImg: 'scale-[1] rounded-lg',
+          blurredImg: 'rounded-lg scale-[1]',
           img: 'rounded-lg',
           wrapper: 'rounded-lg',
         }}
@@ -77,10 +80,11 @@ export const ImageRenderer = ({
         height={data.file.height}
         width={data.file.width}
         quality={100}
-        isBlurred={!isCover}
+        isBlurred={!isCover && !isIllustration}
         priority
         loading='eager'
       />
+
       {data?.caption && (
         <span className='truncate text-sm font-medium italic text-foreground-700'>
           {data.caption}

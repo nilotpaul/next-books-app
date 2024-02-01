@@ -27,7 +27,7 @@ export function getcontentByChapter(blocks?: any) {
       currentChapter = { title: item.data.text, content: [item] };
     } else if (!titles.includes(item.data.text) && item.type === 'image') {
       currentChapter = {
-        title: item.data.text || currentChapter.title || '',
+        title: item.data.text || currentChapter?.title || 'illustration',
         content: currentChapter?.content.concat(item) || [item],
       };
     } else {

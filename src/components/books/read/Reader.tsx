@@ -6,9 +6,10 @@ import { cn } from '@/utils/utils';
 
 type ReaderProps = {
   content: any;
+  illustration: boolean;
 };
 
-const Reader = ({ content }: ReaderProps) => {
+const Reader = ({ content, illustration }: ReaderProps) => {
   return (
     <div className='mt-2 h-full prose-headings:text-foreground-600 prose-p:text-foreground-800'>
       <Blocks
@@ -32,11 +33,9 @@ const Reader = ({ content }: ReaderProps) => {
           },
         }}
         renderers={{
-          image: ImageRenderer,
+          image: (props) => ImageRenderer({ ...props, data: { ...props.data, illustration } }),
           list: ListRenderer,
-          header: ({
-            ...props
-          }: {
+          header: (props: {
             data: any;
             className?: string;
             classNames?: {

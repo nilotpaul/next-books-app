@@ -37,7 +37,7 @@ const ReaderWrapper = ({ chapters: initialChapters, metadata, toc }: ReaderWrapp
           <CarouselContent>
             {chapters.map((chapter) => (
               <CarouselItem key={chapter.title}>
-                <Reader content={chapter.content} />
+                <Reader content={chapter.content} illustration={chapter.title === 'illustration'} />
               </CarouselItem>
             ))}
           </CarouselContent>
