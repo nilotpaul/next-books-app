@@ -44,8 +44,8 @@ const BookPublishModal = ({ book, requestSubmit }: BookPublishModalProps) => {
     mode: 'onChange',
     defaultValues: {
       bookId: book.id,
-      bookTitle: book.bookTitle || '',
-      content: book.content || undefined,
+      bookTitle: '',
+      content: undefined,
       synopsis: book.synopsis || undefined,
       language: book.language || undefined,
       status: book.status || (isSelected ? 'published' : 'draft'),
