@@ -20,6 +20,6 @@ export const navItems = [
 export const dashNavItems = [
   {
     name: 'Documentation',
-    path: '/docs',
+    path: '/docs/introduction',
   },
 ];

@@ -17,12 +17,16 @@ import {
 import Container from '../ui/Container';
 import { dashNavItems } from '@/config/constants/navMenu';
 import BrandLogo from '../BrandLogo';
+import { cn } from '@/utils/utils';
 
 type DashNavbarProps = {
   children: React.ReactNode;
+  classNames?: {
+    container?: string;
+  };
 };
 
-const DashNavbar = ({ children }: DashNavbarProps) => {
+const DashNavbar = ({ children, classNames }: DashNavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -39,7 +43,7 @@ const DashNavbar = ({ children }: DashNavbarProps) => {
         wrapper: 'px-0',
       }}
     >
-      <Container className='flex w-full items-center gap-12'>
+      <Container className={cn('flex w-full items-center gap-12', classNames?.container)}>
         <NavbarBrand className='sm:min-w-fit sm:max-w-fit'>
           <BrandLogo />
         </NavbarBrand>

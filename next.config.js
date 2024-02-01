@@ -1,14 +1,13 @@
+const { withContentlayer } = require('next-contentlayer');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
     // ppr: true,
-    // esmExternals: 'loose',
   },
-  // logging: {
-  //   fetches: {
-  //     fullUrl: true,
-  //   },
-  // },
+  reactStrictMode: true,
+  swcMinify: true,
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   images: {
     remotePatterns: [
       {
@@ -27,4 +26,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withContentlayer(nextConfig);
