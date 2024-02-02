@@ -51,7 +51,8 @@ const MDXRenderer = ({ content }: MDXRendererProps) => {
                 fill
                 className='object-scale-down'
                 classNames={{
-                  wrapper: 'relative min-h-max my-8 max-h-[400px] min-w-full aspect-square',
+                  wrapper:
+                    'relative min-h-max my-3 md:my-8 max-h-[250px] md:max-h-[400px] min-w-full aspect-square',
                   blurredImg: 'object-scale-down',
                 }}
               />

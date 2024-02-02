@@ -1,13 +1,24 @@
 import { allDocs } from '.contentlayer/generated';
 import { notFound } from 'next/navigation';
+import nextDynamic from 'next/dynamic';
+import { Suspense } from 'react';
 
-import MDXRenderer from '@/components/docs/MDXRenderer';
+const MDXRenderer = nextDynamic(() => import('@/components/docs/MDXRenderer'));
+
+export const dynamicParams = false;
+export const dynamic = 'force-static';
 
 type pageProps = {
   params: {
     doc: string;
   };
 };
+
+export async function generateStaticParams() {
+  return allDocs.map(({ url }) => ({
+    doc: url,
+  }));
+}
 
 const page = async ({ params }: pageProps) => {
   const { doc: title } = params;
@@ -18,7 +29,11 @@ const page = async ({ params }: pageProps) => {
     return notFound();
   }
 
-  return <MDXRenderer content={doc.body.raw} />;
+  return (
+    <Suspense fallback={'Loading...'}>
+      <MDXRenderer content={doc.body.raw} />
+    </Suspense>
+  );
 };
 
 export default page;

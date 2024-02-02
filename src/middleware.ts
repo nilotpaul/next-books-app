@@ -14,7 +14,7 @@ export default authMiddleware({
     '/authors',
     '/discover',
     '/forum/posts',
-    '/docs',
+    '/docs/:path*',
   ],
   afterAuth: async (auth, req) => {
     if (!auth.userId && !auth.isPublicRoute) {

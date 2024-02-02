@@ -20,7 +20,7 @@ import BrandLogo from '../BrandLogo';
 import { cn } from '@/utils/utils';
 
 type DashNavbarProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   classNames?: {
     container?: string;
   };
