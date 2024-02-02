@@ -1,7 +1,7 @@
 # BooksGod
 
 ![](./public/booksgod.png)
-**BooksGod** is a Next.js application designed for managing and exploring books. It incorporates the latest features and best practices of Next.js 14, providing a comprehensive platform for both readers and authors. Below is an overview of its features and technologies.
+**BooksGod** is a Next.js application designed for managing and exploring books. It incorporates the latest features and best practices of Next.js 14, providing a comprehensive platform for both readers and authors.
 
 ## Overview
 
