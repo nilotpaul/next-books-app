@@ -15,6 +15,7 @@ This is a side project of mine aimed at implementing and understanding the lates
 - Reader for reading books
 - Editor for writing books
 - User friendly dashboard
+- Docs for authors using contentlayer
 - Image upload with AWS S3
 - Filter options for books
 - Search with infinite pagination
