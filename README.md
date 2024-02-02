@@ -34,7 +34,7 @@ Users can log in, search for books, read, and register as authors to write their
 
 ## To-Do List:
 
-- Documentation for Authors
+- ~~Documentation for Authors~~
 - More Author Features
 - Auto-Save Editor Functionality
 - Reading Preferences
