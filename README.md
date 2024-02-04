@@ -1,12 +1,11 @@
 # BooksGod
 
 ![](./public/booksgod.png)
-**BooksGod** is a Next.js application designed for managing and exploring books. It incorporates the latest features and best practices of Next.js 14, providing a comprehensive platform for both readers and authors. Below is an overview of its features and technologies.
+**BooksGod** is a Next.js application designed for managing and exploring books. It incorporates the latest features and best practices of Next.js 14, providing a comprehensive platform for both readers and authors.
 
 ## Overview
 
-**About:**
-This is a side project of mine aimed at implementing and understanding the latest Next.js features and best practices. Users can log in, search for books, read, and register as authors to write their own books. Authors can utilize the provided editor to write, save drafts, and publish. It supports book cover uploads, details, and allows paid book purchases for users.
+Users can log in, search for books, read, and register as authors to write their own books. Authors can utilize the provided editor to write, save drafts, and publish. It supports book cover uploads, details, and allows paid book purchases for users.
 
 ## Features
 
@@ -15,6 +14,7 @@ This is a side project of mine aimed at implementing and understanding the lates
 - Reader for reading books
 - Editor for writing books
 - User friendly dashboard
+- Docs for authors using contentlayer
 - Image upload with AWS S3
 - Filter options for books
 - Search with infinite pagination
@@ -34,7 +34,7 @@ This is a side project of mine aimed at implementing and understanding the lates
 
 ## To-Do List:
 
-- Documentation for Authors
+- ~~Documentation for Authors~~
 - More Author Features
 - Auto-Save Editor Functionality
 - Reading Preferences
