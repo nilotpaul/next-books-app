@@ -1,9 +1,37 @@
 import { allDocs } from '.contentlayer/generated';
+import { Metadata } from 'next';
+import { constructMetadata } from '@/lib/constructMetadata';
 
 import DashNavbar from '@/components/dashboard/DashNavbar';
 import DocsSidebar from '@/components/docs/DocsSidebar';
 import Toc from '@/components/docs/Toc';
 import Container from '@/components/ui/Container';
+
+export async function generateMetadata({
+  params: { doc: title },
+}: {
+  params: { doc: string };
+}): Promise<Metadata> {
+  const doc = allDocs.find(({ url }) => url.toLowerCase() === title.toLowerCase());
+
+  if (!doc)
+    return constructMetadata({
+      title: 'Not Found',
+      description: 'This page does not exist',
+    });
+
+  const docImg = doc.body.raw
+    .match(/!\[.*?\]\(.*?\)/g)?.[0]
+    .split(']')[1]
+    .replaceAll('(', '')
+    .replaceAll(')', '');
+
+  return constructMetadata({
+    title: doc.title,
+    description: `${doc.title} explains the procedures to efficiently write books.`,
+    image: docImg ?? undefined,
+  });
+}
 
 const DocsLayout = ({
   children,
