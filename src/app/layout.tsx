@@ -16,8 +16,8 @@ export const metadata = constructMetadata({
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='en'>
-      <body className={cn('min-h-screen antialiased', inter.className)}>
+    <html lang='en' className='scroll-smooth'>
+      <body className={cn('min-h-screen max-w-full scroll-smooth antialiased', inter.className)}>
         <Providers>
           <GradiantBlob />
 

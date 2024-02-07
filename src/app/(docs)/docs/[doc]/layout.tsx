@@ -6,6 +6,8 @@ import DashNavbar from '@/components/dashboard/DashNavbar';
 import DocsSidebar from '@/components/docs/DocsSidebar';
 import Toc from '@/components/docs/Toc';
 import Container from '@/components/ui/Container';
+import { Button } from '@nextui-org/button';
+import Link from '@/components/ui/Link';
 
 export async function generateMetadata({
   params: { doc: title },
@@ -50,7 +52,17 @@ const DocsLayout = ({
         classNames={{
           container: 'max-w-7xl',
         }}
-      />
+      >
+        <Button
+          className='text-sm font-medium'
+          color='warning'
+          size='sm'
+          as={Link}
+          href='/dashboard'
+        >
+          Go Back
+        </Button>
+      </DashNavbar>
 
       <Container className='mb-16 mt-6 grid min-h-screen w-full max-w-7xl grid-cols-1 place-content-between gap-4 md:grid-cols-[1.5fr_4fr] lg:grid-cols-[1fr_3fr_1fr] lg:gap-8'>
         <DocsSidebar menu={menu} />

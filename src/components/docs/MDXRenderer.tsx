@@ -18,7 +18,7 @@ const MDXRenderer = ({ content }: MDXRendererProps) => {
   };
 
   return (
-    <div className='prose prose-sm max-w-full dark:prose-invert xs:prose-base sm:prose-sm md:prose-base prose-headings:mt-4 prose-headings:text-danger prose-h1:text-zinc-200 prose-h2:text-3xl prose-h3:text-xl prose-h3:font-semibold prose-a:text-primary prose-strong:font-bold prose-img:m-0'>
+    <div className='prose prose-sm max-w-full dark:prose-invert xs:prose-base sm:prose-sm md:prose-base prose-headings:mt-4 prose-headings:text-danger prose-h1:text-foreground-800 prose-h2:text-3xl prose-h3:text-xl prose-h3:font-semibold prose-a:text-primary prose-strong:font-bold prose-img:m-0 dark:prose-h1:text-zinc-200'>
       <MDXRemote
         source={content}
         options={{

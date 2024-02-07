@@ -6,6 +6,8 @@ const nextConfig = {
     // ppr: true,
   },
   reactStrictMode: true,
+  compress: true,
+  optimizeFonts: true,
   swcMinify: true,
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   images: {
@@ -24,6 +26,12 @@ const nextConfig = {
       },
     ],
   },
+  rewrites: async () => [
+    {
+      source: '/docs',
+      destination: '/docs/introduction',
+    },
+  ],
 };
 
 module.exports = withContentlayer(nextConfig);

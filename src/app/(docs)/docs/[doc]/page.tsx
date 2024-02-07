@@ -1,9 +1,6 @@
 import { allDocs } from '.contentlayer/generated';
 import { notFound } from 'next/navigation';
-import nextDynamic from 'next/dynamic';
-import { Suspense } from 'react';
-
-const MDXRenderer = nextDynamic(() => import('@/components/docs/MDXRenderer'));
+import MDXRenderer from '@/components/docs/MDXRenderer';
 
 export const dynamicParams = false;
 export const dynamic = 'force-static';
@@ -29,11 +26,7 @@ const page = async ({ params }: pageProps) => {
     return notFound();
   }
 
-  return (
-    <Suspense fallback={'Loading...'}>
-      <MDXRenderer content={doc.body.raw} />
-    </Suspense>
-  );
+  return <MDXRenderer content={doc.body.raw} />;
 };
 
 export default page;

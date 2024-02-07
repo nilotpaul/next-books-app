@@ -5,11 +5,11 @@ import BrandLogo from '@/components/BrandLogo';
 import Heading from '@/components/Heading';
 import { GridContainer } from '@/components/ReusableCard';
 import BookCardSkeleton from '@/components/loadings/BookCardSkeleton';
-import BookCardShowcase from '@/components/marketing/BookCardShowcase';
 import Container from '@/components/ui/Container';
 import Link from '@/components/ui/Link';
 import { Button } from '@nextui-org/button';
 import { MoveRight, Search } from 'lucide-react';
+import BookCardShowcase from '@/components/marketing/BookCardShowcase';
 import { cn } from '@/utils/utils';
 
 export const runtime = 'edge';
@@ -89,7 +89,7 @@ const Home = () => {
 
         <Suspense
           fallback={
-            <GridContainer position='center'>
+            <GridContainer position='center' className='mt-6'>
               <BookCardSkeleton cards={6} />
             </GridContainer>
           }
