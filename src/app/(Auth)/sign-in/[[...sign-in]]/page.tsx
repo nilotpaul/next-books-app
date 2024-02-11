@@ -9,7 +9,7 @@ export const metadata = constructMetadata({
 const SignInPage = () => {
   return (
     <>
-      <SignIn afterSignInUrl='/' afterSignUpUrl='/' signUpUrl='/sign-up' />
+      <SignIn />
     </>
   );
 };

@@ -7,7 +7,7 @@ export const metadata = constructMetadata({
 });
 
 const SignUpPage = () => {
-  return <SignUp afterSignInUrl='/' afterSignUpUrl='/' signInUrl='/sign-in' />;
+  return <SignUp />;
 };
 
 export default SignUpPage;
