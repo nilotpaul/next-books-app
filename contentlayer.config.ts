@@ -1,5 +1,4 @@
 import { defineDocumentType, makeSource } from 'contentlayer/source-files';
-import rehypePrettyCode from 'rehype-pretty-code';
 
 export const Docs = defineDocumentType(() => ({
   name: 'Docs',

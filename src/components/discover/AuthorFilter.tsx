@@ -40,7 +40,7 @@ const AuthorFilter = ({ setValue }: AuthorFilterProps) => {
       onSelectionChange={(value) =>
         onSearchParamsChange({
           name: 'authorName',
-          value: value?.toString(),
+          value: value?.toString() ?? '',
           deleteQueryParams,
           pathname,
           router,
