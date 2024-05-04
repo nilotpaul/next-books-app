@@ -59,6 +59,8 @@ const Header = ({ children }: HeaderProps) => {
           })}
         </NavbarContent>
 
+        <Link href='/not'>Hello</Link>
+
         <NavbarContent className='hidden sm:flex' justify='end'>
           <Suspense fallback={<NavbarProfileSkeleton />}>{children}</Suspense>
         </NavbarContent>
