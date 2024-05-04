@@ -8,6 +8,8 @@ import BookCardSkeleton from '@/components/loadings/BookCardSkeleton';
 import { GridContainer } from '@/components/ReusableCard';
 import Heading from '@/components/Heading';
 
+export const revalidate = 0;
+
 export const metadata = constructMetadata({
   title: 'Popular Books',
   description: 'A list of popular books from our collection',

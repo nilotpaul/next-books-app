@@ -4,6 +4,8 @@ import { getAuthorByIdWithLinks } from '@/services/author.services';
 
 import TabContent from '@/components/manage/TabContent';
 
+export const revalidate = 0;
+
 const ManagePage = async () => {
   const {
     id: userId,
