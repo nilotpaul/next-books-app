@@ -41,7 +41,6 @@ export async function POST(req: Request) {
       await createUser(createUserPayload);
     } else if (event.type === 'user.deleted') {
       await deleteUser(payload.data.id);
-      console.log(payload);
     } else if (event.type === 'user.updated') {
       await updateUser(payload.data.id, {
         imageUrl: payload.data.image_url,

@@ -191,7 +191,7 @@ export const rateBook = async (
         stars: opts.stars,
       });
 
-      if (ratedBook.rowsAffected === 0) {
+      if (ratedBook[0].affectedRows === 0) {
         tx.rollback();
         return { success: false };
       }
@@ -201,7 +201,7 @@ export const rateBook = async (
         .set({ stars: opts.currentBookStars + opts.stars, ratedBy: opts.prevRatedBy + 1 })
         .where(eq(books.id, opts.bookId));
 
-      if (ratedAuthorBook.rowsAffected === 0) {
+      if (ratedAuthorBook[0].affectedRows === 0) {
         tx.rollback();
         return { success: false };
       }
@@ -218,7 +218,7 @@ export const rateBook = async (
         })
         .where(and(eq(ratedBooks.id, opts.id), eq(ratedBooks.bookId, opts.bookId)));
 
-      if (updatedRating.rowsAffected === 0) {
+      if (updatedRating[0].affectedRows === 0) {
         tx.rollback();
         return { success: false };
       }
@@ -228,7 +228,7 @@ export const rateBook = async (
         .set({ stars: opts.currentBookStars + (opts.stars - opts.prevStars) })
         .where(eq(books.id, opts.bookId));
 
-      if (updatedAuthorBook.rowsAffected === 0) {
+      if (updatedAuthorBook[0].affectedRows === 0) {
         tx.rollback();
         return { success: false };
       }
@@ -240,7 +240,7 @@ export const rateBook = async (
       .delete(ratedBooks)
       .where(and(eq(ratedBooks.bookId, opts.bookId), eq(ratedBooks.id, opts.id)));
 
-    if (deletedRating.rowsAffected === 0) {
+    if (deletedRating[0].affectedRows === 0) {
       tx.rollback();
       return { success: false };
     }
@@ -250,7 +250,7 @@ export const rateBook = async (
       .set({ stars: opts.currentBookStars - opts.stars, ratedBy: opts.prevRatedBy - 1 })
       .where(eq(books.id, opts.bookId));
 
-    if (updatedAuthorBook.rowsAffected === 0) {
+    if (updatedAuthorBook[0].affectedRows === 0) {
       tx.rollback();
       return { success: false };
     }
@@ -268,7 +268,7 @@ export const rateBook = async (
 export const publishBook = async (payload: (typeof books)['$inferInsert']) => {
   const publish = await db.update(books).set(payload).where(eq(books.id, payload.id));
 
-  if (publish.rowsAffected === 0) {
+  if (publish[0].affectedRows === 0) {
     return { success: false };
   }
 
@@ -293,7 +293,7 @@ export const createBook = async ({
     updatedAt: new Date(),
   });
 
-  if (create.rowsAffected === 0) {
+  if (create[0].affectedRows === 0) {
     return { success: false };
   }
 
@@ -303,7 +303,7 @@ export const createBook = async ({
 export const deleteBookById = async (bookId: string) => {
   const deletedBook = await db.delete(books).where(eq(books.id, bookId));
 
-  if (deletedBook.rowsAffected === 0) {
+  if (deletedBook[0].affectedRows === 0) {
     return { success: false };
   }
 

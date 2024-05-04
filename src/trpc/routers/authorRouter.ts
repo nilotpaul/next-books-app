@@ -29,16 +29,16 @@ export const authorRouter = router({
     const { authorName, bio, confirm_email, imageUrl, genres } = input;
 
     try {
-      const author = await getAuthorById(user.id);
+      const { isAuthor, author, user: dbUser } = await getAuthorById(user.id);
 
-      if (author.isAuthor) {
+      if (isAuthor) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'You are already an author',
         });
       }
 
-      if (author.author?.confirm_email !== confirm_email) {
+      if (dbUser.email !== confirm_email) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'Invalid email',

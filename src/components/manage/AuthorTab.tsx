@@ -18,10 +18,13 @@ type AuthorTabtProps = {
 };
 
 const AuthorTab = ({ isAuthor, author, links }: AuthorTabtProps) => {
+  const pendingModal = !isAuthor && author && author?.secretKey.length !== 0;
+  const registerModal = !isAuthor && !author;
+
   return (
     <>
-      {!isAuthor && !author?.secretKey && <AuthorRegisterModal />}
-      {!isAuthor && author?.secretKey && <PendingAuthorRegisterModal />}
+      {registerModal && <AuthorRegisterModal />}
+      {pendingModal && <PendingAuthorRegisterModal />}
       <div
         className={cn('h-full w-full space-y-2', {
           'bg-foreground-50 opacity-40 blur-md filter': !isAuthor,

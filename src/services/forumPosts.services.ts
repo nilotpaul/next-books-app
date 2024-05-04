@@ -93,7 +93,7 @@ export const likeForumPost = async ({
       .set({ likes: [...prevTotalLikes, userId] })
       .where(eq(forumPosts.id, postId));
 
-    if (updated.rowsAffected === 0) {
+    if (updated[0].affectedRows === 0) {
       return { success: false };
     }
 
@@ -105,7 +105,7 @@ export const likeForumPost = async ({
     .set({ likes: prevTotalLikes.filter((item) => item !== userId) })
     .where(eq(forumPosts.id, postId));
 
-  if (updated.rowsAffected === 0) {
+  if (updated[0].affectedRows === 0) {
     return { success: false };
   }
 
@@ -117,7 +117,7 @@ export const deleteForumPost = async (postId: string, userId: string) => {
     .delete(forumPosts)
     .where(and(eq(forumPosts.id, postId), eq(forumPosts.clerkId, userId)));
 
-  if (deletedPost.rowsAffected === 0) {
+  if (deletedPost[0].affectedRows === 0) {
     return { success: false };
   }
 
@@ -135,7 +135,7 @@ export const createForumPost = async (values: ForumPost & { userId: string }) =>
     tags: values.tags,
   });
 
-  if (createdPost.rowsAffected === 0) {
+  if (createdPost[0].affectedRows === 0) {
     return { success: false };
   }
 

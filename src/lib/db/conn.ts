@@ -8,7 +8,7 @@ const poolConn = mysql.createPool({
   host: env.DATABASE_HOST,
   user: env.DATABASE_USERNAME,
   password: env.DATABASE_PASSWORD,
-  uri: env.DATABASE_URL
+  uri: env.DATABASE_URL,
 });
 
 export const db = drizzle(poolConn, { schema, mode: 'default' });

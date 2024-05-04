@@ -93,17 +93,9 @@ export const getAuthorByIdWithLinks = cache(async (userId: string) => {
     .where(eq(authors.clerkId, userId))
     .leftJoin(socialLinks, eq(socialLinks.clerkId, userId));
 
-  if (!row[0]?.authors || !row[0]?.authors?.isConfirmed) {
-    return {
-      isAuthor: false,
-      author: null,
-      links: null,
-    };
-  }
-
   return {
-    isAuthor: row[0].authors.isConfirmed,
-    author: row[0].authors,
+    isAuthor: row[0]?.authors.isConfirmed || false,
+    author: row[0]?.authors,
     links: row[0]?.social_links,
   };
 });
@@ -119,7 +111,9 @@ export const updateAuthorProfile = async (values: UpdateAuthorProfile, userId: s
     })
     .where(eq(authors.clerkId, userId));
 
-  if (updatedAuthor.rowsAffected === 0) {
+  console.log(updatedAuthor);
+
+  if (updatedAuthor[0].affectedRows === 0) {
     return { success: false };
   }
 
@@ -133,14 +127,14 @@ export async function verifyAuthor(userId: string) {
       .set({ isConfirmed: true })
       .where(eq(authors.clerkId, userId));
 
-    if (!author || author.rowsAffected === 0) {
+    if (!author || author[0].affectedRows === 0) {
       tx.rollback();
       return { success: false };
     }
 
     const user = await tx.update(users).set({ isAuthor: true }).where(eq(users.clerkId, userId));
 
-    if (!user || user.rowsAffected === 0) {
+    if (!user || user[0].affectedRows === 0) {
       tx.rollback();
       return { success: false };
     }
@@ -202,7 +196,7 @@ export async function registerAuthor(
   await db.transaction(async (tx) => {
     const author = await tx.insert(authors).values(data);
 
-    if (!author || author.rowsAffected === 0) {
+    if (!author || author[0].affectedRows === 0) {
       await tx.rollback();
 
       return { success: false };
