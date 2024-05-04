@@ -12,9 +12,6 @@ import { MoveRight, Search } from 'lucide-react';
 import BookCardShowcase from '@/components/marketing/BookCardShowcase';
 import { cn } from '@/utils/utils';
 
-export const runtime = 'edge';
-export const preferredRegion = ['sin1', 'cle1'];
-
 const Home = () => {
   return (
     <Container className='px-0'>

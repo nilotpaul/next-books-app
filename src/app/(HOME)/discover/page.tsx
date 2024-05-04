@@ -7,9 +7,6 @@ import BookCardSkeleton from '@/components/loadings/BookCardSkeleton';
 import { GridContainer } from '@/components/ReusableCard';
 import Heading from '@/components/Heading';
 
-export const runtime = 'edge';
-export const preferredRegion = ['sin1', 'cle1'];
-
 export const metadata = constructMetadata({
   title: 'Discover',
   description: 'Search and filter books by authors, price, genre, etc.',

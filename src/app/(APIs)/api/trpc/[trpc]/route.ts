@@ -3,8 +3,11 @@ import { createTRPCContext } from '@/trpc/trpc';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { NextRequest } from 'next/server';
 
-export const runtime = 'edge';
-export const preferredRegion = ['sin1', 'cle1'];
+// export const runtime = 'edge';
+// export const preferredRegion = ['sin1', 'cle1'];
+
+// Edge runtime can't be used as we're not using 
+// the planetscale drizzle driver anymore.
 
 const handler = (req: NextRequest) =>
   fetchRequestHandler({

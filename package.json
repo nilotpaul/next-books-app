@@ -25,7 +25,6 @@
     "@hookform/resolvers": "^3.3.4",
     "@mantine/hooks": "^7.5.1",
     "@nextui-org/react": "^2.2.9",
-    "@planetscale/database": "^1.15.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@stripe/stripe-js": "^2.4.0",
     "@t3-oss/env-nextjs": "^0.7.3",

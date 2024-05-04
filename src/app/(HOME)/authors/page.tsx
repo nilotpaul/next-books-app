@@ -7,9 +7,6 @@ import AuthorCardWrapper from '@/components/authors/AuthorCardWrapper';
 import AuthorCardSkeleton from '@/components/loadings/AuthorCardSkeleton';
 import Heading from '@/components/Heading';
 
-export const runtime = 'edge';
-export const preferredRegion = ['sin1', 'cle1'];
-
 export const metadata = constructMetadata({
   title: 'Popular Authors',
   description: 'A list of most popular authors in booksgod',

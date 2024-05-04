@@ -1,12 +1,14 @@
 import { env } from '@/validations/env';
-import { drizzle } from 'drizzle-orm/planetscale-serverless';
-import { connect } from '@planetscale/database';
+import { drizzle } from 'drizzle-orm/mysql2';
+import mysql from 'mysql2/promise';
+
 import * as schema from './schema';
 
-const conn = connect({
+const poolConn = mysql.createPool({
   host: env.DATABASE_HOST,
-  username: env.DATABASE_USERNAME,
+  user: env.DATABASE_USERNAME,
   password: env.DATABASE_PASSWORD,
+  uri: env.DATABASE_URL
 });
 
-export const db = drizzle(conn, { schema });
+export const db = drizzle(poolConn, { schema, mode: 'default' });
