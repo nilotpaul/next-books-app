@@ -35,7 +35,7 @@ export const getUserById = cache(async (userId: string) => {
 export async function createUser(user: (typeof users)['$inferInsert']) {
   const createdUser = await db.insert(users).values(user);
 
-  if (createdUser[0].affectedRows === 0) {
+  if (createdUser[0].changedRows === 0) {
     return null;
   }
 
@@ -45,7 +45,7 @@ export async function createUser(user: (typeof users)['$inferInsert']) {
 export async function deleteUser(userId: string) {
   const deletedUser = await db.delete(users).where(eq(users.clerkId, userId));
 
-  if (deletedUser[0].affectedRows === 0) {
+  if (deletedUser[0].changedRows === 0) {
     return null;
   }
 
@@ -90,7 +90,7 @@ export const purchaseBook = async ({
       })
       .where(eq(users.clerkId, userId));
 
-    if (purchasedBook[0].affectedRows === 0) {
+    if (purchasedBook[0].changedRows === 0) {
       tx.rollback();
       return { success: false };
     }
@@ -100,7 +100,7 @@ export const purchaseBook = async ({
       .set({ purchaseCount: prevPurchaseCount + 1 })
       .where(eq(books.id, bookId));
 
-    if (updateBookPurchaseCount[0].affectedRows === 0) {
+    if (updateBookPurchaseCount[0].changedRows === 0) {
       tx.rollback();
       return { success: false };
     }

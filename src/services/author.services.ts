@@ -1,5 +1,6 @@
 import { db } from '@/lib/db/conn';
-import { authors, books, socialLinks, users } from '@/lib/db/schema';
+import { authors, books, users } from '@/lib/db/schema';
+import { DBResult } from '@/utils/utils';
 import { UpdateAuthorProfile } from '@/validations/authorValidations';
 import { env } from '@/validations/env';
 import { and, asc, desc, eq, gt, like, lt } from 'drizzle-orm';
@@ -86,20 +87,6 @@ export const getAuthorById = cache(async (userId: string) => {
   };
 });
 
-export const getAuthorByIdWithLinks = cache(async (userId: string) => {
-  const row = await db
-    .select()
-    .from(authors)
-    .where(eq(authors.clerkId, userId))
-    .leftJoin(socialLinks, eq(socialLinks.clerkId, userId));
-
-  return {
-    isAuthor: row[0]?.authors.isConfirmed || false,
-    author: row[0]?.authors,
-    links: row[0]?.social_links,
-  };
-});
-
 export const updateAuthorProfile = async (values: UpdateAuthorProfile, userId: string) => {
   const updatedAuthor = await db
     .update(authors)
@@ -108,12 +95,12 @@ export const updateAuthorProfile = async (values: UpdateAuthorProfile, userId: s
       author_image: values.authorImage,
       artistGenres: values.genres,
       bio: values.bio,
+      instagram: values.links.instagram,
+      twitter: values.links.Twitter,
     })
     .where(eq(authors.clerkId, userId));
 
-  console.log(updatedAuthor);
-
-  if (updatedAuthor[0].affectedRows === 0) {
+  if (DBResult(updatedAuthor[0]).changedRows === 0) {
     return { success: false };
   }
 
@@ -127,14 +114,14 @@ export async function verifyAuthor(userId: string) {
       .set({ isConfirmed: true })
       .where(eq(authors.clerkId, userId));
 
-    if (!author || author[0].affectedRows === 0) {
+    if (!author || author[0].changedRows === 0) {
       tx.rollback();
       return { success: false };
     }
 
     const user = await tx.update(users).set({ isAuthor: true }).where(eq(users.clerkId, userId));
 
-    if (!user || user[0].affectedRows === 0) {
+    if (!user || user[0].changedRows === 0) {
       tx.rollback();
       return { success: false };
     }
@@ -196,7 +183,7 @@ export async function registerAuthor(
   await db.transaction(async (tx) => {
     const author = await tx.insert(authors).values(data);
 
-    if (!author || author[0].affectedRows === 0) {
+    if (!author || author[0].changedRows === 0) {
       await tx.rollback();
 
       return { success: false };

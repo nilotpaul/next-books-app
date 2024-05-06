@@ -14,7 +14,7 @@ import Heading from '../Heading';
 type AuthorTabtProps = {
   isAuthor: boolean;
   author: Author | null;
-  links: SocialLinks | null;
+  links: Partial<SocialLinks>;
 };
 
 const AuthorTab = ({ isAuthor, author, links }: AuthorTabtProps) => {
@@ -176,18 +176,6 @@ const AuthorTab = ({ isAuthor, author, links }: AuthorTabtProps) => {
                   label='Twitter'
                   placeholder='Enter your twitter link'
                   value={links?.twitter || 'Not added'}
-                />
-                <Input
-                  type='text'
-                  label='Name'
-                  readOnly
-                  variant='faded'
-                  size='sm'
-                  classNames={{
-                    inputWrapper: 'border-none',
-                  }}
-                  placeholder='Enter any social other link'
-                  value={links?.other || 'Not added'}
                 />
               </div>
 

@@ -1,1 +1,0 @@
-ALTER TABLE `users` ADD `purchased_books` json DEFAULT ('[]');

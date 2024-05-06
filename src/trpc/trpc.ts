@@ -4,9 +4,9 @@ import type { inferAsyncReturnType } from '@trpc/server';
 import { ZodError } from 'zod';
 import superjson from 'superjson';
 import { userSession } from '@/services/auth.services';
-import { getAuthorById } from '@/services/author.services';
 import { NextRequest } from 'next/server';
 import { rateLimit, redis } from '@/lib/redis';
+import { getAuthorById } from '@/services/author.services';
 
 export const createTRPCContext = async (
   opts?: Omit<FetchCreateContextFnOptions, 'req'> & { req: NextRequest }
@@ -111,9 +111,17 @@ const withRateLimit = t.middleware(async ({ ctx, next, type, path }) => {
 
 const isAuthor = t.middleware(async ({ next, ctx }) => {
   const { user } = ctx;
-  const { isAuthor, author, user: dbUser } = await getAuthorById(user?.id || '');
 
-  if (!user || !user?.id || !isAuthor || !author) {
+  if (!user?.id) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'not logged in',
+    });
+  }
+
+  const { isAuthor, author, user: dbUser } = await getAuthorById(user.id);
+
+  if (!user || !dbUser?.clerkId || !isAuthor || !author) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'You need to be an author to do this',

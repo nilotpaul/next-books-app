@@ -1,7 +1,7 @@
 'use client';
 
 import { useToggleTabStore } from '@/hooks/useToggleTabStore';
-import { Author, SocialLinks } from '@/types/author.types';
+import { Author } from '@/types/author.types';
 import { useMounted } from '@/hooks/useMounted';
 
 import ReaderTab from './ReaderTab';
@@ -16,10 +16,9 @@ type TabContentProps = {
   image: string;
   isAuthor: boolean;
   author: Author | null;
-  links: SocialLinks | null;
 };
 
-const TabContent = ({ isAuthor, author, links, ...props }: TabContentProps) => {
+const TabContent = ({ isAuthor, author, ...props }: TabContentProps) => {
   const tab = useToggleTabStore((state) => state.tab);
 
   const [isMounted] = useMounted();
@@ -33,7 +32,14 @@ const TabContent = ({ isAuthor, author, links, ...props }: TabContentProps) => {
       {tab === 'Reader' ? (
         <ReaderTab {...props} />
       ) : (
-        <AuthorTab isAuthor={isAuthor} author={author} links={links} />
+        <AuthorTab
+          isAuthor={isAuthor}
+          author={author}
+          links={{
+            instagram: author?.instagram ?? '',
+            twitter: author?.twitter ?? '',
+          }}
+        />
       )}
     </>
   );

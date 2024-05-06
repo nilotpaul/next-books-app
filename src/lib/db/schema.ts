@@ -48,6 +48,8 @@ export const authors = mysqlTable(
     isConfirmed: boolean('is_confirmed').default(false),
     secretKey: varchar('secret_key', { length: 255 }).notNull(),
     stars: int('stars').default(0),
+    instagram: varchar('instagram', { length: 255 }),
+    twitter: varchar('twitter', { length: 255 }),
     joinedOn: timestamp('joined_on').defaultNow().notNull(),
   },
   (table) => ({
@@ -120,17 +122,6 @@ export const ratedAuthors = mysqlTable(
   })
 );
 
-export const socialLinks = mysqlTable(
-  'social_links',
-  {
-    clerkId: varchar('clerk_id', { length: 255 }).primaryKey().notNull(),
-    instagram: varchar('instagram', { length: 255 }),
-    twitter: varchar('twitter', { length: 255 }),
-    other: varchar('other', { length: 255 }),
-  },
-  (table) => ({ clerkIdx: index('clerk_idx').on(table.clerkId) })
-);
-
 export const forumPosts = mysqlTable(
   'forum_posts',
   {
@@ -163,10 +154,6 @@ export const userRelations = relations(users, ({ one, many }) => ({
 
 export const authorRelations = relations(authors, ({ many, one }) => ({
   books: many(books),
-  socialLinks: one(socialLinks, {
-    fields: [authors.clerkId],
-    references: [socialLinks.clerkId],
-  }),
 }));
 
 export const booksRelations = relations(books, ({ one }) => ({

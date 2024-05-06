@@ -1,4 +1,0 @@
-ALTER TABLE `authors` ADD `bio` varchar(255) NOT NULL;--> statement-breakpoint
-ALTER TABLE `authors` ADD `genres` enum('Fiction','Non-fiction','Mystery','Thriller','Science Fiction','Fantasy','Romance','Horror','Historical Fiction','Biography','Autobiography','Self-help','Business','Science','Travel','Poetry','Children','Young Adult','Graphic Novels','Cookbooks','Religion','Philosophy','Art','History','Classics','Humor','Drama','Adventure','Crime','Comics','Manga','Western','Short Stories','Essays','Satire','Anthology','Dystopian') NOT NULL;--> statement-breakpoint
-ALTER TABLE `authors` ADD `confirmed_email` varchar(255);--> statement-breakpoint
-ALTER TABLE `authors` ADD `secret_key` varchar(255);

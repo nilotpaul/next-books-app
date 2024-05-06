@@ -1,1 +1,0 @@
-ALTER TABLE `authors` MODIFY COLUMN `confirmed_email` varchar(255) NOT NULL;

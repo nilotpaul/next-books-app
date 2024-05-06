@@ -29,7 +29,7 @@ export const authorRouter = router({
     const { authorName, bio, confirm_email, imageUrl, genres } = input;
 
     try {
-      const { isAuthor, author, user: dbUser } = await getAuthorById(user.id);
+      const { isAuthor, user: dbUser } = await getAuthorById(user.id);
 
       if (isAuthor) {
         throw new TRPCError({
@@ -243,7 +243,7 @@ export const authorRouter = router({
       }
 
       try {
-        const { success } = await updateAuthorProfile(input, author.clerkId);
+        const { success } = await updateAuthorProfile(input, user.clerkId);
 
         if (!success) {
           throw new TRPCError({

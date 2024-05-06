@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "be7ca9ca-d481-42f9-9ce0-7d3a3b4c021d",
+  "id": "9e8c4576-00c6-456d-9ff8-53429b4d8b2b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "authors": {
@@ -72,6 +72,20 @@
           "autoincrement": false,
           "default": 0
         },
+        "instagram": {
+          "name": "instagram",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "twitter": {
+          "name": "twitter",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "joined_on": {
           "name": "joined_on",
           "type": "timestamp",
@@ -81,7 +95,15 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "clerk_idx": {
+          "name": "clerk_idx",
+          "columns": [
+            "clerk_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "authors_clerk_id": {
@@ -218,6 +240,14 @@
           "autoincrement": false,
           "default": 0
         },
+        "purchase_count": {
+          "name": "purchase_count",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
+        },
         "publication_date": {
           "name": "publication_date",
           "type": "timestamp",
@@ -242,7 +272,22 @@
           "onUpdate": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "book_idx": {
+          "name": "book_idx",
+          "columns": [
+            "book_name"
+          ],
+          "isUnique": false
+        },
+        "clerk_idx": {
+          "name": "clerk_idx",
+          "columns": [
+            "clerk_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "books_id": {
@@ -267,6 +312,116 @@
         }
       }
     },
+    "forum_posts": {
+      "name": "forum_posts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "clerk_id": {
+          "name": "clerk_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "is_author": {
+          "name": "is_author",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "post_title": {
+          "name": "post_title",
+          "type": "varchar(70)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "post_content": {
+          "name": "post_content",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "post_image": {
+          "name": "post_image",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tags": {
+          "name": "tags",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "likes": {
+          "name": "likes",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "post_idx": {
+          "name": "post_idx",
+          "columns": [
+            "id"
+          ],
+          "isUnique": false
+        },
+        "clerk_idx": {
+          "name": "clerk_idx",
+          "columns": [
+            "clerk_id"
+          ],
+          "isUnique": false
+        },
+        "title_idx": {
+          "name": "title_idx",
+          "columns": [
+            "post_title"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "forum_posts_id": {
+          "name": "forum_posts_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "forum_posts_id_unique": {
+          "name": "forum_posts_id_unique",
+          "columns": [
+            "id"
+          ]
+        }
+      }
+    },
     "rated_authors": {
       "name": "rated_authors",
       "columns": {
@@ -281,7 +436,7 @@
           "name": "clerk_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "author_id": {
@@ -315,7 +470,22 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "book_idx": {
+          "name": "book_idx",
+          "columns": [
+            "id"
+          ],
+          "isUnique": false
+        },
+        "author_idx": {
+          "name": "author_idx",
+          "columns": [
+            "clerk_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "rated_authors_id": {
@@ -348,7 +518,7 @@
           "name": "clerk_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "book_id": {
@@ -382,7 +552,22 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "book_idx": {
+          "name": "book_idx",
+          "columns": [
+            "book_name"
+          ],
+          "isUnique": false
+        },
+        "clerk_idx": {
+          "name": "clerk_idx",
+          "columns": [
+            "clerk_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "rated_books_id": {
@@ -400,50 +585,6 @@
           ]
         }
       }
-    },
-    "social_links": {
-      "name": "social_links",
-      "columns": {
-        "clerk_id": {
-          "name": "clerk_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "instagram": {
-          "name": "instagram",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "twitter": {
-          "name": "twitter",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "other": {
-          "name": "other",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "social_links_clerk_id": {
-          "name": "social_links_clerk_id",
-          "columns": [
-            "clerk_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
     },
     "users": {
       "name": "users",
@@ -537,7 +678,22 @@
           "onUpdate": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "clerk_idx": {
+          "name": "clerk_idx",
+          "columns": [
+            "clerk_id"
+          ],
+          "isUnique": false
+        },
+        "email_idx": {
+          "name": "email_idx",
+          "columns": [
+            "email"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "users_clerk_id": {

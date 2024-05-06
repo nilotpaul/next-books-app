@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "turbo": "next dev --turbo",
-    "generate": "drizzle-kit generate:pg",
-    "push": "drizzle-kit push:pg",
+    "generate": "drizzle-kit generate:mysql",
+    "push": "drizzle-kit push:mysql",
     "build": "contentlayer build && next build",
     "start": "next start",
     "lint": "next lint"
