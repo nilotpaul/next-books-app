@@ -19,12 +19,12 @@ import {
   publishBookValidation,
 } from '@/validations/bookValidation';
 import { TRPCError } from '@trpc/server';
-import { DrizzleError } from 'drizzle-orm';
 import { z } from 'zod';
 import { nanoid } from 'nanoid';
 import { normaliseTitle } from '@/utils/utils';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { infiniteSearchValidaion } from '@/validations';
+import { trpcErrors } from '@/lib/errors/trpcErrors';
 
 export const bookRouter = router({
   create: authorProcedure.input(createBookValidation).mutation(async ({ input, ctx }) => {
@@ -64,29 +64,7 @@ export const bookRouter = router({
     } catch (err) {
       console.error('[CREATE_BOOK_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'Data not passed in correct format',
-        });
-      }
-      if (err instanceof DrizzleError) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to make changes to the db',
-        });
-      }
-      if (err instanceof TRPCError) {
-        throw new TRPCError({
-          code: err.code,
-          message: err.message,
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Something went wrong while creating the book',
-      });
+      return trpcErrors(err, 'Something went wrong while creating the book');
     }
   }),
 
@@ -145,29 +123,7 @@ export const bookRouter = router({
     } catch (err) {
       console.error('[PUBLISH_BOOK_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'Data not passed in correct format',
-        });
-      }
-      if (err instanceof DrizzleError) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to make changes to the db',
-        });
-      }
-      if (err instanceof TRPCError) {
-        throw new TRPCError({
-          code: err.code,
-          message: err.message,
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to publish the book',
-      });
+      return trpcErrors(err, 'Failed to publish the book');
     }
   }),
 
@@ -209,29 +165,7 @@ export const bookRouter = router({
       } catch (err) {
         console.error('[DELETE_BOOK_ERROR]:', err);
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'Data not passed in correct format',
-          });
-        }
-        if (err instanceof DrizzleError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to make changes to the db',
-          });
-        }
-        if (err instanceof TRPCError) {
-          throw new TRPCError({
-            code: err.code,
-            message: err.message,
-          });
-        }
-
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to delete the book',
-        });
+        return trpcErrors(err, 'Failed to delete the book');
       }
     }),
 
@@ -283,24 +217,7 @@ export const bookRouter = router({
     } catch (err) {
       console.error('[BOOK_FILTER_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'Data not passed in correct format',
-        });
-      }
-
-      if (err instanceof TRPCError) {
-        throw new TRPCError({
-          code: err.code,
-          message: err.message,
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Something went wrong',
-      });
+      return trpcErrors(err);
     }
   }),
 
@@ -401,29 +318,7 @@ export const bookRouter = router({
       } catch (err) {
         console.error('[BOOK_RATING_ERROR]:', err);
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'Data not passed in correct format',
-          });
-        }
-        if (err instanceof DrizzleError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to make changes to the db',
-          });
-        }
-        if (err instanceof TRPCError) {
-          throw new TRPCError({
-            code: err.code,
-            message: err.message,
-          });
-        }
-
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Something went wrong',
-        });
+        return trpcErrors(err);
       }
     }),
 
@@ -458,17 +353,7 @@ export const bookRouter = router({
     } catch (err) {
       console.error('[BOOK_ROUTER_GET_BOOKS_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'data not passed in correct format',
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to get the books',
-      });
+      return trpcErrors(err, 'Failed to get the books');
     }
   }),
 });

@@ -77,18 +77,19 @@ const BooksInfoRight = ({ book, isPurchased }: BookInfoRight) => {
       </div>
 
       <div className='flex items-center gap-4 pt-4'>
-        <Button
-          as={Link}
-          href={`/books/read/${book.id}`}
-          className='font-medium text-black dark:bg-foreground-800'
-          variant='solid'
-        >
-          Read Now
-        </Button>
-        {!isPurchased && book.availability === 'Paid' && (
+        {!isPurchased && book.availability === 'Paid' ? (
           <PurchaseBook bookId={book.id} variant='bordered' className='font-medium text-danger'>
             Buy Now
           </PurchaseBook>
+        ) : (
+          <Button
+            as={Link}
+            href={`/books/read/${book.id}`}
+            className='font-medium text-black dark:bg-foreground-800'
+            variant='solid'
+          >
+            Read Now
+          </Button>
         )}
       </div>
       <Divider className='h-[1px] bg-foreground-400' />

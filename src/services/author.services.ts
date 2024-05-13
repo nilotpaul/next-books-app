@@ -1,9 +1,8 @@
 import { db } from '@/lib/db/conn';
 import { authors, books, users } from '@/lib/db/schema';
-import { DBResult } from '@/utils/utils';
 import { UpdateAuthorProfile } from '@/validations/authorValidations';
 import { env } from '@/validations/env';
-import { and, asc, desc, eq, gt, like, lt } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, ilike, lt } from 'drizzle-orm';
 import { cache } from 'react';
 
 import 'server-only';
@@ -35,7 +34,7 @@ export const getAuthorByName = cache(async (authorName: string) => {
       authorName: authors.authorName,
     })
     .from(authors)
-    .where(like(authors.authorName, `%${authorName}%`))
+    .where(ilike(authors.authorName, `%${authorName}%`))
     .limit(5);
 
   return row;
@@ -100,7 +99,7 @@ export const updateAuthorProfile = async (values: UpdateAuthorProfile, userId: s
     })
     .where(eq(authors.clerkId, userId));
 
-  if (DBResult(updatedAuthor[0]).changedRows === 0) {
+  if (updatedAuthor.rowCount === 0) {
     return { success: false };
   }
 
@@ -114,14 +113,14 @@ export async function verifyAuthor(userId: string) {
       .set({ isConfirmed: true })
       .where(eq(authors.clerkId, userId));
 
-    if (!author || author[0].changedRows === 0) {
+    if (!author || author.rowCount === 0) {
       tx.rollback();
       return { success: false };
     }
 
     const user = await tx.update(users).set({ isAuthor: true }).where(eq(users.clerkId, userId));
 
-    if (!user || user[0].changedRows === 0) {
+    if (!user || user.rowCount === 0) {
       tx.rollback();
       return { success: false };
     }
@@ -183,7 +182,7 @@ export async function registerAuthor(
   await db.transaction(async (tx) => {
     const author = await tx.insert(authors).values(data);
 
-    if (!author || author[0].changedRows === 0) {
+    if (!author || author.rowCount === 0) {
       await tx.rollback();
 
       return { success: false };

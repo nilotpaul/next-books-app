@@ -57,7 +57,7 @@ const AuthorFilter = ({ setValue }: AuthorFilterProps) => {
       placeholder='Enter author name'
       className='font-semibold'
     >
-      {({ authorName, id }) => <AutocompleteItem key={id}>{authorName}</AutocompleteItem>}
+      {({ authorName }) => <AutocompleteItem key={authorName}>{authorName}</AutocompleteItem>}
     </Autocomplete>
   );
 };

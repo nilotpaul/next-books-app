@@ -42,11 +42,13 @@ const CreateBookModal = ({ userId }: CreateBookModalProps) => {
   });
 
   const { mutate: createBook, isLoading } = trpc.bookRouter.create.useMutation({
-    onSuccess: ({ bookId }) => {
+    onSuccess: (result) => {
       router.refresh();
       utils.authorRouter.getAuthorBooks.refetch();
       onClose();
-      router.push(`/books/write/${userId}/${bookId}`);
+      if (result?.success) {
+        router.push(`/books/write/${userId}/${result.bookId}`);
+      }
     },
     onError: (err) => {
       console.error(err);

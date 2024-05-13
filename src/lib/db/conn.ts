@@ -1,14 +1,12 @@
 import { env } from '@/validations/env';
-import { drizzle } from 'drizzle-orm/mysql2';
-import mysql from 'mysql2/promise';
+
+import { Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 
 import * as schema from './schema';
 
-const poolConn = mysql.createPool({
-  host: env.DATABASE_HOST,
-  user: env.DATABASE_USERNAME,
-  password: env.DATABASE_PASSWORD,
-  uri: env.DATABASE_URL,
+const poolConn = new Pool({
+  connectionString: env.DATABASE_URL,
 });
 
-export const db = drizzle(poolConn, { schema, mode: 'default' });
+export const db = drizzle(poolConn, { schema });

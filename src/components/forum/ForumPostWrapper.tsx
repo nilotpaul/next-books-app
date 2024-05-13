@@ -20,10 +20,12 @@ const ForumPostWrapper = async ({ getPosts }: ForumPostWrapperProps) => {
       const dbPosts = await getPosts();
       posts = dbPosts;
 
-      await redis.set('forum_posts', dbPosts, {
-        keepTtl: true,
-      });
-      await redis.expire('forum_posts', 60 * 60 * 2, 'nx');
+      if (dbPosts.length !== 0) {
+        await redis.set('forum_posts', dbPosts, {
+          keepTtl: true,
+        });
+        await redis.expire('forum_posts', 60 * 60 * 2, 'nx');
+      }
     } catch (err) {
       if (err instanceof Error) {
         console.error(err.message);

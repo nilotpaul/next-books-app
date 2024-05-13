@@ -14,7 +14,7 @@ if (!DATABASE_URL) {
 export default {
   schema: './src/lib/db/schema.ts',
   out: './migrations',
-  driver: 'mysql2',
+  driver: 'pg',
   dbCredentials: {
     connectionString: DATABASE_URL,
   },

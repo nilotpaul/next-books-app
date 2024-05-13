@@ -1,98 +1,87 @@
 {
   "version": "5",
-  "dialect": "mysql",
-  "id": "9e8c4576-00c6-456d-9ff8-53429b4d8b2b",
+  "dialect": "pg",
+  "id": "a2782d4e-6b13-4446-b6ee-996b72068c7d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "authors": {
       "name": "authors",
+      "schema": "",
       "columns": {
         "clerk_id": {
           "name": "clerk_id",
           "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "primaryKey": true,
+          "notNull": true
         },
         "author_name": {
           "name": "author_name",
           "type": "varchar(120)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "author_image": {
           "name": "author_image",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "bio": {
           "name": "bio",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "artist_genres": {
           "name": "artist_genres",
           "type": "json",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "confirmed_email": {
           "name": "confirmed_email",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "is_confirmed": {
           "name": "is_confirmed",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
           "default": false
         },
         "secret_key": {
           "name": "secret_key",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "stars": {
           "name": "stars",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
           "default": 0
         },
         "instagram": {
           "name": "instagram",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "twitter": {
           "name": "twitter",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "joined_on": {
           "name": "joined_on",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         }
       },
       "indexes": {
@@ -105,171 +94,143 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "authors_clerk_id": {
-          "name": "authors_clerk_id",
-          "columns": [
-            "clerk_id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "books": {
       "name": "books",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "primaryKey": true,
+          "notNull": true
         },
         "clerk_id": {
           "name": "clerk_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "book_name": {
           "name": "book_name",
           "type": "varchar(70)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "content": {
           "name": "content",
           "type": "json",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "synopsis": {
           "name": "synopsis",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "normalised_title": {
           "name": "normalised_title",
           "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "front_artwork": {
           "name": "front_artwork",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "back_artwork": {
           "name": "back_artwork",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "status": {
           "name": "status",
-          "type": "enum('draft','published')",
+          "type": "book_status",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "genres": {
           "name": "genres",
           "type": "json",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "language": {
           "name": "language",
-          "type": "enum('English','Spanish','French','German','Chinese','Russian','Japanese','Arabic','Hindi','Portuguese','Bengali','Urdu','Indonesian','Italian','Dutch','Turkish','Korean','Vietnamese','Polish','Thai')",
+          "type": "book_language",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
-        "availabality": {
-          "name": "availabality",
-          "type": "enum('Free','Paid')",
+        "availability": {
+          "name": "availability",
+          "type": "book_availabality",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "pricing": {
           "name": "pricing",
-          "type": "decimal(10,2)",
+          "type": "numeric(10, 2)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "series": {
           "name": "series",
           "type": "json",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "('[]')"
+          "default": "'[]'::json"
         },
         "collaborations": {
           "name": "collaborations",
           "type": "json",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "stars": {
           "name": "stars",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
           "default": 0
         },
         "rated_by": {
           "name": "rated_by",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
           "default": 0
         },
         "purchase_count": {
           "name": "purchase_count",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
           "default": 0
         },
         "publication_date": {
           "name": "publication_date",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "onUpdate": true
+          "notNull": true
         }
       },
       "indexes": {
@@ -289,23 +250,18 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "books_id": {
-          "name": "books_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "books_book_name_unique": {
           "name": "books_book_name_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "book_name"
           ]
         },
         "books_normalised_title_unique": {
           "name": "books_normalised_title_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "normalised_title"
           ]
@@ -314,71 +270,63 @@
     },
     "forum_posts": {
       "name": "forum_posts",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "primaryKey": true,
+          "notNull": true
         },
         "clerk_id": {
           "name": "clerk_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "is_author": {
           "name": "is_author",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
           "default": false
         },
         "post_title": {
           "name": "post_title",
           "type": "varchar(70)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "post_content": {
           "name": "post_content",
           "type": "json",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "post_image": {
           "name": "post_image",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "tags": {
           "name": "tags",
           "type": "json",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "likes": {
           "name": "likes",
           "type": "json",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         }
       },
       "indexes": {
@@ -405,17 +353,11 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "forum_posts_id": {
-          "name": "forum_posts_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "forum_posts_id_unique": {
           "name": "forum_posts_id_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "id"
           ]
@@ -424,41 +366,37 @@
     },
     "rated_authors": {
       "name": "rated_authors",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "primaryKey": true,
+          "notNull": true
         },
         "clerk_id": {
           "name": "clerk_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "author_id": {
           "name": "author_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "author_name": {
           "name": "author_name",
           "type": "varchar(70)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "stars": {
           "name": "stars",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": 0
         },
         "created_at": {
@@ -466,8 +404,7 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         }
       },
       "indexes": {
@@ -487,17 +424,11 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "rated_authors_id": {
-          "name": "rated_authors_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "rated_authors_id_unique": {
           "name": "rated_authors_id_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "id"
           ]
@@ -506,41 +437,37 @@
     },
     "rated_books": {
       "name": "rated_books",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "primaryKey": true,
+          "notNull": true
         },
         "clerk_id": {
           "name": "clerk_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "book_id": {
           "name": "book_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "book_name": {
           "name": "book_name",
           "type": "varchar(70)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "stars": {
           "name": "stars",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": 0
         },
         "created_at": {
@@ -548,8 +475,7 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         }
       },
       "indexes": {
@@ -569,17 +495,11 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "rated_books_id": {
-          "name": "rated_books_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "rated_books_id_unique": {
           "name": "rated_books_id_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "id"
           ]
@@ -588,62 +508,55 @@
     },
     "users": {
       "name": "users",
+      "schema": "",
       "columns": {
         "clerk_id": {
           "name": "clerk_id",
           "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "primaryKey": true,
+          "notNull": true
         },
         "email": {
           "name": "email",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "first_name": {
           "name": "first_name",
           "type": "varchar(50)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "last_name": {
           "name": "last_name",
           "type": "varchar(70)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "user_name": {
           "name": "user_name",
           "type": "varchar(50)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "image_url": {
           "name": "image_url",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "strategy": {
           "name": "strategy",
           "type": "varchar(50)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "is_author": {
           "name": "is_author",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
           "default": false
         },
         "purchased_books": {
@@ -651,31 +564,26 @@
           "type": "json",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
-          "default": "('[]')"
+          "default": "'[]'::json"
         },
         "stripe_customer_id": {
           "name": "stripe_customer_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "onUpdate": true
+          "notNull": true
         }
       },
       "indexes": {
@@ -695,15 +603,49 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "users_clerk_id": {
-          "name": "users_clerk_id",
-          "columns": [
-            "clerk_id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
+    }
+  },
+  "enums": {
+    "book_availabality": {
+      "name": "book_availabality",
+      "values": {
+        "Free": "Free",
+        "Paid": "Paid"
+      }
+    },
+    "book_language": {
+      "name": "book_language",
+      "values": {
+        "English": "English",
+        "Spanish": "Spanish",
+        "French": "French",
+        "German": "German",
+        "Chinese": "Chinese",
+        "Russian": "Russian",
+        "Japanese": "Japanese",
+        "Arabic": "Arabic",
+        "Hindi": "Hindi",
+        "Portuguese": "Portuguese",
+        "Bengali": "Bengali",
+        "Urdu": "Urdu",
+        "Indonesian": "Indonesian",
+        "Italian": "Italian",
+        "Dutch": "Dutch",
+        "Turkish": "Turkish",
+        "Korean": "Korean",
+        "Vietnamese": "Vietnamese",
+        "Polish": "Polish",
+        "Thai": "Thai"
+      }
+    },
+    "book_status": {
+      "name": "book_status",
+      "values": {
+        "draft": "draft",
+        "published": "published"
+      }
     }
   },
   "schemas": {},

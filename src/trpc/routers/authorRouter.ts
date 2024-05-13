@@ -22,6 +22,7 @@ import { AxiosError } from 'axios';
 import { infiniteSearchValidaion } from '@/validations';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { omit } from 'lodash';
+import { trpcErrors } from '@/lib/errors/trpcErrors';
 
 export const authorRouter = router({
   register: privateProcedure.input(registerAuthorValidation).mutation(async ({ input, ctx }) => {
@@ -78,35 +79,7 @@ export const authorRouter = router({
     } catch (err) {
       console.error('[Error: Author_Registration]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'Data not passed in correct format',
-        });
-      }
-      if (err instanceof DrizzleError) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to make changes to the database',
-        });
-      }
-      if (err instanceof TRPCError) {
-        throw new TRPCError({
-          code: err.code,
-          message: err.message,
-        });
-      }
-      if (err instanceof AxiosError) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: err.message,
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Author registration failed',
-      });
+      return trpcErrors(err, 'Author registration failed');
     }
   }),
 
@@ -151,29 +124,7 @@ export const authorRouter = router({
     } catch (err) {
       console.error('[Error]: Author verification', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'Data not passed in correct format',
-        });
-      }
-      if (err instanceof DrizzleError) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to make changes to the database',
-        });
-      }
-      if (err instanceof TRPCError) {
-        throw new TRPCError({
-          code: err.code,
-          message: err.message,
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Author verification failed',
-      });
+      return trpcErrors(err, 'Author verification failed');
     }
   }),
 
@@ -194,29 +145,7 @@ export const authorRouter = router({
       } catch (err) {
         console.error('[AUTHOR_SEARCH_ERROR]', err);
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'Data not passed in correct format',
-          });
-        }
-        if (err instanceof DrizzleError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to make changes to the database',
-          });
-        }
-        if (err instanceof TRPCError) {
-          throw new TRPCError({
-            code: err.code,
-            message: err.message,
-          });
-        }
-
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Something went wrong',
-        });
+        return trpcErrors(err);
       }
     }),
 
@@ -256,29 +185,7 @@ export const authorRouter = router({
       } catch (err) {
         console.error('[AUTHOR_PROFILE_UPDATE_ERROR]:', err);
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'Data not passed in correct format',
-          });
-        }
-        if (err instanceof DrizzleError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to make changes to the database',
-          });
-        }
-        if (err instanceof TRPCError) {
-          throw new TRPCError({
-            code: err.code,
-            message: err.message,
-          });
-        }
-
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Something went wrong',
-        });
+        return trpcErrors(err);
       }
     }),
 
@@ -313,17 +220,7 @@ export const authorRouter = router({
     } catch (err) {
       console.error('[AUTHOR_ROUTER_GET_AUTHORS_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'data not passed in correct order',
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to get the authors',
-      });
+      return trpcErrors(err, 'Failed to get the authors');
     }
   }),
 
@@ -364,17 +261,7 @@ export const authorRouter = router({
     } catch (err) {
       console.error('[AUTHOR_ROUTER_GET_AUTHOR_BOOKS_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'data not passed in correct order',
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to get the books',
-      });
+      return trpcErrors(err, 'Failed to get the books');
     }
   }),
 
@@ -427,17 +314,7 @@ export const authorRouter = router({
     } catch (err) {
       console.error('[AUTHOR_ROUTER_GET_SOLD_BOOKS_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'data not passed in correct order',
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to get the books',
-      });
+      return trpcErrors(err, 'Failed to get the books');
     }
   }),
 });

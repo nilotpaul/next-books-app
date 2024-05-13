@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { privateProcedure, publicProcedure, router } from '../trpc';
+import { privateProcedure, router } from '../trpc';
 import { getBookById, getBookInfoById, getRatedBookById } from '@/services/books.services';
 import getUrl from '@/utils/getUrl';
 import { TRPCError } from '@trpc/server';
@@ -9,6 +9,7 @@ import { stripe } from '@/lib/payments/stripeServer';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { infiniteSearchValidaion } from '@/validations';
 import { getUserForumPosts } from '@/services/forumPosts.services';
+import { trpcErrors } from '@/lib/errors/trpcErrors';
 
 export const userRouter = router({
   purchaseBook: privateProcedure
@@ -98,29 +99,7 @@ export const userRouter = router({
       } catch (err) {
         console.error('[PURCHASE_BOOK_ERROR]:', err);
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'Data passed in incorrect format',
-          });
-        }
-        if (err instanceof DrizzleError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to make changes to the db',
-          });
-        }
-        if (err instanceof TRPCError) {
-          throw new TRPCError({
-            code: err.code,
-            message: err.message,
-          });
-        }
-
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Something went wrong',
-        });
+        return trpcErrors(err);
       }
     }),
 
@@ -181,17 +160,7 @@ export const userRouter = router({
     } catch (err) {
       console.error('[PURCHASED_BOOKS_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'Data passed in incorrect format',
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to get the purchases',
-      });
+      return trpcErrors(err, 'Failed to get the purchases');
     }
   }),
 
@@ -240,17 +209,7 @@ export const userRouter = router({
     } catch (err) {
       console.error('[FORUM_POST_GET_POSTS_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'data not passed in correct format',
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to get the posts',
-      });
+      return trpcErrors(err, 'Failed to get the posts');
     }
   }),
 });

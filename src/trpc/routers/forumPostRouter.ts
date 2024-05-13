@@ -14,6 +14,7 @@ import { z } from 'zod';
 import { DrizzleError } from 'drizzle-orm';
 import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { infiniteSearchValidaion } from '@/validations';
+import { trpcErrors } from '@/lib/errors/trpcErrors';
 
 export const forumPostRouter = router({
   create: privateProcedure.input(forumPostValidation).mutation(async ({ ctx, input }) => {
@@ -48,29 +49,7 @@ export const forumPostRouter = router({
     } catch (err) {
       console.error('[FORUM_POSTS_CREATE_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'Data not passed in correct format',
-        });
-      }
-      if (err instanceof DrizzleError) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to make changes to the db',
-        });
-      }
-      if (err instanceof TRPCError) {
-        throw new TRPCError({
-          code: err.code,
-          message: err.message,
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Something went wrong',
-      });
+      return trpcErrors(err);
     }
   }),
 
@@ -110,29 +89,7 @@ export const forumPostRouter = router({
       } catch (err) {
         console.error('[FORUM_POST_DELETE_ERROR]:', err);
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'Data not passed in correct format',
-          });
-        }
-        if (err instanceof DrizzleError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to make changes to the db',
-          });
-        }
-        if (err instanceof TRPCError) {
-          throw new TRPCError({
-            code: err.code,
-            message: err.message,
-          });
-        }
-
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Something went wrong',
-        });
+        return trpcErrors(err);
       }
     }),
 
@@ -192,29 +149,7 @@ export const forumPostRouter = router({
       } catch (err) {
         console.error('[FORUM_POST_LIKE_ERROR]:', err);
 
-        if (err instanceof z.ZodError) {
-          throw new TRPCError({
-            code: 'PARSE_ERROR',
-            message: 'Data not passed in correct format',
-          });
-        }
-        if (err instanceof DrizzleError) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to make changes to the db',
-          });
-        }
-        if (err instanceof TRPCError) {
-          throw new TRPCError({
-            code: err.code,
-            message: err.message,
-          });
-        }
-
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Something went wrong',
-        });
+        return trpcErrors(err);
       }
     }),
 
@@ -249,17 +184,7 @@ export const forumPostRouter = router({
     } catch (err) {
       console.error('[FORUM_POST_GET_POSTS_ERROR]:', err);
 
-      if (err instanceof z.ZodError) {
-        throw new TRPCError({
-          code: 'PARSE_ERROR',
-          message: 'data not passed in correct format',
-        });
-      }
-
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to get the posts',
-      });
+      return trpcErrors(err, 'Failed to get the posts');
     }
   }),
 });

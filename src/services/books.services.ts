@@ -1,9 +1,8 @@
-import { MAX_SEARCH_RESULTS_LIMIT } from '@/config/constants/search-filters';
 import { db } from '@/lib/db/conn';
 import { authors, books, ratedBooks } from '@/lib/db/schema';
 import { DeleteBook, RateBook, UpdateBook } from '@/types/book.types';
 import { BookFilters, CreateBook } from '@/validations/bookValidation';
-import { and, asc, desc, eq, gt, like, lt, or, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, ilike, like, lt, sql } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { cache } from 'react';
 
@@ -58,6 +57,8 @@ export const getBooksByFilters = cache(
   async (filters: Partial<BookFilters>, cursor?: string, limit?: number) => {
     const genresQuery = filters?.genres?.map((genre) => genre).join('|');
 
+    console.log(filters.authorName);
+
     const row = await db
       .select({
         id: books.id,
@@ -71,23 +72,22 @@ export const getBooksByFilters = cache(
         and(
           eq(books.status, 'published'),
           cursor ? gt(books.id, cursor) : undefined,
-          filters.genres?.length
-            ? sql`books.genres REGEXP`.append(
-                sql`${genresQuery}`.append(sql`COLLATE utf8mb4_general_ci`)
-              )
+          filters.genres?.length ? sql`books.genres::jsonb::text ~* (${genresQuery})` : undefined,
+          filters.publication
+            ? sql`to_char(books.publication_date, 'YYYY') LIKE ${filters.publication}`
             : undefined,
-          filters.publication ? like(books.publicationDate, `%${filters.publication}%`) : undefined,
           filters.rating ? eq(books.stars, filters.rating) : undefined,
-          filters.price ? like(books.pricing, `%${filters.price}%`) : undefined,
-          filters.language ? like(books.language, `%${filters.language}%`) : undefined,
-          filters.series ? like(books.series, `%${filters.series}%`) : undefined,
+          filters.price ? eq(books.pricing, filters.price) : undefined,
+          filters.language ? sql`CAST(books.language AS TEXT) LIKE ${filters.language}` : undefined,
+          filters.series ? ilike(books.series, filters.series) : undefined,
           filters.availability
             ? eq(books.availability, filters.availability as 'Free' | 'Paid')
             : undefined,
-          filters.authorName ? eq(books.clerkId, filters.authorName) : undefined,
-          filters.q ? like(books.bookTitle, `%${filters.q}%`) : undefined
+          filters.authorName ? ilike(authors.authorName, filters.authorName) : undefined,
+          filters.q ? ilike(books.bookTitle, filters.q) : undefined
         )
       )
+      .innerJoin(authors, eq(authors.clerkId, books.clerkId))
       .limit(limit ?? 10)
       .orderBy(asc(books.id));
 
@@ -168,7 +168,7 @@ export const getBookByTitle = cache(async (bookTitle: string) => {
   const row = await db
     .select()
     .from(books)
-    .where(like(books.normalised_title, `%${bookTitle}%`));
+    .where(ilike(books.normalised_title, `%${bookTitle}%`));
 
   if (row.length === 0) {
     return null;
@@ -191,7 +191,7 @@ export const rateBook = async (
         stars: opts.stars,
       });
 
-      if (ratedBook[0].changedRows === 0) {
+      if (ratedBook.rowCount === 0) {
         tx.rollback();
         return { success: false };
       }
@@ -201,7 +201,7 @@ export const rateBook = async (
         .set({ stars: opts.currentBookStars + opts.stars, ratedBy: opts.prevRatedBy + 1 })
         .where(eq(books.id, opts.bookId));
 
-      if (ratedAuthorBook[0].changedRows === 0) {
+      if (ratedAuthorBook.rowCount === 0) {
         tx.rollback();
         return { success: false };
       }
@@ -218,7 +218,7 @@ export const rateBook = async (
         })
         .where(and(eq(ratedBooks.id, opts.id), eq(ratedBooks.bookId, opts.bookId)));
 
-      if (updatedRating[0].changedRows === 0) {
+      if (updatedRating.rowCount === 0) {
         tx.rollback();
         return { success: false };
       }
@@ -228,7 +228,7 @@ export const rateBook = async (
         .set({ stars: opts.currentBookStars + (opts.stars - opts.prevStars) })
         .where(eq(books.id, opts.bookId));
 
-      if (updatedAuthorBook[0].changedRows === 0) {
+      if (updatedAuthorBook.rowCount === 0) {
         tx.rollback();
         return { success: false };
       }
@@ -240,7 +240,7 @@ export const rateBook = async (
       .delete(ratedBooks)
       .where(and(eq(ratedBooks.bookId, opts.bookId), eq(ratedBooks.id, opts.id)));
 
-    if (deletedRating[0].changedRows === 0) {
+    if (deletedRating.rowCount === 0) {
       tx.rollback();
       return { success: false };
     }
@@ -250,7 +250,7 @@ export const rateBook = async (
       .set({ stars: opts.currentBookStars - opts.stars, ratedBy: opts.prevRatedBy - 1 })
       .where(eq(books.id, opts.bookId));
 
-    if (updatedAuthorBook[0].changedRows === 0) {
+    if (updatedAuthorBook.rowCount === 0) {
       tx.rollback();
       return { success: false };
     }
@@ -268,7 +268,7 @@ export const rateBook = async (
 export const publishBook = async (payload: (typeof books)['$inferInsert']) => {
   const publish = await db.update(books).set(payload).where(eq(books.id, payload.id));
 
-  if (publish[0].changedRows === 0) {
+  if (publish.rowCount === 0) {
     return { success: false };
   }
 
@@ -293,7 +293,8 @@ export const createBook = async ({
     updatedAt: new Date(),
   });
 
-  if (create[0].changedRows === 0) {
+  if (create.rowCount === 0) {
+    console.log(create);
     return { success: false };
   }
 
@@ -303,7 +304,7 @@ export const createBook = async ({
 export const deleteBookById = async (bookId: string) => {
   const deletedBook = await db.delete(books).where(eq(books.id, bookId));
 
-  if (deletedBook[0].changedRows === 0) {
+  if (deletedBook.rowCount === 0) {
     return { success: false };
   }
 

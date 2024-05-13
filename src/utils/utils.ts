@@ -1,5 +1,4 @@
 import { type ClassValue, clsx } from 'clsx';
-import { MySqlRawQueryResult } from 'drizzle-orm/mysql2';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -51,10 +50,4 @@ export function renderArrayItemsByComma(array: string[]) {
     }
     return item + ',' + ' ';
   });
-}
-
-export function DBResult(queryResult: MySqlRawQueryResult[0]) {
-  const changedRows = queryResult.info.match(/Changed:\s(\d+)/);
-
-  return { changedRows: Number(changedRows?.[1] || 0), queryResult };
 }
