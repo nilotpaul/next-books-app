@@ -16,14 +16,14 @@
     "incremental": true,
     "plugins": [
       {
-        "name": "next",
-      },
+        "name": "next"
+      }
     ],
     "paths": {
       "@/*": ["./src/*", "./.contentlayer/generated"],
-      "contentlayer/generated/*": ["./contentlayer/generated/*"],
+      "contentlayer/generated/*": ["./contentlayer/generated/*"]
     },
-    "typeRoots": ["./node_modules/@types", "src/types/**/*.ts"],
+    "typeRoots": ["./node_modules/@types", "src/types/**/*.ts"]
   },
   "include": [
     "next-env.d.ts",
@@ -32,7 +32,7 @@
     ".next/types/**/*.ts",
     "src/types/**/*.d.ts",
     ".contentlayer/generated",
-    "contentlayer.config.js",
+    "contentlayer.config.js"
   ],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }

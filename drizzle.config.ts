@@ -8,7 +8,7 @@ dotenv.config({
 const DATABASE_URL = process.env.DATABASE_URL;
 
 if (!DATABASE_URL) {
-  throw new Error('no db url');
+  throw new Error('ERROR drizzle.config.ts: DATABASE_URL is undefined');
 }
 
 export default {
